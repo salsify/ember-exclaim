@@ -1,5 +1,6 @@
 .container {
   height: 100%;
+  height: calc(100% - 72px);
   display: flex;
   border: solid #ddd;
   border-width: 1px 1px 0 0;

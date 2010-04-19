@@ -12,6 +12,7 @@
 /.env*
 /.pnp*
 /.sass-cache
+/.tool-versions
 /connect.lock
 /coverage/
 /libpeerconnection.log
