@@ -26,7 +26,7 @@ export default Component.extend({
     return new Environment(get(this, 'env') || {});
   }),
 
-  content: computed('specProcessor', 'interface', 'resolveComponent', function() {
+  content: computed('specProcessor', 'ui', 'resolveComponent', function() {
     const processor = get(this, 'specProcessor');
     const ui = get(this, 'ui');
     const resolveComponent = get(this, 'resolveComponent');

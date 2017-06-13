@@ -43,7 +43,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.rootURL = '/ember-exclaim';
+    ENV.locationType = 'hash';
   }
 
   return ENV;
