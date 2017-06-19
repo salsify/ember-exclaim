@@ -4,22 +4,22 @@ import { transform, rule, simple, rest } from 'botanist';
 
 export default function buildSpecProcessor({ bindKey, componentKey }) {
   return transform({
-    @rule({ [bindKey]: simple('name') })
-    createBinding({ name }) {
-      if (!name) {
+    @rule({ [bindKey]: simple('path') })
+    createBinding({ path }) {
+      if (!path) {
         throw new Error(`Invalid binding: ""`);
       } else {
-        return new Binding(name);
+        return new Binding(path);
       }
     },
 
     @rule({ [componentKey]: simple('name'), ...rest('config') })
     createComponentSpec({ name, config }, { resolveComponent, owner }) {
-      const path = resolveComponent(name);
-      if (!owner.hasRegistration(`component:${path}`)) {
+      const resolved = resolveComponent(name);
+      if (!owner.hasRegistration(`component:${resolved}`)) {
         throw new Error(`Unable to resolve component ${name}`);
       } else {
-        return new ComponentSpec(path, config);
+        return new ComponentSpec(resolved, config);
       }
     }
   });
