@@ -6,9 +6,8 @@ import ComponentSpec from 'ember-exclaim/-private/component-spec';
 module('Unit | build-spec-processor');
 
 test('processing valid config', function(assert) {
-  let processor = buildSpecProcessor({ bindKey: 'bind', componentKey: 'component' });
-  let resolveComponent = name => `components/${name}`;
-  let owner = { hasRegistration: () => true };
+  let componentMap = { foo: { componentPath: 'components/foo' } };
+  let processor = buildSpecProcessor({ bindKey: 'bind', componentKey: 'component', componentMap });
   let input = {
     component: 'foo',
     value: {
@@ -16,25 +15,13 @@ test('processing valid config', function(assert) {
     }
   };
 
-  let result = processor(input, { owner, resolveComponent });
+  let result = processor(input);
   assert.deepEqual(result, new ComponentSpec('components/foo', { value: new Binding('bar') }));
 });
 
-test('processing a missing component', function(assert) {
-  let processor = buildSpecProcessor({ bindKey: 'bind', componentKey: 'component' });
-  let resolveComponent = name => `components/${name}`;
-  let owner = { hasRegistration: () => false };
-  let input = { component: 'foo' };
-
-  assert.throws(() => {
-    processor(input, { owner, resolveComponent });
-  }, 'Unable to resolve component foo');
-});
-
 test('processing an empty binding', function(assert) {
-  let processor = buildSpecProcessor({ bindKey: 'bind', componentKey: 'component' });
-  let resolveComponent = name => `components/${name}`;
-  let owner = { hasRegistration: () => true };
+  let componentMap = {};
+  let processor = buildSpecProcessor({ bindKey: 'bind', componentKey: 'component', componentMap });
   let input = {
     component: 'foo',
     value: {
@@ -42,7 +29,20 @@ test('processing an empty binding', function(assert) {
     }
   };
 
-  assert.throws(() => {
-    processor(input, { owner, resolveComponent });
-  }, 'Invalid binding: ""');
+  assert.throws(() => processor(input), 'Invalid binding: ""');
+});
+
+test('processing a component with shorthand', function(assert) {
+  let componentMap = {
+    foo: {
+      componentPath: 'components/foo',
+      shorthandProperty: 'value',
+    },
+  };
+
+  let processor = buildSpecProcessor({ bindKey: 'bind', componentKey: 'component', componentMap });
+  let input = { $foo: { bind: 'bar' } };
+
+  let result = processor(input);
+  assert.deepEqual(result, new ComponentSpec('components/foo', { value: new Binding('bar') }));
 });

@@ -16,10 +16,20 @@ moduleForComponent('exclaim-ui', 'Integration | Component | exclaim-ui', {
   integration: true,
 
   beforeEach() {
-    set(this, 'resolveComponent', name => name);
+    set(this, 'componentMap', {
+      'simple-component': {
+        componentPath: 'simple-component',
+      },
+      'parent-component': {
+        componentPath: 'parent-component',
+      },
+      'child-component': {
+        componentPath: 'child-component'
+      }
+    });
 
     this.renderUI = () => {
-      this.render(hbs`{{exclaim-ui resolveComponent=resolveComponent ui=ui env=env}}`);
+      this.render(hbs`{{exclaim-ui componentMap=componentMap ui=ui env=env}}`);
     };
   }
 });
