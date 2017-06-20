@@ -7,11 +7,11 @@ module('Unit | build-spec-processor');
 
 test('processing valid config', function(assert) {
   let componentMap = { foo: { componentPath: 'components/foo' } };
-  let processor = buildSpecProcessor({ bindKey: 'bind', componentKey: 'component', componentMap });
+  let processor = buildSpecProcessor({ componentMap });
   let input = {
-    component: 'foo',
+    $component: 'foo',
     value: {
-      bind: 'bar'
+      $bind: 'bar'
     }
   };
 
@@ -21,11 +21,11 @@ test('processing valid config', function(assert) {
 
 test('processing an empty binding', function(assert) {
   let componentMap = {};
-  let processor = buildSpecProcessor({ bindKey: 'bind', componentKey: 'component', componentMap });
+  let processor = buildSpecProcessor({ componentMap });
   let input = {
-    component: 'foo',
+    $component: 'foo',
     value: {
-      bind: ''
+      $bind: ''
     }
   };
 
@@ -40,8 +40,8 @@ test('processing a component with shorthand', function(assert) {
     },
   };
 
-  let processor = buildSpecProcessor({ bindKey: 'bind', componentKey: 'component', componentMap });
-  let input = { $foo: { bind: 'bar' } };
+  let processor = buildSpecProcessor({ componentMap });
+  let input = { $foo: { $bind: 'bar' } };
 
   let result = processor(input);
   assert.deepEqual(result, new ComponentSpec('components/foo', { value: new Binding('bar') }));

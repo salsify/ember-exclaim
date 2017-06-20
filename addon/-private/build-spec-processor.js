@@ -2,16 +2,16 @@ import Binding from './binding';
 import ComponentSpec from './component-spec';
 import { transform, rule, simple, subtree, rest } from 'botanist';
 
-export default function buildSpecProcessor({ bindKey, componentKey, componentMap }) {
+export default function buildSpecProcessor({ componentMap }) {
   return transform([
-    buildBaseRules({ bindKey, componentKey, componentMap }),
+    buildBaseRules(componentMap),
     buildShorthandRules(componentMap),
   ]);
 }
 
-function buildBaseRules({ bindKey, componentKey, componentMap }) {
+function buildBaseRules(componentMap) {
   return {
-    @rule({ [bindKey]: simple('path') })
+    @rule({ $bind: simple('path') })
     createBinding({ path }) {
       if (!path) {
         throw new Error(`Invalid binding: ""`);
@@ -20,7 +20,7 @@ function buildBaseRules({ bindKey, componentKey, componentMap }) {
       }
     },
 
-    @rule({ [componentKey]: simple('name'), ...rest('config') })
+    @rule({ $component: simple('name'), ...rest('config') })
     createComponentSpec({ name, config }) {
       if (componentMap.hasOwnProperty(name)) {
         return new ComponentSpec(componentMap[name].componentPath, config);
