@@ -13,9 +13,6 @@ const {
 export default Component.extend({
   layout,
 
-  bindKey: '$bind',
-  componentKey: '$component',
-
   ui: null,
   env: null,
 
@@ -36,7 +33,7 @@ export default Component.extend({
     }
   }),
 
-  specProcessor: computed('bindKey', 'componentKey', 'componentMap', function() {
-    return buildSpecProcessor(getProperties(this, 'bindKey', 'componentKey', 'componentMap'));
+  specProcessor: computed('componentMap', function() {
+    return buildSpecProcessor(getProperties(this, 'componentMap'));
   }),
 });
