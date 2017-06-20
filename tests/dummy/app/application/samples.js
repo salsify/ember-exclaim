@@ -44,6 +44,20 @@ export default [
     `,
   },
   {
+    name: 'Iteration (with shorthand)',
+    interface: stripIndent`
+      {
+        "$vbox": [{
+          "$each": [1, 2, 3],
+          "yield": "number",
+          "do": {
+            "$text": ["Item #", {"$bind":"number"}]
+          }
+        }]
+      }
+    `
+  },
+  {
     name: 'Input',
     interface: stripIndent`
       {

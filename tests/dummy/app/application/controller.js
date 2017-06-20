@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import { deserialize } from 'ember-leadlight';
+import config from 'dummy/config/environment';
+import discoverComponents from 'dummy/utils/discover-components';
 import samples from './samples';
-import docs from './docs';
 
 const {
   get,
@@ -18,6 +19,9 @@ const panes = deserialize([
   ],
 ]);
 
+const componentMap = discoverComponents(config.modulePrefix, 'exclaim-components');
+const docs = Object.values(componentMap);
+
 export default Controller.extend({
   queryParams: ['active'],
   active: -1,
@@ -25,13 +29,10 @@ export default Controller.extend({
   panes,
   samples,
   docs,
+  componentMap,
 
   uiString: sampleValue('interface'),
   envString: sampleValue('environment'),
-
-  resolveComponent(name) {
-    return `exclaim-components/${name}`;
-  },
 });
 
 function sampleValue(key) {

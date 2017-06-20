@@ -7,6 +7,20 @@ const {
   Component,
 } = Ember;
 
+export const NAME = 'let';
+export const DESCRIPTION = 'A construct for binding values in child components';
+export const SHORTHAND_PROPERTY = 'bindings';
+export const PROPERTIES = [
+  {
+    name: 'bindings',
+    description: 'A hash of values, each of which will be available to "$bind" in child components'
+  },
+  {
+    name: 'do',
+    description: 'A child component, in which all the values in "bindings" will be available'
+  }
+];
+
 export default Component.extend({
   tagName: '',
 

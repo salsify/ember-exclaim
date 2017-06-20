@@ -7,7 +7,7 @@
           local-class="rendered"
           ui=(json uiString)
           env=(json envString)
-          resolveComponent=(action resolveComponent)
+          componentMap=componentMap
           as |error|
         }}
           Error: {{error.message}}
@@ -42,8 +42,13 @@
             <div local-class="component">
               <code local-class="code-element">{{component.name}}</code>: {{component.description}}
               <ul>
-                {{#each component.params as |param|}}
-                  <li><code local-class="code-element">{{param.name}}</code>: {{param.description}}</li>
+                {{#each component.properties as |property|}}
+                  <li>
+                    <code local-class="code-element {{if (eq component.shorthandProperty property.name) 'shorthand'}}">
+                      {{~property.name~}}
+                    </code>:
+                    {{property.description}}
+                  </li>
                 {{/each}}
               </ul>
             </div>

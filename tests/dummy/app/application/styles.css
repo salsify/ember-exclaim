@@ -53,3 +53,7 @@
 .code-element {
   font-size: 110%;
 }
+
+.shorthand {
+  text-decoration: underline;
+}
