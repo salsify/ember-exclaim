@@ -1,6 +1,6 @@
 # Glossary
 
-This document aims to be a brief summary of the terminology used within the implementation of this addon. In all documentation below, bear in mind that `$component` and `$bind` may be substituted with other strings based on the configured values for `componentKey` and `bindKey`, respectively, for the `{{ember-exclaim}}` instance in question.
+This document aims to be a brief summary of the terminology used within the implementation of this addon.
 
 ## UI Config
 
