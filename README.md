@@ -35,7 +35,7 @@ The following UI would render "Hello, world!":
 
 And something like this would render an input that would update the underlying value of `target` as the user made changes:
 
-```json
+```js
 {
   "$input": { "$bind": "target" }
 }
@@ -67,7 +67,7 @@ The basic way to invoke a component in an ember-exclaim UI is with a hash contai
 }
 ```
 
-This would invoke whatever Ember component is configured under the `text` key of the given `componentMap`, passing it a hash of configuration that looks like `{ content: 'hello' }`.
+This would invoke whatever Ember component is configured under the `text` key of the given `componentMap`, passing it a hash of configuration that looks like `{ content: 'Hello' }`.
 
 #### `$bind`
 
@@ -95,7 +95,7 @@ Note that component implementations might also expose `$bind`able values to thei
 
 You may have noted that the examples in this section appear more verbose than those at the top of the document. By supplying the name of a _shorthand property_, components can be invoked using their name prefixed with a `$` as a key for that property, skipping the `$component` key completely.
 
-For example, the `input` component in [the demo application](https://salsify.github.io/ember-exclaim) declares its shorthand property to be `content`, making this:
+For example, the `text` component in [the demo application](https://salsify.github.io/ember-exclaim) declares its shorthand property to be `content`, making this:
 
 ```js
 {

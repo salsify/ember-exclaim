@@ -12,10 +12,10 @@ const {
  * Wraps an array, resolving any Bindings in it when requested to the corresponding
  * paths in the given environment.
  */
-export default class ArrayValue extends ArrayProxy {
-  constructor(value, env) {
-    super({ content: value });
-    this.__wrapped__ = (value instanceof ArrayValue) ? value.__wrapped__ : A(value);
+export default class EnvironmentArray extends ArrayProxy {
+  constructor(data, env) {
+    super({ content: data });
+    this.__wrapped__ = (data instanceof EnvironmentArray) ? data.__wrapped__ : A(data);
     this.__env__ = env;
   }
 
