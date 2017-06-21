@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import createEnvComputed from './create-env-computed';
-import Value from './value';
-import ArrayValue from './array-value';
+import EnvironmentData from './data';
+import EnvironmentArray from './array';
 
 const {
   get,
@@ -39,27 +39,27 @@ export default class Environment extends EmberObject {
 }
 
 /*
- * Given a value and an environment, returns a wrapped version of that value that
+ * Given a piece of data and an environment, returns a wrapped version of that value that
  * will resolve any Binding instances against the given environment.
  */
-export function wrap(value, env) {
-  if (Array.isArray(value) || value instanceof ArrayValue) {
-    return new ArrayValue(value, env);
-  } else if (value && typeof value === 'object' || value instanceof Value) {
-    return new Value(value, env);
+export function wrap(data, env) {
+  if (Array.isArray(data) || data instanceof EnvironmentArray) {
+    return new EnvironmentArray(data, env);
+  } else if (data && typeof data === 'object' || data instanceof EnvironmentData) {
+    return new EnvironmentData(data, env);
   } else {
-    return value;
+    return data;
   }
 }
 
 /*
- * Given a wrapped value, returns the underlying one.
+ * Given a wrapped piece of data, returns the underlying one.
  */
-export function unwrap(value) {
-  if (value instanceof ArrayValue || value instanceof Value) {
-    return value.__wrapped__;
+export function unwrap(data) {
+  if (data instanceof EnvironmentArray || data instanceof EnvironmentData) {
+    return data.__wrapped__;
   } else {
-    return value;
+    return data;
   }
 }
 

@@ -10,10 +10,10 @@ const {
  * Wraps an object, resolving any Bindings in it when requested to the corresponding
  * paths in the given environment.
  */
-export default class Value extends EmberObject {
-  constructor(value, env) {
+export default class EnvironmentData extends EmberObject {
+  constructor(data, env) {
     super();
-    this.__wrapped__ = (value instanceof Value) ? value.__wrapped__ : value;
+    this.__wrapped__ = (data instanceof EnvironmentData) ? data.__wrapped__ : data;
     this.__env__ = env;
   }
 

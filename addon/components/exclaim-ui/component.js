@@ -22,7 +22,7 @@ export default Component.extend({
     return new Environment(get(this, 'env') || {});
   }),
 
-  content: computed('specProcessor', 'interface', function() {
+  content: computed('specProcessor', 'ui', function() {
     const processor = get(this, 'specProcessor');
     const ui = get(this, 'ui');
 
