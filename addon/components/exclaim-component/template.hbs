@@ -1,0 +1,7 @@
+{{#component spec.path
+  config=resolvedConfig
+  env=effectiveEnv
+  as |spec overrideEnv|
+}}
+	{{~exclaim-component spec=spec env=effectiveEnv overrideEnv=overrideEnv~}}
+{{/component}}

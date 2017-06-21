@@ -1,0 +1,5 @@
+{{#if content.spec}}
+  {{~exclaim-component spec=content.spec env=baseEnv~}}
+{{else if content.error}}
+  {{~yield content.error~}}
+{{/if}}
