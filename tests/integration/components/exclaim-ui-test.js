@@ -28,8 +28,10 @@ moduleForComponent('exclaim-ui', 'Integration | Component | exclaim-ui', {
       }
     });
 
+    set(this, 'resolveMeta', () => {});
+
     this.renderUI = () => {
-      this.render(hbs`{{exclaim-ui componentMap=componentMap ui=ui env=env}}`);
+      this.render(hbs`{{exclaim-ui componentMap=componentMap ui=ui env=env resolveMeta=resolveMeta}}`);
     };
   }
 });
@@ -143,4 +145,62 @@ test('it renders subcomponents with extended envs', function(assert) {
   this.renderUI();
   assert.equal(this.$('[data-id=1]').text(), 'a');
   assert.equal(this.$('[data-id=2]').text(), 'b');
+});
+
+test('it allows components to resolve field metadata', function(assert) {
+  getOwner(this).register('component:parent-component', Component.extend({
+    layout: hbs`{{#each envs as |env|}}{{yield config.child env}}{{/each}}`,
+
+    envs: computed('config.items.[]', function() {
+      return this.get('config.items').map((item) => {
+        return this.get('env').extend({ item });
+      });
+    }),
+  }));
+
+  getOwner(this).register('component:child-component', Component.extend({
+    layout: hbs`{{if error error config.value}}`,
+
+    error: computed('config.value', function() {
+      const meta = this.get('env').metaFor(this, 'config.value');
+      if (meta && this.get('config.value') !== meta.goldStandard) {
+        return 'Invalid.';
+      }
+    })
+  }));
+
+  set(this, 'ui', {
+    $component: 'parent-component',
+    items: [
+      { $bind: 'data.a' },
+      { $bind: 'data.b' },
+    ],
+    child: {
+      $component: 'child-component',
+      value: { $bind: 'item.value' }
+    }
+  });
+
+  set(this, 'resolveMeta', (path) => {
+    return { goldStandard: path.toUpperCase() };
+  });
+
+  set(this, 'env', {
+    data: {
+      a: { value: 'hello' },
+      b: { value: 'goodbye' },
+    },
+  });
+
+  this.renderUI();
+  assert.equal(this.$().text(), 'Invalid.Invalid.');
+
+  run(() => this.set('env.data.a.value', 'DATA.A.VALUE'));
+  assert.equal(this.$().text(), 'DATA.A.VALUEInvalid.');
+
+  run(() => this.set('env.data.b.value', 'DATA.A.VALUE'));
+  assert.equal(this.$().text(), 'DATA.A.VALUEInvalid.');
+
+  run(() => this.set('env.data.b.value', 'DATA.B.VALUE'));
+  assert.equal(this.$().text(), 'DATA.A.VALUEDATA.B.VALUE');
 });

@@ -45,12 +45,13 @@ And something like this would render an input that would update the underlying v
 
 ## Usage
 
-The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` component. It expects three arguments:
+The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` component. It expects up to four arguments:
  - `ui`: an object containing configuration for the UI that should be rendered
  - `env`: a hash whose keys will be bindable from the `ui` config, to be read from and written to
  - `componentMap`: a mapping of component names in the `ui` config to information about their backing Ember components
+ - `resolveMeta(path)`: an optional action that will be invoked if a component calls `env.metaFor(...)`
 
-Each of these three things is described in further detail below.
+Each of these things is described in further detail below.
 
 ### UI Configuration
 
@@ -124,6 +125,14 @@ The `componentMap` given to `{{exclaim-ui}}` dictates what components it can ren
  - `componentPath`: the name to the Ember component to be invoked when this exclaim-ui component is used in the config, as you'd give it to the `{{component}}` helper
  - `shorthandProperty` (optional): the name of a property that should be populated when shorthand notation is used for this component (see above)
 
+### Metadata Resolution
+
+The `env` property exposed to ember-exclaim components (see below for details) includes a `metaFor(object, key)` method that component implementations can use to discover more information about their bound values. For instance, an `$input` component might call `metaFor(this, 'config.value')` to discover validation rules for its bound value in order to display an error message to the user.
+
+The `resolveMeta` action on `{{exclaim-ui}}` designates how this metadata is discovered. It receives the full path in the environment of the value in question.
+
+This action should return any relevant information available about the field at `valuePath`. Note that, if a component calls `metaFor` on a path that doesn't resolve to a field on the environment, the `resolveMeta` action will not be invoked.
+
 ## Implementing Components
 
 The [demo app](https://salsify.github.io/ember-exclaim) for this repo contains [a variety of simple component implementations](tests/dummy/app/components/exclaim-components) that you can use as a starting point for building your own.
@@ -142,7 +151,9 @@ When invoked as `{ "$component": "input", "value": {"$bind":"x"} }` with `x` in 
 
 ### `env`
 
-The `env` property will contain an object representing the environment that the component is being rendered in. This object has a method `extend`, which, given a hash, can be used to produce a new environment based on the original that contains the values from that hash.
+The `env` property will contain an object representing the environment that the component is being rendered in. This object has two methods:
+ - `extend(hash)`: can be used to produce a new environment based on the original that additionally contains the values from the given hash
+ - `metaFor(object, key)`: takes an object and key, resolves the canonical path for that key in the environment, and then retrieves metadata for that path according to any configured `resolveMeta` action on the owning `{{exclaim-ui}}` component
 
 ### Rendering Children
 

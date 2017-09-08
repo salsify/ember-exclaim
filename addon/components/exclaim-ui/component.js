@@ -18,8 +18,10 @@ export default Component.extend({
 
   componentMap: null,
 
-  baseEnv: computed('env', function() {
-    return new Environment(get(this, 'env') || {});
+  resolveMeta: () => {},
+
+  baseEnv: computed('env', 'resolveMeta', function() {
+    return new Environment(get(this, 'env') || {}, this.get('resolveMeta'));
   }),
 
   content: computed('specProcessor', 'ui', function() {

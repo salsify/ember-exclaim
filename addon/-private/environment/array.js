@@ -13,10 +13,11 @@ const {
  * paths in the given environment.
  */
 export default class EnvironmentArray extends ArrayProxy {
-  constructor(data, env) {
+  constructor(data, env, key) {
     super({ content: data });
     this.__wrapped__ = (data instanceof EnvironmentArray) ? data.__wrapped__ : A(data);
     this.__env__ = env;
+    this.__key__ = key;
   }
 
   objectAtContent(index) {
@@ -24,7 +25,7 @@ export default class EnvironmentArray extends ArrayProxy {
     if (item instanceof Binding) {
       return get(this.__env__, item.path.join('.'));
     } else {
-      return wrap(item, this.__env__);
+      return wrap(item, this.__env__, this.__key__ && `${this.__key__}.${index}`);
     }
   }
 
