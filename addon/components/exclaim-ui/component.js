@@ -19,9 +19,12 @@ export default Component.extend({
   componentMap: null,
 
   resolveMeta: () => {},
+  onChange: () => {},
 
   baseEnv: computed('env', 'resolveMeta', function() {
-    return new Environment(get(this, 'env') || {}, this.get('resolveMeta'));
+    const env = new Environment(get(this, 'env') || {}, this.get('resolveMeta'));
+    env.on('change', get(this, 'onChange'));
+    return env;
   }),
 
   content: computed('specProcessor', 'ui', function() {

@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 import { fillIn } from 'ember-native-dom-helpers';
+import sinon from 'sinon';
 
 const {
   run,
@@ -31,7 +32,7 @@ moduleForComponent('exclaim-ui', 'Integration | Component | exclaim-ui', {
     set(this, 'resolveMeta', () => {});
 
     this.renderUI = () => {
-      this.render(hbs`{{exclaim-ui componentMap=componentMap ui=ui env=env resolveMeta=resolveMeta}}`);
+      this.render(hbs`{{exclaim-ui componentMap=componentMap ui=ui env=env resolveMeta=resolveMeta onChange=onChange}}`);
     };
   }
 });
@@ -114,6 +115,32 @@ test('it writes bound data back to the env', function(assert) {
 
   run(() => fillIn('input', 'after'))
   assert.equal(get(this, 'env.envValue'), 'after');
+});
+
+test('it should call the onChange action when the env changes', function(assert) {
+  set(this, 'onChange', sinon.spy());
+
+  getOwner(this).register('component:simple-component', Component.extend({
+    layout: hbs`<input value={{config.value}} oninput={{action (mut config.value) value='target.value'}}>`
+  }));
+
+  set(this, 'ui', {
+    $component: 'simple-component',
+    value: {
+      $bind: 'envValue'
+    }
+  });
+
+  set(this, 'env', {
+    envValue: 'before'
+  });
+
+  this.renderUI();
+
+  run(() => fillIn('input', 'after'))
+
+  assert.ok(get(this, 'onChange').calledOnce);
+  assert.ok(get(this, 'onChange').calledWith({ key: 'envValue', value: 'after' }));
 });
 
 test('it renders subcomponents with extended envs', function(assert) {
