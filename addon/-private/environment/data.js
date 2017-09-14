@@ -10,7 +10,7 @@ const {
  * Wraps an object, resolving any Bindings in it when requested to the corresponding
  * paths in the given environment.
  */
-export default class EnvironmentData extends EmberObject.extend(Ember.Evented) {
+export default class EnvironmentData extends EmberObject {
   constructor(data, env, key) {
     super();
     this.__wrapped__ = (data instanceof EnvironmentData) ? data.__wrapped__ : data;

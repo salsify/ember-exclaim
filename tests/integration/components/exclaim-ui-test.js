@@ -118,7 +118,7 @@ test('it writes bound data back to the env', function(assert) {
 });
 
 test('it should call the onChange action when the env changes', function(assert) {
-  set(this, 'onChange', sinon.spy());
+  set(this, 'onChange', sinon.spy((envKey) => envKey));
 
   getOwner(this).register('component:simple-component', Component.extend({
     layout: hbs`<input value={{config.value}} oninput={{action (mut config.value) value='target.value'}}>`
@@ -140,7 +140,8 @@ test('it should call the onChange action when the env changes', function(assert)
   run(() => fillIn('input', 'after'))
 
   assert.ok(get(this, 'onChange').calledOnce);
-  assert.ok(get(this, 'onChange').calledWith({ key: 'envValue', value: 'after' }));
+  assert.ok(get(this, 'onChange').calledWith('envValue'));
+  assert.equal(get(this, `env.${get(this, 'onChange').firstCall.returnValue}`), 'after')
 });
 
 test('it renders subcomponents with extended envs', function(assert) {

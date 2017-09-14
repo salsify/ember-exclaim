@@ -47,7 +47,6 @@ export default class Environment extends EmberObject.extend(Ember.Evented) {
   setUnknownProperty(key, value) {
     createEnvComputed(this, key, `__bound__.${findIndex(this.__bound__, key)}`);
     set(this, key, value);
-    this.trigger('change', { key, value });
     return get(this, key);
   }
 }
