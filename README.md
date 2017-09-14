@@ -50,7 +50,7 @@ The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` compone
  - `env`: a hash whose keys will be bindable from the `ui` config, to be read from and written to
  - `componentMap`: a mapping of component names in the `ui` config to information about their backing Ember components
  - `resolveMeta(path)`: an optional action that will be invoked if a component calls `env.metaFor(...)`
- - `onChange(changedEnvKey)`: an optional action that will be invoked when a value in the `env` changes
+ - `onChange(envKeyOfChangedValue)`: an optional action that will be invoked when a value in the `env` changes
 
 Each of these things is described in further detail below.
 
