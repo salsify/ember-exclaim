@@ -45,11 +45,12 @@ And something like this would render an input that would update the underlying v
 
 ## Usage
 
-The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` component. It expects up to four arguments:
+The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` component. It expects up to five arguments:
  - `ui`: an object containing configuration for the UI that should be rendered
  - `env`: a hash whose keys will be bindable from the `ui` config, to be read from and written to
  - `componentMap`: a mapping of component names in the `ui` config to information about their backing Ember components
  - `resolveMeta(path)`: an optional action that will be invoked if a component calls `env.metaFor(...)`
+ - `onChange(changedEnvKey)`: an optional action that will be invoked when a value in the `env` changes
 
 Each of these things is described in further detail below.
 
