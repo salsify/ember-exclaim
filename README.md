@@ -45,12 +45,13 @@ And something like this would render an input that would update the underlying v
 
 ## Usage
 
-The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` component. It expects up to five arguments:
+The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` component. It expects up to six arguments:
  - `ui`: an object containing configuration for the UI that should be rendered
  - `env`: a hash whose keys will be bindable from the `ui` config, to be read from and written to
  - `componentMap`: a mapping of component names in the `ui` config to information about their backing Ember components
- - `resolveMeta(path)`: an optional action that will be invoked if a component calls `env.metaFor(...)`
+ - `resolveFieldMeta(path)`: an optional action that will be invoked if a component calls `env.metaFor(...)`
  - `onChange(envKeyOfChangedValue)`: an optional action that will be invoked when a value in the `env` changes
+ - `wrapper`: an optional component or component name string that will wrap every rendered component in your UI configuration. The `wrapper` component will receive the unwrapped `spec`, the `env` and the component's resolved `config`.
 
 Each of these things is described in further detail below.
 
@@ -130,9 +131,9 @@ The `componentMap` given to `{{exclaim-ui}}` dictates what components it can ren
 
 The `env` property exposed to ember-exclaim components (see below for details) includes a `metaFor(object, key)` method that component implementations can use to discover more information about their bound values. For instance, an `$input` component might call `metaFor(this, 'config.value')` to discover validation rules for its bound value in order to display an error message to the user.
 
-The `resolveMeta` action on `{{exclaim-ui}}` designates how this metadata is discovered. It receives the full path in the environment of the value in question.
+The `resolveFieldMeta` action on `{{exclaim-ui}}` designates how this metadata is discovered. It receives the full path in the environment of the value in question.
 
-This action should return any relevant information available about the field at `valuePath`. Note that, if a component calls `metaFor` on a path that doesn't resolve to a field on the environment, the `resolveMeta` action will not be invoked.
+This action should return any relevant information available about the field at `valuePath`. Note that, if a component calls `metaFor` on a path that doesn't resolve to a field on the environment, the `resolveFieldMeta` action will not be invoked.
 
 ## Implementing Components
 
@@ -154,7 +155,7 @@ When invoked as `{ "$component": "input", "value": {"$bind":"x"} }` with `x` in 
 
 The `env` property will contain an object representing the environment that the component is being rendered in. This object has two methods:
  - `extend(hash)`: can be used to produce a new environment based on the original that additionally contains the values from the given hash
- - `metaFor(object, key)`: takes an object and key, resolves the canonical path for that key in the environment, and then retrieves metadata for that path according to any configured `resolveMeta` action on the owning `{{exclaim-ui}}` component
+ - `metaFor(object, key)`: takes an object and key, resolves the canonical path for that key in the environment, and then retrieves metadata for that path according to any configured `resolveFieldMeta` action on the owning `{{exclaim-ui}}` component
 
 ### Rendering Children
 

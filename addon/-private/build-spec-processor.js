@@ -23,7 +23,7 @@ function buildBaseRules(componentMap) {
     @rule({ $component: simple('name'), ...rest('config') })
     createComponentSpec({ name, config }) {
       if (componentMap.hasOwnProperty(name)) {
-        return new ComponentSpec(componentMap[name].componentPath, config);
+        return new ComponentSpec(componentMap[name].componentPath, config, componentMap[name].componentMeta);
       } else {
         throw new Error(`Unable to resolve component ${name}`);
       }
@@ -42,12 +42,12 @@ function buildShorthandRules(componentMap) {
   return rules;
 }
 
-function buildShorthandRule(name, { shorthandProperty, componentPath }) {
+function buildShorthandRule(name, { shorthandProperty, componentPath, componentMeta }) {
   return {
     @rule({ [`$${name}`]: subtree('shorthandValue'), ...rest('config') })
     createComponentSpec({ shorthandValue, config }) {
       let fullConfig = { [shorthandProperty]: shorthandValue, ...config };
-      return new ComponentSpec(componentPath, fullConfig);
+      return new ComponentSpec(componentPath, fullConfig, componentMeta);
     }
   };
 }

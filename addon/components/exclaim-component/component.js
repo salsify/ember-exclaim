@@ -15,11 +15,15 @@ export default Component.extend({
   spec: null,
   env: null,
 
+  unwrappedSpec: computed('spec', function() {
+    return unwrap(get(this, 'spec'));
+  }),
+
   effectiveEnv: computed('env', 'overrideEnv', function() {
     return get(this, 'overrideEnv') || get(this, 'env');
   }),
 
   resolvedConfig: computed('spec', 'effectiveEnv', function() {
-    return unwrap(get(this, 'spec')).resolveConfig(get(this, 'effectiveEnv'));
+    return get(this, 'unwrappedSpec').resolveConfig(get(this, 'effectiveEnv'));
   }),
 });

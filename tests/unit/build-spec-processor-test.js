@@ -46,3 +46,24 @@ test('processing a component with shorthand', function(assert) {
   let result = processor(input);
   assert.deepEqual(result, new ComponentSpec('components/foo', { value: new Binding('bar') }));
 });
+
+test('processing a component with meta', function(assert) {
+  let componentMap = {
+    foo: {
+      componentPath: 'components/foo',
+      componentMeta: {
+        available: true,
+      },
+    },
+  };
+
+  let processor = buildSpecProcessor({ componentMap });
+  let input = {
+    $component: 'foo',
+    value: {
+      $bind: 'bar'
+    }
+  };
+  let result = processor(input);
+  assert.deepEqual(result, new ComponentSpec('components/foo', { value: new Binding('bar') }, { available: true }));
+});

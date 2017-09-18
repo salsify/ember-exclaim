@@ -21,11 +21,11 @@ export default class Environment extends EmberObject.extend(Ember.Evented) {
   constructor(bound, metaFor) {
     super();
     this.__bound__ = makeArray(bound);
-    this.__resolveMeta__ = metaFor;
+    this.__resolveFieldMeta__ = metaFor;
   }
 
   extend(values) {
-    return new Environment([values, ...this.__bound__], this.__resolveMeta__);
+    return new Environment([values, ...this.__bound__], this.__resolveFieldMeta__);
   }
 
   metaFor(object, path) {
@@ -34,9 +34,9 @@ export default class Environment extends EmberObject.extend(Ember.Evented) {
       object = this;
     }
 
-    const resolveMeta = this.__resolveMeta__;
+    const resolveFieldMeta = this.__resolveFieldMeta__;
     const resolvedPath = resolvePath(object, path);
-    return resolveMeta(resolvedPath);
+    return resolveFieldMeta(resolvedPath);
   }
 
   unknownProperty(key) {

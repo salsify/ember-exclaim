@@ -18,11 +18,11 @@ export default Component.extend({
 
   componentMap: null,
 
-  resolveMeta: () => {},
+  resolveFieldMeta: () => {},
   onChange: () => {},
 
-  baseEnv: computed('env', 'resolveMeta', function() {
-    const env = new Environment(get(this, 'env') || {}, this.get('resolveMeta'));
+  baseEnv: computed('env', 'resolveFieldMeta', function() {
+    const env = new Environment(get(this, 'env') || {}, this.get('resolveFieldMeta'));
     env.on('change', get(this, 'onChange'));
     return env;
   }),
