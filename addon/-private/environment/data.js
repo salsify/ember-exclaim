@@ -11,10 +11,11 @@ const {
  * paths in the given environment.
  */
 export default class EnvironmentData extends EmberObject {
-  constructor(data, env) {
+  constructor(data, env, key) {
     super();
     this.__wrapped__ = (data instanceof EnvironmentData) ? data.__wrapped__ : data;
     this.__env__ = env;
+    this.__key__ = key;
   }
 
   unknownProperty(key) {

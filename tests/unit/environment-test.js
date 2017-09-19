@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import Ember from 'ember';
 import Binding from 'ember-exclaim/-private/binding';
-import Environment, { wrap } from 'ember-exclaim/-private/environment';
+import Environment, { wrap, resolvePath } from 'ember-exclaim/-private/environment';
 
 const {
   get,
@@ -32,6 +32,9 @@ test('simple binding resolution', function(assert) {
 test('complex binding resolution', function(assert) {
   const env = new Environment({ x: { y: 'foo', z: 'bar' }, other: new Binding('x'), stillMore: new Binding('other.z') });
   assert.equal(get(env, 'stillMore'), 'bar');
+  assert.equal(resolvePath(env, 'x.y'), 'x.y');
+  assert.equal(resolvePath(env, 'other'), 'x');
+  assert.equal(resolvePath(env, 'stillMore'), 'x.z');
 
   set(env, 'x.z', 123);
   assert.equal(get(env, 'other.z'), 123);
@@ -50,6 +53,7 @@ test('value reference resolution', function(assert) {
   const env = new Environment({ foo: 'bar' });
   const value = wrap({ key: new Binding('foo') }, env);
   assert.equal(get(value, 'key'), 'bar');
+  assert.equal(resolvePath(value, 'key'), 'foo');
 
   set(value, 'key', 'ok');
   assert.equal(get(env, 'foo'), 'ok');
@@ -60,6 +64,10 @@ test('chained reference resolution', function(assert) {
   const value = wrap({ key: { child: new Binding('foo') } }, env);
   const subvalue = get(value, 'key');
   assert.equal(get(subvalue, 'child'), 'bar');
+
+  assert.equal(resolvePath(value, 'key'), undefined);
+  assert.equal(resolvePath(value, 'key.child'), 'foo');
+  assert.equal(resolvePath(subvalue, 'child'), 'foo');
 
   set(subvalue, 'child', 321);
   assert.equal(get(value, 'key.child'), 321);
@@ -134,4 +142,89 @@ test('environment extension', function(assert) {
   assert.equal(get(base, 'd'), 'everywhere');
   assert.equal(get(ext1, 'd'), 'everywhere');
   assert.equal(get(ext2, 'd'), 'everywhere');
+});
+
+test('path resolution', function(assert) {
+  const env = new Environment({
+    root: 'value',
+    nested: {
+      pointsToRoot: new Binding('root'),
+      ownKey: 'ownValue',
+      super: {
+        extra: {
+          nested: true,
+        },
+      },
+    },
+    array: [
+      new Binding('nested'),
+      {
+        pointsToParent: new Binding('array'),
+        ownKey: 'ownKey',
+      },
+    ],
+  });
+
+  assert.equal(resolvePath(env, 'nonexistent'), 'nonexistent');
+  assert.equal(resolvePath(env, 'root'), 'root');
+  assert.equal(resolvePath(env, 'nested'), 'nested');
+  assert.equal(resolvePath(env, 'nested.ownKey'), 'nested.ownKey');
+  assert.equal(resolvePath(env, 'nested.pointsToRoot'), 'root');
+  assert.equal(resolvePath(env, 'array'), 'array');
+  assert.equal(resolvePath(env, 'array.firstObject.ownKey'), 'nested.ownKey');
+  assert.equal(resolvePath(env, 'nested.super.extra.nested'), 'nested.super.extra.nested');
+
+  const nested = get(env, 'nested');
+  assert.equal(resolvePath(nested, 'nonexistent'), 'nested.nonexistent');
+  assert.equal(resolvePath(nested, 'ownKey'), 'nested.ownKey');
+  assert.equal(resolvePath(nested, 'pointsToRoot'), 'root');
+
+  const array = get(env, 'array');
+  assert.equal(resolvePath(array, 'firstObject.pointsToRoot'), 'root');
+  assert.equal(resolvePath(array, 'firstObject.ownKey'), 'nested.ownKey');
+  assert.equal(resolvePath(array, 'lastObject.ownKey'), 'array.1.ownKey');
+  assert.equal(resolvePath(array, 'lastObject.pointsToParent'), 'array');
+  assert.throws(() => resolvePath(array, 'firstObject'), /Cannot canonicalize the path to an array element/);
+  assert.throws(() => resolvePath(array, '0'), /Cannot canonicalize the path to an array element/);
+
+  // A value (like components' `config`) that has bindings to the environment, but didn't itself come from there
+  const config = wrap({
+    abc: 123,
+    binding: new Binding('nested.ownKey')
+  }, env);
+
+  assert.equal(resolvePath(config, 'abc'), undefined);
+  assert.equal(resolvePath(config, 'binding'), 'nested.ownKey');
+
+  const subenv = env.extend({
+    subValue: 'hello',
+    upReference: new Binding('nested.ownKey'),
+    recycled: get(env, 'nested.super'),
+  });
+
+  assert.equal(resolvePath(subenv, 'upReference'), 'nested.ownKey');
+  assert.equal(resolvePath(subenv, 'subValue'), 'subValue');
+  assert.equal(resolvePath(subenv, 'recycled'), 'nested.super');
+  assert.equal(resolvePath(subenv, 'recycled.extra'), 'nested.super.extra');
+});
+
+test('metadata resolution', function(assert) {
+  const env = new Environment({
+    foo: 'bar',
+    baz: new Binding('foo'),
+    deep: {
+      own: 'key',
+      ref: new Binding('baz'),
+    },
+  }, (path) => {
+    return { tag: 'so meta', path };
+  });
+
+  assert.deepEqual(env.metaFor('foo'), { tag: 'so meta', path: 'foo' });
+  assert.deepEqual(env.metaFor('baz'), { tag: 'so meta', path: 'foo' });
+  assert.deepEqual(env.metaFor('deep.ref'), { tag: 'so meta', path: 'foo' });
+
+  const value = get(env, 'deep');
+  assert.deepEqual(env.metaFor(value, 'own'), { tag: 'so meta', path: 'deep.own' });
+  assert.deepEqual(env.metaFor(value, 'ref'), { tag: 'so meta', path: 'foo' });
 });

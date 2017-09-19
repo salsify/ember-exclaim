@@ -22,8 +22,8 @@ const {
  * Environment instances are their own binding resolution source, so they have no envRoot.)
  */
 export default function createComputed(host, key, valueRoot, envRoot) {
-  const fullKey = `${valueRoot}.${key}`;
-  const result = get(host, fullKey);
+  const fullHostKey = `${valueRoot}.${key}`;
+  const result = get(host, fullHostKey);
   const env = envRoot ? get(host, envRoot) : host;
 
   if (result instanceof Binding) {
@@ -31,13 +31,14 @@ export default function createComputed(host, key, valueRoot, envRoot) {
     host[key] = computed.alias(envPath(envRoot, result));
   } else {
     // Otherwise, we depend on the value of that key on the host object
+    const fullEnvKey = host.__key__ ? `${host.__key__}.${key}` : key;
     host[key] = computed(...determineDependentKeys(result, key, valueRoot, envRoot), {
       get() {
-        return wrap(get(host, fullKey), env);
+        return wrap(get(host, fullHostKey), env, fullEnvKey);
       },
       set(key, value) {
-        set(host, fullKey, value);
-        return wrap(get(host, fullKey), env);
+        set(host, fullHostKey, value);
+        return wrap(get(host, fullHostKey), env, fullEnvKey);
       }
     });
   }
