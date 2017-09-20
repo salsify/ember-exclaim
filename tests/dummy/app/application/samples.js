@@ -5,8 +5,7 @@ export default [
     name: 'Hello World',
     interface: stripIndent`
       {
-        "$component": "text",
-        "content": "Hello World!"
+        "$text": "Hello World!"
       }
     `,
   },
@@ -14,8 +13,7 @@ export default [
     name: 'Hello World (Dynamic)',
     interface: stripIndent`
       {
-        "$component": "text",
-        "content": ["Hello ", {"$bind":"hello_target"}, "!"]
+        "$text": ["Hello ", {"$bind":"hello_target"}, "!"]
       }
     `,
     environment: stripIndent`
@@ -28,15 +26,12 @@ export default [
     name: 'Iteration',
     interface: stripIndent`
       {
-        "$component": "vbox",
-        "children": [
+        "$vbox": [
           {
-            "$component": "each",
-            "items": [1, 2, 3],
+            "$each": [1, 2, 3],
             "yield": "number",
             "do": {
-              "$component": "text",
-              "content": ["Item #", {"$bind":"number"}]
+              "$text": ["Item #", {"$bind":"number"}]
             }
           }
         ]
@@ -44,54 +39,33 @@ export default [
     `,
   },
   {
-    name: 'Iteration (with shorthand)',
-    interface: stripIndent`
-      {
-        "$vbox": [{
-          "$each": [1, 2, 3],
-          "yield": "number",
-          "do": {
-            "$text": ["Item #", {"$bind":"number"}]
-          }
-        }]
-      }
-    `
-  },
-  {
     name: 'Input',
     interface: stripIndent`
       {
-        "$component": "vbox",
-        "children": [
+        "$vbox": [
           {
-            "$component": "header",
-            "content": "Input"
+            "$header": "Input"
           },
           {
-            "$component": "box",
-            "children": [
-              { "$component": "text", "content": "text_value:" },
-              { "$component": "input", "value": {"$bind":"text_value"} }
+            "$box": [
+              { "$text": "text_value:" },
+              { "$input": {"$bind":"text_value"} }
             ]
           },
           {
-            "$component": "box",
-            "children": [
-              { "$component": "text", "content": "boolean_value:" },
-              { "$component": "checkbox", "checked": {"$bind":"boolean_value"} }
+            "$box": [
+              { "$text": "boolean_value:" },
+              { "$checkbox": {"$bind":"boolean_value"} }
             ]
           },
           {
-            "$component": "header",
-            "content": "Output"
+            "$header": "Output"
           },
           {
-            "$component": "text",
-            "content": ["text_value: ", {"$bind":"text_value"}]
+            "$text": ["text_value: ", {"$bind":"text_value"}]
           },
           {
-            "$component": "text",
-            "content": ["boolean_value: ", {"$bind":"boolean_value"}]
+            "$text": ["boolean_value: ", {"$bind":"boolean_value"}]
           }
         ]
       }
@@ -107,18 +81,17 @@ export default [
     name: 'Table',
     interface: stripIndent`
       {
-        "$component": "table",
-        "items": ["one", "two", "three"],
+        "$table": ["one", "two", "three"],
 
         "header": [
-          { "$component": "text", "content": "Name" },
-          { "$component": "text", "content": "Length" }
+          { "$text": "Name" },
+          { "$text": "Length" }
         ],
 
         "yield": "item",
         "row": [
-          { "$component": "text", "content": {"$bind":"item"} },
-          { "$component": "text", "content": {"$bind":"item.length"} }
+          { "$text": {"$bind":"item"} },
+          { "$text": {"$bind":"item.length"} }
         ]
       }
     `
@@ -127,32 +100,25 @@ export default [
     name: 'Complex Binding',
     interface: stripIndent`
       {
-        "$component": "vbox",
-        "children": [
+        "$vbox": [
           {
-            "$component": "header",
-            "content": ["Displaying ", {"$bind":"items.length"}, " Items"]
+            "$header": ["Displaying ", {"$bind":"items.length"}, " Items"]
           },
           {
-            "$component": "each",
-            "items": {"$bind":"items"},
+            "$each": {"$bind":"items"},
             "yield": "item",
             "do": {
-              "$component": "text",
-              "content": ["Value: ", {"$bind":"item.name"}]
+              "$text": ["Value: ", {"$bind":"item.name"}]
             }
           },
           {
-            "$component": "header",
-            "content": ["Editing ", {"$bind":"items.length"}, " Items"]
+            "$header": ["Editing ", {"$bind":"items.length"}, " Items"]
           },
           {
-            "$component": "each",
-            "items": {"$bind":"items"},
+            "$each": {"$bind":"items"},
             "yield": "item",
             "do": {
-              "$component": "input",
-              "value": {"$bind":"item.name"}
+              "$input": {"$bind":"item.name"}
             }
           }
         ]
