@@ -117,7 +117,7 @@ Any other configuration keys the component expects can be specified the same way
 
 ### The Environment
 
-Keys on the given `env` object are what powers `$bind` directives in the configured UI. The object in question may be a simple POJO or something richer, like an Ember Data model.
+Keys on the given `env` object are what powers `$bind` directives in the configured UI. The object in question may be a simple POJO or something richer, like an Ember Data model. Avoid swapping the `env` object out wholesale, as this will cause unnecessary rerenders.
 
 Note that `$bind` works with paths, too, so `{ $bind: 'foo.bar' }` would access the `bar` key of the `foo` object in the environment.
 
