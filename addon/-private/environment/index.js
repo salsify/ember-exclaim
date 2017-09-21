@@ -17,15 +17,15 @@ const {
  * from a call `get(env, 'some.key')` will itself be wrapped in a proxy allowing
  * it to resolve subsequent calls to get its own values.
  */
-export default class Environment extends EmberObject {
+export default class Environment extends EmberObject.extend(Ember.Evented) {
   constructor(bound, metaFor) {
     super();
     this.__bound__ = makeArray(bound);
-    this.__metaFor__ = metaFor;
+    this.__resolveMeta__ = metaFor;
   }
 
   extend(values) {
-    return new Environment([values, ...this.__bound__], this.__metaFor__);
+    return new Environment([values, ...this.__bound__], this.__resolveMeta__);
   }
 
   metaFor(object, path) {
@@ -34,9 +34,9 @@ export default class Environment extends EmberObject {
       object = this;
     }
 
-    const metaFor = this.__metaFor__;
+    const resolveMeta = this.__resolveMeta__;
     const resolvedPath = resolvePath(object, path);
-    return metaFor(resolvedPath);
+    return resolveMeta(resolvedPath);
   }
 
   unknownProperty(key) {

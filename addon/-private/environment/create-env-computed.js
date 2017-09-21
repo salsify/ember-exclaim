@@ -38,6 +38,7 @@ export default function createComputed(host, key, valueRoot, envRoot) {
       },
       set(key, value) {
         set(host, fullHostKey, value);
+        env.trigger('change', fullEnvKey);
         return wrap(get(host, fullHostKey), env, fullEnvKey);
       }
     });
