@@ -16,7 +16,7 @@ export const PROPERTIES = [
 
 export const COMPONENT_META = {
   isUserInput: true,
-  boundKey: SHORTHAND_PROPERTY,
+  writesKeys: [ SHORTHAND_PROPERTY ],
 };
 
 export default Component.extend({
