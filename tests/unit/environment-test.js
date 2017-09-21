@@ -220,11 +220,11 @@ test('metadata resolution', function(assert) {
     return { tag: 'so meta', path };
   });
 
-  assert.deepEqual(env.metaFor('foo'), { tag: 'so meta', path: 'foo' });
-  assert.deepEqual(env.metaFor('baz'), { tag: 'so meta', path: 'foo' });
-  assert.deepEqual(env.metaFor('deep.ref'), { tag: 'so meta', path: 'foo' });
+  assert.deepEqual(env.metaForField('foo'), { tag: 'so meta', path: 'foo' });
+  assert.deepEqual(env.metaForField('baz'), { tag: 'so meta', path: 'foo' });
+  assert.deepEqual(env.metaForField('deep.ref'), { tag: 'so meta', path: 'foo' });
 
   const value = get(env, 'deep');
-  assert.deepEqual(env.metaFor(value, 'own'), { tag: 'so meta', path: 'deep.own' });
-  assert.deepEqual(env.metaFor(value, 'ref'), { tag: 'so meta', path: 'foo' });
+  assert.deepEqual(env.metaForField(value, 'own'), { tag: 'so meta', path: 'deep.own' });
+  assert.deepEqual(env.metaForField(value, 'ref'), { tag: 'so meta', path: 'foo' });
 });

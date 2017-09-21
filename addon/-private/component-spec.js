@@ -1,10 +1,10 @@
 import { wrap } from 'ember-exclaim';
 
 export default class ComponentSpec {
-  constructor(path, config, componentMeta) {
+  constructor(path, config, meta) {
     this.path = path;
     this.config = config;
-    this.componentMeta = componentMeta;
+    this.meta = meta;
   }
 
   resolveConfig(env) {

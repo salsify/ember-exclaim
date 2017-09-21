@@ -32,7 +32,7 @@ export default Component.extend({
     const ui = get(this, 'ui');
 
     try {
-      return { spec: processor(ui) };
+      return { componentSpec: processor(ui) };
     } catch (error) {
       return { error };
     }

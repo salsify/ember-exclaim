@@ -17,10 +17,6 @@ export const PROPERTIES = [
   }
 ];
 
-export const COMPONENT_META = {
-  boundKey: SHORTHAND_PROPERTY,
-};
-
 export default Component.extend({
   tagName: 'h3',
 

@@ -1,13 +1,13 @@
 {{#component wrapper
-  spec=unwrappedSpec
+  componentSpec=unwrappedSpec
   env=effectiveEnv
   config=resolvedConfig
 }}
-  {{#component spec.path
+  {{#component componentSpec.path
     config=resolvedConfig
     env=effectiveEnv
-    as |spec overrideEnv|
+    as |componentSpec overrideEnv|
   }}
-    {{~exclaim-component spec=spec env=effectiveEnv overrideEnv=overrideEnv wrapper=wrapper~}}
+    {{~exclaim-component componentSpec=componentSpec env=effectiveEnv overrideEnv=overrideEnv wrapper=wrapper~}}
   {{/component}}
 {{/component}}

@@ -18,17 +18,17 @@ const {
  * it to resolve subsequent calls to get its own values.
  */
 export default class Environment extends EmberObject.extend(Ember.Evented) {
-  constructor(bound, metaFor) {
+  constructor(bound, metaForField) {
     super();
     this.__bound__ = makeArray(bound);
-    this.__resolveFieldMeta__ = metaFor;
+    this.__resolveFieldMeta__ = metaForField;
   }
 
   extend(values) {
     return new Environment([values, ...this.__bound__], this.__resolveFieldMeta__);
   }
 
-  metaFor(object, path) {
+  metaForField(object, path) {
     if (!path) {
       path = object;
       object = this;

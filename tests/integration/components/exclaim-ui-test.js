@@ -190,7 +190,7 @@ test('it allows components to resolve field metadata', function(assert) {
     layout: hbs`{{if error error config.value}}`,
 
     error: computed('config.value', function() {
-      const meta = this.get('env').metaFor(this, 'config.value');
+      const meta = this.get('env').metaForField(this, 'config.value');
       if (meta && this.get('config.value') !== meta.goldStandard) {
         return 'Invalid.';
       }

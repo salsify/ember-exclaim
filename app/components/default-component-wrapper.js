@@ -1,1 +1,1 @@
-export { default } from 'ember-exclaim/components/default-component-wrapper/component';
+export { default } from 'ember-exclaim/components/exclaim-default-component-wrapper/component';
