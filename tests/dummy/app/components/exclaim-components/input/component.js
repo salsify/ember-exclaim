@@ -24,6 +24,11 @@ export const PROPERTIES = [
   }
 ];
 
+export const COMPONENT_META = {
+  isUserInput: true,
+  writesKeys: [ SHORTHAND_PROPERTY ],
+};
+
 export default Component.extend({
   tagName: '',
 

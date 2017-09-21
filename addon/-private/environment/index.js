@@ -18,25 +18,25 @@ const {
  * it to resolve subsequent calls to get its own values.
  */
 export default class Environment extends EmberObject.extend(Ember.Evented) {
-  constructor(bound, metaFor) {
+  constructor(bound, metaForField) {
     super();
     this.__bound__ = makeArray(bound);
-    this.__resolveMeta__ = metaFor;
+    this.__resolveFieldMeta__ = metaForField;
   }
 
   extend(values) {
-    return new Environment([values, ...this.__bound__], this.__resolveMeta__);
+    return new Environment([values, ...this.__bound__], this.__resolveFieldMeta__);
   }
 
-  metaFor(object, path) {
+  metaForField(object, path) {
     if (!path) {
       path = object;
       object = this;
     }
 
-    const resolveMeta = this.__resolveMeta__;
+    const resolveFieldMeta = this.__resolveFieldMeta__;
     const resolvedPath = resolvePath(object, path);
-    return resolveMeta(resolvedPath);
+    return resolveFieldMeta(resolvedPath);
   }
 
   unknownProperty(key) {

@@ -29,10 +29,10 @@ moduleForComponent('exclaim-ui', 'Integration | Component | exclaim-ui', {
       }
     });
 
-    set(this, 'resolveMeta', () => {});
+    set(this, 'resolveFieldMeta', () => {});
 
     this.renderUI = () => {
-      this.render(hbs`{{exclaim-ui componentMap=componentMap ui=ui env=env resolveMeta=resolveMeta onChange=onChange}}`);
+      this.render(hbs`{{exclaim-ui componentMap=componentMap ui=ui env=env resolveFieldMeta=resolveFieldMeta onChange=onChange wrapper=wrapper}}`);
     };
   }
 });
@@ -190,7 +190,7 @@ test('it allows components to resolve field metadata', function(assert) {
     layout: hbs`{{if error error config.value}}`,
 
     error: computed('config.value', function() {
-      const meta = this.get('env').metaFor(this, 'config.value');
+      const meta = this.get('env').metaForField(this, 'config.value');
       if (meta && this.get('config.value') !== meta.goldStandard) {
         return 'Invalid.';
       }
@@ -209,7 +209,7 @@ test('it allows components to resolve field metadata', function(assert) {
     }
   });
 
-  set(this, 'resolveMeta', (path) => {
+  set(this, 'resolveFieldMeta', (path) => {
     return { goldStandard: path.toUpperCase() };
   });
 
@@ -231,4 +231,26 @@ test('it allows components to resolve field metadata', function(assert) {
 
   run(() => this.set('env.data.b.value', 'DATA.B.VALUE'));
   assert.equal(this.$().text(), 'DATA.A.VALUEDATA.B.VALUE');
+});
+
+test('it renders the wrapper component around every extensible component', function(assert) {
+  getOwner(this).register('component:wrapper-component', Component.extend({
+    layout: hbs`<code>{{yield}}</code>`,
+  }));
+
+  getOwner(this).register('component:simple-component', Component.extend({
+    layout: hbs`<div data-value>{{config.value}}</div>`
+  }));
+
+  set(this, 'ui', {
+    $component: 'simple-component',
+    value: 'value!'
+  });
+
+  set(this, 'wrapper', 'wrapper-component');
+
+  this.renderUI();
+
+  assert.equal(this.$().text(), 'value!');
+  assert.equal(this.$('code').length, 1);
 });
