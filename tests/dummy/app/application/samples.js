@@ -13,7 +13,7 @@ export default [
     name: 'Hello World (Dynamic)',
     interface: stripIndent`
       {
-        "$text": ["Hello ", {"$bind":"hello_target"}, "!"]
+        "$text": { "$join": ["Hello ", {"$bind":"hello_target"}, "!"] }
       }
     `,
     environment: stripIndent`
@@ -31,7 +31,7 @@ export default [
             "$each": [1, 2, 3],
             "yield": "number",
             "do": {
-              "$text": ["Item #", {"$bind":"number"}]
+              "$text": { "$join": ["Item #", {"$bind":"number"}] }
             }
           }
         ]
@@ -62,10 +62,10 @@ export default [
             "$header": "Output"
           },
           {
-            "$text": ["text_value: ", {"$bind":"text_value"}]
+            "$text": { "$join": ["text_value: ", {"$bind":"text_value"}] }
           },
           {
-            "$text": ["boolean_value: ", {"$bind":"boolean_value"}]
+            "$text": { "$join": ["boolean_value: ", {"$bind":"boolean_value"}] }
           }
         ]
       }
@@ -102,17 +102,17 @@ export default [
       {
         "$vbox": [
           {
-            "$header": ["Displaying ", {"$bind":"items.length"}, " Items"]
+            "$header": { "$join": ["Displaying ", {"$bind":"items.length"}, " Items"] }
           },
           {
             "$each": {"$bind":"items"},
             "yield": "item",
             "do": {
-              "$text": ["Value: ", {"$bind":"item.name"}]
+              "$text": { "$join": ["Value: ", {"$bind":"item.name"}] }
             }
           },
           {
-            "$header": ["Editing ", {"$bind":"items.length"}, " Items"]
+            "$header": { "$join": ["Editing ", {"$bind":"items.length"}, " Items"] }
           },
           {
             "$each": {"$bind":"items"},

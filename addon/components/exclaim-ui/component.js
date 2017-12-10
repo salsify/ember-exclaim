@@ -7,8 +7,13 @@ const {
   get,
   getProperties,
   computed,
+  computed: {
+    deprecatingAlias,
+  },
   Component,
 } = Ember;
+
+// TODO determine a way to have helpers at the root
 
 export default Component.extend({
   layout,
@@ -16,7 +21,11 @@ export default Component.extend({
   ui: null,
   env: null,
 
-  componentMap: null,
+  implementationMap: null,
+  componentMap: deprecatingAlias('implementationMap', {
+    id: 'ember-exclaim.component-map',
+    until: '2.0.0',
+  }),
 
   resolveFieldMeta: () => {},
   onChange: () => {},
@@ -38,7 +47,7 @@ export default Component.extend({
     }
   }),
 
-  specProcessor: computed('componentMap', function() {
-    return buildSpecProcessor(getProperties(this, 'componentMap'));
+  specProcessor: computed('implementationMap', function() {
+    return buildSpecProcessor(getProperties(this, 'implementationMap'));
   }),
 });

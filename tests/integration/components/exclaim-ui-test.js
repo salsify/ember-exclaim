@@ -17,7 +17,7 @@ moduleForComponent('exclaim-ui', 'Integration | Component | exclaim-ui', {
   integration: true,
 
   beforeEach() {
-    set(this, 'componentMap', {
+    set(this, 'implementationMap', {
       'simple-component': {
         componentPath: 'simple-component',
       },
@@ -32,7 +32,7 @@ moduleForComponent('exclaim-ui', 'Integration | Component | exclaim-ui', {
     set(this, 'resolveFieldMeta', () => {});
 
     this.renderUI = () => {
-      this.render(hbs`{{exclaim-ui componentMap=componentMap ui=ui env=env resolveFieldMeta=resolveFieldMeta onChange=onChange wrapper=wrapper}}`);
+      this.render(hbs`{{exclaim-ui implementationMap=implementationMap ui=ui env=env resolveFieldMeta=resolveFieldMeta onChange=onChange wrapper=wrapper}}`);
     };
   }
 });
@@ -49,6 +49,31 @@ test('it renders a basic component', function(assert) {
 
   this.renderUI();
   assert.equal(this.$('[data-value]').text(), 'value!');
+});
+
+test('it invokes helpers', function(assert) {
+  getOwner(this).register('component:simple-component', Component.extend({
+    layout: hbs`<div data-value>{{config.value}}</div>`
+  }));
+
+  set(this, 'implementationMap.join', {
+    shorthandProperty: 'items',
+    helper: (config) => {
+      let items = get(config, 'items').toArray();
+      let separator = get(config, 'separator') || ', ';
+      return items.join(separator);
+    }
+  });
+
+  set(this, 'env', { variable: 'b' });
+
+  set(this, 'ui', {
+    $component: 'simple-component',
+    value: { $join: ['a', { $bind: 'variable' }, 'c'] }
+  });
+
+  this.renderUI();
+  assert.equal(this.$('[data-value]').text(), 'a, b, c');
 });
 
 test('it renders subcomponents', function(assert) {

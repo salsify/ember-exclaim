@@ -7,7 +7,7 @@
           local-class="rendered"
           ui=(json uiString)
           env=(json envString)
-          componentMap=componentMap
+          implementationMap=implementationMap
           wrapper=(component 'sample-wrapper')
           as |error|
         }}
@@ -38,14 +38,33 @@
         }}
       {{else if pane.activeDocument.docs}}
         <h2 local-class="header">Demo Component Documentation</h2>
-        <div local-class="components">
-          {{#each docs as |component|}}
-            <div local-class="component">
+        <div local-class="impls">
+          {{#each componentDocs as |component|}}
+            <div local-class="impl">
               <code local-class="code-element">{{component.name}}</code>: {{component.description}}
               <ul>
                 {{#each component.properties as |property|}}
                   <li>
                     <code local-class="code-element {{if (eq component.shorthandProperty property.name) 'shorthand'}}">
+                      {{~property.name~}}
+                    </code>:
+                    {{property.description}}
+                  </li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/each}}
+        </div>
+
+        <h2 local-class="header">Demo Helper Documentation</h2>
+        <div local-class="impls">
+          {{#each helperDocs as |helper|}}
+            <div local-class="impl">
+              <code local-class="code-element">{{helper.name}}</code>: {{helper.description}}
+              <ul>
+                {{#each helper.properties as |property|}}
+                  <li>
+                    <code local-class="code-element {{if (eq helper.shorthandProperty property.name) 'shorthand'}}">
                       {{~property.name~}}
                     </code>:
                     {{property.description}}

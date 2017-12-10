@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Binding from 'ember-exclaim/-private/binding';
+import HelperSpec from 'ember-exclaim/-private/helper-spec';
 import { wrap } from './index';
 const {
   get,
@@ -29,6 +30,16 @@ export default function createComputed(host, key, valueRoot, envRoot) {
   if (result instanceof Binding) {
     // If it's a Binding, we can just return an alias for the given value on the environment
     host[key] = computed.alias(envPath(envRoot, result));
+  } else if (result instanceof HelperSpec) {
+    host[key] = computed(...result.bindings.map(binding => envPath(envRoot, binding)), {
+      get() {
+        return result.invoke(env);
+      },
+
+      set(key, value) {
+        return value;
+      }
+    });
   } else {
     // Otherwise, we depend on the value of that key on the host object
     const fullEnvKey = host.__key__ ? `${host.__key__}.${key}` : key;

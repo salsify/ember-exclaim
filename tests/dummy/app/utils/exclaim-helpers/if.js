@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 const {
-  Component,
+  get,
 } = Ember;
 
 export const NAME = 'if';
@@ -22,6 +22,10 @@ export const PROPERTIES = [
   }
 ];
 
-export default Component.extend({
-  tagName: '',
-});
+export default (config) => {
+  if (get(config, 'condition')) {
+    return get(config, 'then');
+  } else {
+    return get(config, 'else');
+  }
+};

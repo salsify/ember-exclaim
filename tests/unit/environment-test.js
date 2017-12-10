@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import Ember from 'ember';
 import Binding from 'ember-exclaim/-private/binding';
+import HelperSpec from 'ember-exclaim/-private/helper-spec';
 import Environment, { wrap, resolvePath } from 'ember-exclaim/-private/environment';
 
 const {
@@ -227,4 +228,26 @@ test('metadata resolution', function(assert) {
   const value = get(env, 'deep');
   assert.deepEqual(env.metaForField(value, 'own'), { tag: 'so meta', path: 'deep.own' });
   assert.deepEqual(env.metaForField(value, 'ref'), { tag: 'so meta', path: 'foo' });
+});
+
+test('helper invocation', function(assert) {
+  const env = new Environment({
+    foo: 'bar',
+    shouty: new HelperSpec(config => get(config, 'word').toUpperCase(), { word: new Binding('foo') }),
+    array: [
+      1,
+      2,
+      new HelperSpec(config => get(config, 'word.length'), { word: new Binding('shouty') }),
+    ]
+  });
+
+  assert.equal(get(env, 'foo'), 'bar');
+  assert.equal(get(env, 'shouty'), 'BAR');
+  assert.deepEqual(get(env, 'array').toArray(), [1, 2, 3]);
+
+  set(env, 'foo', 'ok');
+
+  assert.equal(get(env, 'foo'), 'ok');
+  assert.equal(get(env, 'shouty'), 'OK');
+  assert.deepEqual(get(env, 'array').toArray(), [1, 2, 2]);
 });
