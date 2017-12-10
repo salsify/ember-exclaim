@@ -19,7 +19,7 @@ const panes = deserialize([
   ],
 ]);
 
-const implementationMap = discoverImplementations(config.modulePrefix, {
+const implementationMap = discoverImplementations(config, {
   componentPrefix: 'components/exclaim-components',
   helperPrefix: 'utils/exclaim-helpers',
 });

@@ -9,6 +9,7 @@ const {
   set,
   makeArray,
   Object: EmberObject,
+  String: { isHTMLSafe },
 } = Ember;
 
 /*
@@ -60,7 +61,7 @@ export function wrap(data, env, key) {
   const realKey = data && data.__key__ || key;
   if (Array.isArray(data) || data instanceof EnvironmentArray) {
     return new EnvironmentArray(data, env, realKey);
-  } else if (data && typeof data === 'object' || data instanceof EnvironmentData) {
+  } else if ((data && typeof data === 'object' && !isHTMLSafe(data)) || data instanceof EnvironmentData) {
     return new EnvironmentData(data, env, realKey);
   } else {
     return data;

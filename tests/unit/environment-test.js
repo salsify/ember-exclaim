@@ -7,6 +7,7 @@ import Environment, { wrap, resolvePath } from 'ember-exclaim/-private/environme
 const {
   get,
   set,
+  String: { htmlSafe },
 } = Ember;
 
 module('Unit | environment');
@@ -17,6 +18,11 @@ test('simple lookups', function(assert) {
 
   set(env, 'foo', 'baz');
   assert.equal(get(env, 'foo'), 'baz');
+});
+
+test('HTML-safe strings', function(assert) {
+  const env = new Environment({ foo: htmlSafe('hello') });
+  assert.deepEqual(get(env, 'foo'), htmlSafe('hello'));
 });
 
 test('simple binding resolution', function(assert) {
