@@ -1,15 +1,10 @@
-import Ember from 'ember';
+import Evented from '@ember/object/evented';
+import { makeArray } from '@ember/array';
+import EmberObject, { set, get } from '@ember/object';
 import createEnvComputed from './create-env-computed';
 import EnvironmentData from './data';
 import EnvironmentArray from './array';
 import Binding from '../binding';
-
-const {
-  get,
-  set,
-  makeArray,
-  Object: EmberObject,
-} = Ember;
 
 /*
  * Wraps an object that may contain exclaim Bindings, automatically resolving
@@ -17,7 +12,7 @@ const {
  * from a call `get(env, 'some.key')` will itself be wrapped in a proxy allowing
  * it to resolve subsequent calls to get its own values.
  */
-export default class Environment extends EmberObject.extend(Ember.Evented) {
+export default class Environment extends EmberObject.extend(Evented) {
   constructor(bound, metaForField) {
     super();
     this.__bound__ = makeArray(bound);

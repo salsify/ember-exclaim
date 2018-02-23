@@ -1,6 +1,12 @@
 import Binding from './binding';
 import ComponentSpec from './component-spec';
-import { transform, rule, simple, subtree, rest } from 'botanist';
+import {
+  transform,
+  rule,
+  simple,
+  subtree,
+  rest
+} from 'botanist';
 
 export default function buildSpecProcessor({ componentMap }) {
   return transform([

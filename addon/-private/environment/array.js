@@ -1,12 +1,8 @@
+import { set, get } from '@ember/object';
+import { A } from '@ember/array';
+import ArrayProxy from '@ember/array/proxy';
 import Binding from 'ember-exclaim/-private/binding';
 import { wrap } from './index';
-import Ember from 'ember';
-const {
-  get,
-  set,
-  A,
-  ArrayProxy,
-} = Ember;
 
 /*
  * Wraps an array, resolving any Bindings in it when requested to the corresponding
@@ -20,7 +16,9 @@ export default class EnvironmentArray extends ArrayProxy {
     this.__key__ = key;
   }
 
-  objectAtContent(index) {
+  // Overriding objectAt (rather than objectAtContent) in order to avoid
+  // the caching that ArrayProxy does in newer versions of Ember.
+  objectAt(index) {
     const item = this.__wrapped__.objectAt(index);
     if (item instanceof Binding) {
       return get(this.__env__, item.path.join('.'));
@@ -29,7 +27,6 @@ export default class EnvironmentArray extends ArrayProxy {
     }
   }
 
-  // technically private on ArrayProxy
   replaceContent(index, amount, items) {
     for (let i = 0; i < amount; i++) {
       const item = this.__wrapped__.objectAt(i + index);

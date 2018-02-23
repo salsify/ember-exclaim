@@ -1,10 +1,5 @@
-import Ember from 'ember';
-
-const {
-  get,
-  computed,
-  Component,
-} = Ember;
+import { computed, get } from '@ember/object';
+import Component from '@ember/component';
 
 export const NAME = 'input';
 export const DESCRIPTION = 'A basic form field';

@@ -1,10 +1,5 @@
-import Ember from 'ember';
-
-const {
-  get,
-  computed,
-  Component,
-} = Ember;
+import { computed, get } from '@ember/object';
+import Component from '@ember/component';
 
 export const NAME = 'table';
 export const DESCRIPTION = 'A table rendered with one row for each element of the given array';
@@ -31,7 +26,7 @@ export const PROPERTIES = [
 export default Component.extend({
   tagName: '',
 
-  items: computed('config.items.[]', 'config.yield', 'env', function() {
+  items: computed('config.{items.[],yield}', 'env', function() {
     const items = get(this, 'config.items');
 
     if (items) {

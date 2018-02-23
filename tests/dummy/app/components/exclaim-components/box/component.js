@@ -1,8 +1,4 @@
-import Ember from 'ember';
-
-const {
-  Component,
-} = Ember;
+import Component from '@ember/component';
 
 export const NAME = 'box';
 export const DESCRIPTION = 'A container whose children flow naturally, whatever that means'

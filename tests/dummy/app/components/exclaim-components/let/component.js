@@ -1,11 +1,6 @@
-import Ember from 'ember';
+import { computed, get } from '@ember/object';
+import Component from '@ember/component';
 import { unwrap } from 'ember-exclaim';
-
-const {
-  get,
-  computed,
-  Component,
-} = Ember;
 
 export const NAME = 'let';
 export const DESCRIPTION = 'A construct for binding values in child components';

@@ -1,14 +1,8 @@
-import Ember from 'ember';
+import { computed, getProperties, get } from '@ember/object';
+import Component from '@ember/component';
 import layout from './template';
 import buildSpecProcessor from 'ember-exclaim/-private/build-spec-processor';
 import Environment from 'ember-exclaim/-private/environment';
-
-const {
-  get,
-  getProperties,
-  computed,
-  Component,
-} = Ember;
 
 export default Component.extend({
   layout,

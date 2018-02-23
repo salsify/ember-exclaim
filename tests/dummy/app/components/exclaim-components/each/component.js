@@ -1,10 +1,5 @@
-import Ember from 'ember';
-
-const {
-  get,
-  computed,
-  Component,
-} = Ember;
+import { computed, get } from '@ember/object';
+import Component from '@ember/component';
 
 export const NAME = 'each';
 export const DESCRIPTION = 'A construct for rendering a component for each element of an array';
@@ -27,7 +22,7 @@ export const PROPERTIES = [
 export default Component.extend({
   tagName: '',
 
-  items: computed('config.items.[]', 'config.yield', 'env', function() {
+  items: computed('config.{items.[],yield}', 'env', function() {
     const items = get(this, 'config.items');
 
     if (items) {
