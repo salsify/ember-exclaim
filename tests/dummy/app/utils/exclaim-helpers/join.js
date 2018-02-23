@@ -1,8 +1,4 @@
-import Ember from 'ember';
-
-const {
-  get,
-} = Ember;
+import { get } from '@ember/object';
 
 export const NAME = 'join';
 export const DESCRIPTION = 'Joins an array of values into a single string';

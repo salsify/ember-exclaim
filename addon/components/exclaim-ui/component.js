@@ -1,19 +1,9 @@
-import Ember from 'ember';
+import { computed, getProperties, get } from '@ember/object';
+import { deprecatingAlias } from '@ember/object/computed';
+import Component from '@ember/component';
 import layout from './template';
 import buildSpecProcessor from 'ember-exclaim/-private/build-spec-processor';
 import Environment from 'ember-exclaim/-private/environment';
-
-const {
-  get,
-  getProperties,
-  computed,
-  computed: {
-    deprecatingAlias,
-  },
-  Component,
-} = Ember;
-
-// TODO determine a way to have helpers at the root
 
 export default Component.extend({
   layout,

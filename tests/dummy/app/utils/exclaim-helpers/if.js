@@ -1,8 +1,4 @@
-import Ember from 'ember';
-
-const {
-  get,
-} = Ember;
+import { get } from '@ember/object';
 
 export const NAME = 'if';
 export const DESCRIPTION = 'A construct for rendering one thing or another';

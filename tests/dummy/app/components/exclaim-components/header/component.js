@@ -1,8 +1,4 @@
-import Ember from 'ember';
-
-const {
-  Component,
-} = Ember;
+import Component from '@ember/component';
 
 export const NAME = 'header';
 export const DESCRIPTION = 'A header';

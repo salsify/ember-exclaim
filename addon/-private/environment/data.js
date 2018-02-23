@@ -1,10 +1,5 @@
-import Ember from 'ember';
+import EmberObject, { set, get } from '@ember/object';
 import createEnvComputed from './create-env-computed';
-const {
-  get,
-  set,
-  Object: EmberObject,
-} = Ember;
 
 /*
  * Wraps an object, resolving any Bindings in it when requested to the corresponding

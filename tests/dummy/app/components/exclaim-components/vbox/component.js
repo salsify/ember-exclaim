@@ -1,8 +1,4 @@
-import Ember from 'ember';
-
-const {
-  Component,
-} = Ember;
+import Component from '@ember/component';
 
 export const NAME = 'vbox';
 export const DESCRIPTION = 'A container that lays out its contents vertically';

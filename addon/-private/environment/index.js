@@ -1,16 +1,12 @@
-import Ember from 'ember';
+import Evented from '@ember/object/evented';
+import { makeArray } from '@ember/array';
+import EmberObject, { set, get } from '@ember/object';
+import { isHTMLSafe } from '@ember/string';
 import createEnvComputed from './create-env-computed';
 import EnvironmentData from './data';
 import EnvironmentArray from './array';
 import Binding from '../binding';
-
-const {
-  get,
-  set,
-  makeArray,
-  Object: EmberObject,
-  String: { isHTMLSafe },
-} = Ember;
+import { extractKey } from './utils';
 
 /*
  * Wraps an object that may contain exclaim Bindings, automatically resolving
@@ -18,7 +14,7 @@ const {
  * from a call `get(env, 'some.key')` will itself be wrapped in a proxy allowing
  * it to resolve subsequent calls to get its own values.
  */
-export default class Environment extends EmberObject.extend(Ember.Evented) {
+export default class Environment extends EmberObject.extend(Evented) {
   constructor(bound, metaForField) {
     super();
     this.__bound__ = makeArray(bound);
@@ -58,7 +54,7 @@ export default class Environment extends EmberObject.extend(Ember.Evented) {
  */
 export function wrap(data, env, key) {
   // Persist the original environment key if we're re-wrapping a new one
-  const realKey = data && data.__key__ || key;
+  const realKey = extractKey(data) || key;
   if (Array.isArray(data) || data instanceof EnvironmentArray) {
     return new EnvironmentArray(data, env, realKey);
   } else if ((data && typeof data === 'object' && !isHTMLSafe(data)) || data instanceof EnvironmentData) {
@@ -89,7 +85,8 @@ export function resolvePath(object, path) {
     return canonicalizeBinding(host, host.__bound__[findIndex(host.__bound__, key)][key]) || key;
   } else if (host instanceof EnvironmentData) {
     const canonicalized = canonicalizeBinding(host.__env__, host.__wrapped__[key]);
-    return canonicalized || (host.__key__ && `${host.__key__}.${key}`);
+    const hostKey = extractKey(host);
+    return canonicalized || hostKey && `${hostKey}.${key}`;
   } else if (host instanceof EnvironmentArray) {
     throw new Error('Cannot canonicalize the path to an array element itself.');
   }
@@ -101,7 +98,7 @@ function canonicalizeBinding(env, value) {
   } else if (value instanceof EnvironmentData || value instanceof EnvironmentArray) {
     // We can wind up with wrapped values IN wrapped values in cases like `env.extend({ foo: env.get('bar') })`
     // When this happens, we want to canonicalize on the original key
-    return resolvePath(env, value.__key__);
+    return resolvePath(env, extractKey(value));
   }
 }
 
