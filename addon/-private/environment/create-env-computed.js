@@ -2,6 +2,7 @@ import { alias } from '@ember/object/computed';
 import { computed, set, get, defineProperty } from '@ember/object';
 import Binding from 'ember-exclaim/-private/binding';
 import { wrap } from './index';
+import { extractKey } from './utils';
 
 /*
  * For an object proxying some other content in an exclaim Environment, this function
@@ -27,7 +28,8 @@ export default function createComputed(host, key, valueRoot, envRoot) {
     defineProperty(host, key, alias(envPath(envRoot, result)));
   } else {
     // Otherwise, we depend on the value of that key on the host object
-    const fullEnvKey = host.__key__ ? `${host.__key__}.${key}` : key;
+    const hostKey = extractKey(host);
+    const fullEnvKey = hostKey ? `${hostKey}.${key}` : key;
     defineProperty(host, key, computed(...determineDependentKeys(result, key, valueRoot, envRoot), {
       get() {
         return wrap(get(host, fullHostKey), env, fullEnvKey);

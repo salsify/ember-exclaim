@@ -3,6 +3,7 @@ import { A } from '@ember/array';
 import ArrayProxy from '@ember/array/proxy';
 import Binding from 'ember-exclaim/-private/binding';
 import { wrap } from './index';
+import { extractKey } from './utils';
 
 /*
  * Wraps an array, resolving any Bindings in it when requested to the corresponding
@@ -23,7 +24,8 @@ export default class EnvironmentArray extends ArrayProxy {
     if (item instanceof Binding) {
       return get(this.__env__, item.path.join('.'));
     } else {
-      return wrap(item, this.__env__, this.__key__ && `${this.__key__}.${index}`);
+      let key = extractKey(this);
+      return wrap(item, this.__env__, key && `${key}.${index}`);
     }
   }
 
