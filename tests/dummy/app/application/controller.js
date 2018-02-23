@@ -1,14 +1,9 @@
-import Ember from 'ember';
+import { computed, get } from '@ember/object';
+import Controller from '@ember/controller';
 import { deserialize } from 'ember-leadlight';
 import config from 'dummy/config/environment';
 import discoverComponents from 'dummy/utils/discover-components';
 import samples from './samples';
-
-const {
-  get,
-  computed,
-  Controller,
-} = Ember;
 
 const panes = deserialize([
   [0, { data: true }],

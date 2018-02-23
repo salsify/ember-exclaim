@@ -1,11 +1,6 @@
-import Ember from 'ember';
+import { computed, get } from '@ember/object';
+import Component from '@ember/component';
 import joinStringContent from 'dummy/utils/join-string-content';
-
-const {
-  get,
-  computed,
-  Component,
-} = Ember;
 
 export const NAME = 'text';
 export const DESCRIPTION = 'Some text';
