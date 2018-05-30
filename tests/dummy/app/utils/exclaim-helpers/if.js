@@ -1,4 +1,4 @@
-import Component from '@ember/component';
+import { get } from '@ember/object';
 
 export const NAME = 'if';
 export const DESCRIPTION = 'A construct for rendering one thing or another';
@@ -18,6 +18,10 @@ export const PROPERTIES = [
   }
 ];
 
-export default Component.extend({
-  tagName: '',
-});
+export default (config) => {
+  if (get(config, 'condition')) {
+    return get(config, 'then');
+  } else {
+    return get(config, 'else');
+  }
+};

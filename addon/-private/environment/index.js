@@ -1,6 +1,7 @@
 import Evented from '@ember/object/evented';
 import { makeArray } from '@ember/array';
 import EmberObject, { set, get } from '@ember/object';
+import { isHTMLSafe } from '@ember/string';
 import createEnvComputed from './create-env-computed';
 import EnvironmentData from './data';
 import EnvironmentArray from './array';
@@ -56,7 +57,7 @@ export function wrap(data, env, key) {
   const realKey = extractKey(data) || key;
   if (Array.isArray(data) || data instanceof EnvironmentArray) {
     return new EnvironmentArray(data, env, realKey);
-  } else if (data && typeof data === 'object' || data instanceof EnvironmentData) {
+  } else if ((data && typeof data === 'object' && !isHTMLSafe(data)) || data instanceof EnvironmentData) {
     return new EnvironmentData(data, env, realKey);
   } else {
     return data;

@@ -1,6 +1,4 @@
-import { computed, get } from '@ember/object';
 import Component from '@ember/component';
-import joinStringContent from 'dummy/utils/join-string-content';
 
 export const NAME = 'text';
 export const DESCRIPTION = 'Some text';
@@ -14,8 +12,4 @@ export const PROPERTIES = [
 
 export default Component.extend({
   tagName: 'span',
-
-  content: computed('config.content', function() {
-    return joinStringContent(get(this, 'config.content'));
-  }),
 });

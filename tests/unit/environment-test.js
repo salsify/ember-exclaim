@@ -1,7 +1,9 @@
 import { set, get } from '@ember/object';
 import { module, test } from 'qunit';
 import Binding from 'ember-exclaim/-private/binding';
+import HelperSpec from 'ember-exclaim/-private/helper-spec';
 import Environment, { wrap, resolvePath } from 'ember-exclaim/-private/environment';
+import { htmlSafe } from '@ember/string';
 
 module('Unit | environment', function() {
   test('simple lookups', function(assert) {
@@ -10,6 +12,11 @@ module('Unit | environment', function() {
 
     set(env, 'foo', 'baz');
     assert.equal(get(env, 'foo'), 'baz');
+  });
+
+  test('HTML-safe strings', function(assert) {
+    const env = new Environment({ foo: htmlSafe('hello') });
+    assert.deepEqual(get(env, 'foo'), htmlSafe('hello'));
   });
 
   test('simple binding resolution', function(assert) {
@@ -222,4 +229,26 @@ module('Unit | environment', function() {
     assert.deepEqual(env.metaForField(value, 'own'), { tag: 'so meta', path: 'deep.own' });
     assert.deepEqual(env.metaForField(value, 'ref'), { tag: 'so meta', path: 'foo' });
   });
+});
+
+test('helper invocation', function(assert) {
+  const env = new Environment({
+    foo: 'bar',
+    shouty: new HelperSpec(config => get(config, 'word').toUpperCase(), { word: new Binding('foo') }),
+    array: [
+      1,
+      2,
+      new HelperSpec(config => get(config, 'word.length'), { word: new Binding('shouty') }),
+    ]
+  });
+
+  assert.equal(get(env, 'foo'), 'bar');
+  assert.equal(get(env, 'shouty'), 'BAR');
+  assert.deepEqual(get(env, 'array').toArray(), [1, 2, 3]);
+
+  set(env, 'foo', 'ok');
+
+  assert.equal(get(env, 'foo'), 'ok');
+  assert.equal(get(env, 'shouty'), 'OK');
+  assert.deepEqual(get(env, 'array').toArray(), [1, 2, 2]);
 });

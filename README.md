@@ -48,20 +48,21 @@ And something like this would render an input that would update the underlying v
 The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` component. It accepts the following properties:
  - `ui`: an object containing configuration for the UI that should be rendered
  - `env`: a hash whose keys will be bindable from the `ui` config, to be read from and written to
- - `componentMap`: a mapping of component names in the `ui` config to information about their backing Ember components
+ - `implementationMap`: a mapping of names in the `ui` config to information about their backing implementations
  - `resolveFieldMeta(path)`: an optional action that will be invoked if a component calls `env.metaForField(...)`
  - `onChange(envKeyOfChangedValue)`: an optional action that will be invoked when a value in the `env` changes
  - `wrapper`: an optional component or component name string that will wrap every rendered component in your UI configuration. The `wrapper` component will receive the unwrapped `ComponentSpec` as `spec` ([more on `ComponentSpec` here](addon/-private/GLOSSARY.md)), the `Environment` as `env` and the component's resolved `config`.
+ - `resolveMeta(path)`: an optional action that will be invoked if a component calls `env.metaFor(...)`
 
 Each of these things is described in further detail below.
 
 ### UI Configuration
 
-The configuration for an ember-exclaim UI boils down to two special keys: `$component` and `$bind`.
+The configuration for an ember-exclaim UI boils down to three special keys: `$component`, `$helper` and `$bind`.
 
 #### `$component`
 
-The basic way to invoke a component in an ember-exclaim UI is with a hash containing a `$component` key. The value of this key will be used to look up the underlying Ember component implementation according to the configured `componentMap`, and all other keys in the hash will become that component's `config`. As a concrete example, consider the following usage of a hypothetical `text` component:
+Components are used to render content to the screen in an ember-exclaim UI. The basic way to invoke a component is with a hash containing a `$component` key. The value of this key will be used to look up the underlying Ember component implementation according to the configured `implementationMap`, and all other keys in the hash will become that component's `config`. As a concrete example, consider the following usage of a hypothetical `text` component:
 
 ```js
 {
@@ -70,7 +71,26 @@ The basic way to invoke a component in an ember-exclaim UI is with a hash contai
 }
 ```
 
-This would invoke whatever Ember component is configured under the `text` key of the given `componentMap`, passing it a hash of configuration that looks like `{ content: 'Hello' }`.
+This would invoke whatever Ember component is configured under the `text` key of the given `implementationMap`, passing it a hash of configuration that looks like `{ content: 'Hello' }`.
+
+#### `$helper`
+
+Helpers are used to transform data for an ember-exclaim UI. Unlike components, they don't directly render anything. Helpers are invoked by inserting a hash containing a `$helper` key. The value of this key will be used to look up the underlying implementation for the helper.
+
+As a concrete example, if you wanted to render an array of items as a comma separated list using the `text` component above, you might use a `join` helper:
+
+```js
+{
+  "$component": "text",
+  "content": {
+    "$helper": "join",
+    "items": ["one", "two", "three"],
+    "separator": ", "
+  }
+}
+```
+
+This would invoke whatever helper function is configured under the `join` key of the given `implementationMap`, passing it a hash of configuration that looks like `{ items: ['one', 'two', 'three'], separator: ', ' }`.
 
 #### `$bind`
 
@@ -94,9 +114,9 @@ Similarly, an `input` component could write to the environment's `greeting` valu
 
 Note that component implementations might also expose `$bind`able values to their children, such as an `each` component that iterates an array and exposes each item in that array under a given name.
 
-#### Component Shorthand
+#### Shorthand Syntax
 
-You may have noted that the examples in this section appear more verbose than those at the top of the document. By supplying the name of a _shorthand property_, components can be invoked using their name prefixed with a `$` as a key for that property, skipping the `$component` key completely.
+You may have noted that the examples in this section appear more verbose than those at the top of the document. By supplying the name of a _shorthand property_, components and helpers can be invoked using their name prefixed with a `$` as a key for that property, skipping the `$component` or `$helper` key completely.
 
 For example, the `text` component in [the demo application](https://salsify.github.io/ember-exclaim) declares its shorthand property to be `content`, making this:
 
@@ -113,7 +133,24 @@ Equivalent to this:
 { "$text": "Hello, world!" }
 ```
 
-Any other configuration keys the component expects can be specified the same way in either format.
+Similarly, if the `join` helper mentioned above declared `items` to be its shorthand property, then this:
+
+```js
+{
+  "$helper": "join",
+  "items": [1, 2, 3],
+  "separator": " + "
+}
+```
+
+Would be equivalent to this:
+
+```js
+{
+  "$join": [1, 2, 3],
+  "separator": " + "
+}
+```
 
 ### The Environment
 
@@ -121,11 +158,12 @@ Keys on the given `env` object are what powers `$bind` directives in the configu
 
 Note that `$bind` works with paths, too, so `{ $bind: 'foo.bar' }` would access the `bar` key of the `foo` object in the environment.
 
-### The Component Map
+### The Implementation Map
 
-The `componentMap` given to `{{exclaim-ui}}` dictates what components it can render. It should be a hash whose keys are the component names available for use in the UI config. The value for each key should itself be a hash containing the following:
- - `componentPath`: the name to the Ember component to be invoked when this exclaim-ui component is used in the config, as you'd give it to the `{{component}}` helper
- - `shorthandProperty` (optional): the name of a property that should be populated when shorthand notation is used for this component (see above)
+The `implementationMap` given to `{{exclaim-ui}}` dictates what components it can render. It should be a hash whose keys are the component and helper names available for use in the UI config. The value for each key should itself be a hash describing the component or helper with that name.
+ - `componentPath` (for components): the name to the Ember component to be invoked when this exclaim-ui component is used in the config, as you'd give it to the `{{component}}` helper
+ - `helper` (for helper functions): a function that receives a `config` hash and `env` information and should return the output value for the helper
+ - `shorthandProperty` (optional for both helpers and components): the name of a property that should be populated when shorthand notation is used for this component or helper (see above)
 
 ### Metadata Resolution
 
@@ -139,7 +177,7 @@ This action should return any relevant information available about the field at 
 
 The [demo app](https://salsify.github.io/ember-exclaim) for this repo contains [a variety of simple component implementations](tests/dummy/app/components/exclaim-components) that you can use as a starting point for building your own.
 
-An ember-exclaim component implementation will receive two properties when rendered: `env` and `config`.
+An ember-exclaim component implementation will receive two properties when rendered: `config` and `env`.
 
 ### `config`
 
@@ -170,3 +208,9 @@ For example, the [`vbox`](tests/dummy/app/components/exclaim-components/vbox) co
 ```
 
 By default, children will inherit the environment of their parent. This environment can be overridden by passing a new `env` value as a second parameter to `{{yield}}`, typically obtained by calling `extend` on the base environment (see above). Check the implementation of [`each`](tests/dummy/app/components/exclaim-components/each) and [`let`](tests/dummy/app/components/exclaim-components/let) in the demo app for examples of how this can be used.
+
+## Implementing Helpers
+
+The [demo app](https://salsify.github.io/ember-exclaim) for this repo contains [a handful of helper implementations](tests/dummy/app/utils/exclaim-helpers) that you can use as a starting point for building your own.
+
+An ember-exclaim helper implementation is simply a function that takes two arguments, `config` and `env`, which are the same two values described for components above. The value returned when this function is called will be the ultimate value of the `{ $helper: ... }` hash in the UI configuration.

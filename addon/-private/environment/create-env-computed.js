@@ -1,6 +1,7 @@
 import { alias } from '@ember/object/computed';
 import { computed, set, get, defineProperty } from '@ember/object';
 import Binding from 'ember-exclaim/-private/binding';
+import HelperSpec from 'ember-exclaim/-private/helper-spec';
 import { wrap } from './index';
 import { extractKey } from './utils';
 
@@ -26,6 +27,17 @@ export default function createComputed(host, key, valueRoot, envRoot) {
   if (result instanceof Binding) {
     // If it's a Binding, we can just return an alias for the given value on the environment
     defineProperty(host, key, alias(envPath(envRoot, result)));
+  } else if (result instanceof HelperSpec) {
+    // If it's a helper we set up a computed that reflects its calculated result
+    defineProperty(host, key, computed(...result.bindings.map(binding => envPath(envRoot, binding)), {
+      get() {
+        return result.invoke(env);
+      },
+
+      set(key, value) {
+        return value;
+      }
+    }));
   } else {
     // Otherwise, we depend on the value of that key on the host object
     const hostKey = extractKey(host);

@@ -11,7 +11,7 @@ module('Integration | Component | exclaim-ui', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    set(this, 'componentMap', {
+    set(this, 'implementationMap', {
       'simple-component': {
         componentPath: 'simple-component',
       },
@@ -27,9 +27,35 @@ module('Integration | Component | exclaim-ui', function(hooks) {
 
     this.renderUI = async () => {
       await render(
-        hbs`{{exclaim-ui componentMap=componentMap ui=ui env=env resolveFieldMeta=resolveFieldMeta onChange=onChange wrapper=wrapper}}`
+        hbs`{{exclaim-ui implementationMap=implementationMap ui=ui env=env resolveFieldMeta=resolveFieldMeta onChange=onChange wrapper=wrapper}}`
       );
     };
+  });
+
+
+  test('it invokes helpers', async function(assert) {
+    this.owner.register('component:simple-component', Component.extend({
+      layout: hbs`<div data-value>{{config.value}}</div>`
+    }));
+
+    set(this, 'implementationMap.join', {
+      shorthandProperty: 'items',
+      helper: (config) => {
+        let items = get(config, 'items').toArray();
+        let separator = get(config, 'separator') || ', ';
+        return items.join(separator);
+      }
+    });
+
+    set(this, 'env', { variable: 'b' });
+
+    set(this, 'ui', {
+      $component: 'simple-component',
+      value: { $join: ['a', { $bind: 'variable' }, 'c'] }
+    });
+
+    await this.renderUI();
+    assert.equal(this.$('[data-value]').text(), 'a, b, c');
   });
 
   test('it renders a basic component', async function(assert) {

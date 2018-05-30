@@ -36,17 +36,17 @@
   flex: 1;
 }
 
-.components {
+.impls {
   padding: 0 1em;
   font-size: 13px;
   overflow-y: auto;
 }
 
-.component {
+.impl {
   margin: 5px 0;
 }
 
-.component ul {
+.impl ul {
   margin-top: 5px;
 }
 

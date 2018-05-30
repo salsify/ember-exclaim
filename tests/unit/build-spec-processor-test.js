@@ -2,11 +2,12 @@ import { module, test } from 'qunit';
 import buildSpecProcessor from 'ember-exclaim/-private/build-spec-processor';
 import Binding from 'ember-exclaim/-private/binding';
 import ComponentSpec from 'ember-exclaim/-private/component-spec';
+import HelperSpec from 'ember-exclaim/-private/helper-spec';
 
 module('Unit | build-spec-processor', function() {
   test('processing valid config', function(assert) {
-    let componentMap = { foo: { componentPath: 'components/foo' } };
-    let processor = buildSpecProcessor({ componentMap });
+    let implementationMap = { foo: { componentPath: 'components/foo' } };
+    let processor = buildSpecProcessor({ implementationMap });
     let input = {
       $component: 'foo',
       value: {
@@ -19,8 +20,8 @@ module('Unit | build-spec-processor', function() {
   });
 
   test('processing an empty binding', function(assert) {
-    let componentMap = {};
-    let processor = buildSpecProcessor({ componentMap });
+    let implementationMap = {};
+    let processor = buildSpecProcessor({ implementationMap });
     let input = {
       $component: 'foo',
       value: {
@@ -32,14 +33,14 @@ module('Unit | build-spec-processor', function() {
   });
 
   test('processing a component with shorthand', function(assert) {
-    let componentMap = {
+    let implementationMap = {
       foo: {
         componentPath: 'components/foo',
         shorthandProperty: 'value',
       },
     };
 
-    let processor = buildSpecProcessor({ componentMap });
+    let processor = buildSpecProcessor({ implementationMap });
     let input = { $foo: { $bind: 'bar' } };
 
     let result = processor(input);
@@ -47,7 +48,7 @@ module('Unit | build-spec-processor', function() {
   });
 
   test('processing a component with meta', function(assert) {
-    let componentMap = {
+    let implementationMap = {
       foo: {
         componentPath: 'components/foo',
         componentMeta: {
@@ -56,7 +57,7 @@ module('Unit | build-spec-processor', function() {
       },
     };
 
-    let processor = buildSpecProcessor({ componentMap });
+    let processor = buildSpecProcessor({ implementationMap });
     let input = {
       $component: 'foo',
       value: {
@@ -65,5 +66,43 @@ module('Unit | build-spec-processor', function() {
     };
     let result = processor(input);
     assert.deepEqual(result, new ComponentSpec('components/foo', { value: new Binding('bar') }, { available: true }));
+  });
+
+  test('processing a helper with shorthand', function(assert) {
+    let helper = () => {};
+    let implementationMap = {
+      foo: {
+        helper,
+        shorthandProperty: 'value',
+      }
+    };
+
+    let processor = buildSpecProcessor({ implementationMap });
+    let input = { $foo: { $bind: 'bar' } };
+
+    let result = processor(input);
+    assert.deepEqual(result, new HelperSpec(helper, { value: new Binding('bar') }));
+  });
+
+  test('processing a helper with meta', function(assert) {
+    let helper = () => {};
+    let implementationMap = {
+      foo: {
+        helper,
+        helperMeta: {
+          available: true,
+        },
+      },
+    };
+
+    let processor = buildSpecProcessor({ implementationMap });
+    let input = {
+      $helper: 'foo',
+      value: {
+        $bind: 'bar'
+      }
+    };
+    let result = processor(input);
+    assert.deepEqual(result, new HelperSpec(helper, { value: new Binding('bar') }, { available: true }));
   });
 });
