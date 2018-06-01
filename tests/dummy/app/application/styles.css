@@ -1,20 +1,23 @@
 .container {
   height: 100%;
   display: flex;
-}
-
-.document-root {
   border: solid #ddd;
   border-width: 1px 1px 0 0;
+  flex-flow: row;
 }
 
-.document {
-  display: flex;
-  flex-flow: column;
+.pane {
   align-items: stretch;
-  flex: 1;
+  flex: 1 0;
+  overflow: auto;
   border: solid #ddd;
   border-width: 0 0 1px 1px;
+}
+
+.vertical {
+  flex-flow: column;
+  flex: 1;
+  display: flex;
 }
 
 .header {

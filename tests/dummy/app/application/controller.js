@@ -1,18 +1,8 @@
 import { computed, get } from '@ember/object';
 import Controller from '@ember/controller';
-import { deserialize } from 'ember-leadlight';
 import config from 'dummy/config/environment';
 import discoverImplementations from 'dummy/utils/discover-implementations';
 import samples from './samples';
-
-const panes = deserialize([
-  [0, { data: true }],
-  [0, { config: true }],
-  [
-    [0, { render: true }],
-    [0, { docs: true }],
-  ],
-]);
 
 const implementationMap = discoverImplementations(config, {
   componentPrefix: 'components/exclaim-components',
@@ -27,7 +17,6 @@ export default Controller.extend({
   queryParams: ['active'],
   active: -1,
 
-  panes,
   samples,
   componentDocs,
   helperDocs,
