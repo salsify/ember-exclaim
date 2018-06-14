@@ -29,7 +29,9 @@ The following UI would render "Hello, world!":
 
 ```js
 {
-  "$text": ["Hello, ", { "$bind": "target" }, "!"]
+  "$text": {
+    "$join": ["Hello, ", { "$bind": "target" }, "!"]
+  }
 }
 ```
 
