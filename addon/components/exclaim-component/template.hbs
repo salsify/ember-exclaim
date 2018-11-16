@@ -1,13 +1,23 @@
-{{#component wrapper
+{{#component
+  wrapper
+  collapseEmpty=(or collapseEmpty false)
   componentSpec=unwrappedSpec
-  env=effectiveEnv
   config=resolvedConfig
-}}
-  {{#component componentSpec.path
+  env=effectiveEnv
+  mode=mode}}
+  {{#component
+    componentSpec.path
+    collapseEmpty=collapseEmpty
     config=resolvedConfig
     env=effectiveEnv
-    as |componentSpec overrideEnv|
-  }}
-    {{~exclaim-component componentSpec=componentSpec env=effectiveEnv overrideEnv=overrideEnv wrapper=wrapper~}}
+    mode=mode
+    as |componentSpec overrideEnv|}}
+    {{~exclaim-component
+      collapseEmpty=collapseEmpty
+      componentSpec=componentSpec
+      env=effectiveEnv
+      mode=mode
+      overrideEnv=overrideEnv
+      wrapper=wrapper~}}
   {{/component}}
 {{/component}}
