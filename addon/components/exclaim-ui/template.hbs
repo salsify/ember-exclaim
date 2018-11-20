@@ -1,10 +1,5 @@
 {{#if content.componentSpec}}
-  {{~exclaim-component
-    collapseEmpty=collapseEmpty
-    componentSpec=content.componentSpec
-    env=baseEnv
-    mode=mode
-    wrapper=(or wrapper "exclaim-default-component-wrapper")~}}
+  {{~exclaim-component componentSpec=content.componentSpec env=baseEnv wrapper=(or wrapper 'exclaim-default-component-wrapper')~}}
 {{else if content.error}}
   {{~yield content.error~}}
 {{/if}}
