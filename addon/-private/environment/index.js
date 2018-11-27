@@ -18,7 +18,9 @@ export default class Environment extends EmberObject.extend(Evented) {
   constructor(bound, metaForField) {
     super();
     this.__bound__ = makeArray(bound);
-    this.__resolveFieldMeta__ = metaForField;
+    this.__resolveFieldMeta__ = typeof metaForField === 'function' ?
+      metaForField :
+      () => {};
   }
 
   extend(values) {

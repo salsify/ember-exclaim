@@ -1,6 +1,6 @@
 {
   "name": "ember-exclaim",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "An addon allowing apps to expose declarative, JSON-configurable custom UIs backed by Ember components",
   "keywords": [
     "ember-addon"
