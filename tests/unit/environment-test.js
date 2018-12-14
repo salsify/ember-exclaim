@@ -239,16 +239,23 @@ test('helper invocation', function(assert) {
       1,
       2,
       new HelperSpec(config => get(config, 'word.length'), { word: new Binding('shouty') }),
-    ]
+    ],
+    nested: new HelperSpec(config => get(config, 'word').toUpperCase(), {
+      word: new HelperSpec(config => get(config, 'word').split('').reverse().join(''), {
+        word: new Binding('foo')
+      })
+    })
   });
 
   assert.equal(get(env, 'foo'), 'bar');
   assert.equal(get(env, 'shouty'), 'BAR');
+  assert.equal(get(env, 'nested'), 'RAB');
   assert.deepEqual(get(env, 'array').toArray(), [1, 2, 3]);
 
   set(env, 'foo', 'ok');
 
   assert.equal(get(env, 'foo'), 'ok');
   assert.equal(get(env, 'shouty'), 'OK');
+  assert.equal(get(env, 'nested'), 'KO');
   assert.deepEqual(get(env, 'array').toArray(), [1, 2, 2]);
 });
