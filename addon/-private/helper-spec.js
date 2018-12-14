@@ -27,6 +27,8 @@ function discoverBindings(config) {
     });
   } else if (config instanceof Binding) {
     bindings.push(config);
+  } else if (config instanceof HelperSpec) {
+    bindings.push(...config.bindings);
   }
   return bindings;
 }
