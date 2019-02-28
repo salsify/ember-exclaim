@@ -11,11 +11,12 @@ import { extractKey } from './utils';
  * paths in the given environment.
  */
 export default class EnvironmentArray extends ArrayProxy {
-  constructor(data, env, key) {
-    super({ content: data });
-    this.__wrapped__ = (data instanceof EnvironmentArray) ? data.__wrapped__ : A(data);
-    this.__env__ = env;
-    this.__key__ = key;
+  static create({ data, env, key } = {}) {
+    let instance = super.create({ content: data });
+    instance.__wrapped__ = data instanceof EnvironmentArray ? data.__wrapped__ : A(data);
+    instance.__env__ = env;
+    instance.__key__ = key;
+    return instance;
   }
 
   // Overriding objectAt (rather than objectAtContent) in order to avoid

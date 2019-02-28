@@ -28,17 +28,17 @@
 
   <div local-class="vertical">
     <div local-class="pane">
-        <h2 local-class="header">Result</h2>
-        {{#exclaim-ui
-          local-class="rendered"
-          ui=(json uiString)
-          env=(json envString)
-          implementationMap=implementationMap
-          wrapper=(component 'sample-wrapper')
-          as |error|
-        }}
-          Error: {{error.message}}
-        {{/exclaim-ui}}
+      <h2 local-class="header">Result</h2>
+      {{#exclaim-ui
+        local-class="rendered"
+        ui=(json uiString)
+        env=(json envString)
+        implementationMap=implementationMap
+        wrapper=(component 'sample-wrapper')
+        as |error|
+      }}
+        Error: {{error.message}}
+      {{/exclaim-ui}}
     </div>
     <div local-class="pane">
       <h2 local-class="header">Demo Component Documentation</h2>

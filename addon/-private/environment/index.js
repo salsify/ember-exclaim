@@ -1,6 +1,5 @@
-import Evented from '@ember/object/evented';
 import { makeArray } from '@ember/array';
-import EmberObject, { set, get } from '@ember/object';
+import { set, get } from '@ember/object';
 import { isHTMLSafe } from '@ember/string';
 import createEnvComputed from './create-env-computed';
 import EnvironmentData from './data';
@@ -14,13 +13,33 @@ import { extractKey } from './utils';
  * from a call `get(env, 'some.key')` will itself be wrapped in a proxy allowing
  * it to resolve subsequent calls to get its own values.
  */
-export default class Environment extends EmberObject.extend(Evented) {
+export default class Environment {
   constructor(bound, metaForField) {
-    super();
+    this.__listeners__ = Object.create(null);
     this.__bound__ = makeArray(bound);
     this.__resolveFieldMeta__ = typeof metaForField === 'function' ?
       metaForField :
       () => {};
+  }
+
+  get(key) {
+    return get(this, key);
+  }
+
+  set(key, value) {
+    return set(this, key, value);
+  }
+
+  on(type, listener) {
+    let listeners = this.__listeners__[type] || (this.__listeners__[type] = []);
+    listeners.push(listener);
+  }
+
+  trigger(type, event) {
+    let listeners = this.__listeners__[type] || [];
+    for (let i = 0, len = listeners.length; i < len; i++) {
+      listeners[i](event);
+    }
   }
 
   extend(values) {
@@ -58,9 +77,9 @@ export function wrap(data, env, key) {
   // Persist the original environment key if we're re-wrapping a new one
   const realKey = extractKey(data) || key;
   if (Array.isArray(data) || data instanceof EnvironmentArray) {
-    return new EnvironmentArray(data, env, realKey);
+    return EnvironmentArray.create({ data, env, key: realKey });
   } else if ((data && typeof data === 'object' && !isHTMLSafe(data)) || data instanceof EnvironmentData) {
-    return new EnvironmentData(data, env, realKey);
+    return EnvironmentData.create({ data, env, key: realKey });
   } else {
     return data;
   }
