@@ -11,34 +11,40 @@ export default function buildSpecProcessor({ implementationMap }) {
 }
 
 function buildBaseRules(implementationMap) {
-  return {
-    @rule({ $bind: simple('path') })
-    createBinding({ path }) {
-      if (!path) {
-        throw new Error(`Invalid binding: ""`);
-      } else {
-        return new Binding(path);
+  return [
+    rule(
+      { $bind: simple('path') },
+      ({ path }) => {
+        if (!path) {
+          throw new Error(`Invalid binding: ""`);
+        } else {
+          return new Binding(path);
+        }
       }
-    },
+    ),
 
-    @rule({ $helper: simple('name'), ...rest('config') })
-    createHelperSpec({ name, config }) {
-      if (implementationMap.hasOwnProperty(name) && implementationMap[name].helper) {
-        return new HelperSpec(implementationMap[name].helper, config, implementationMap[name].helperMeta);
-      } else {
-        throw new Error(`Unable to resolve helper ${name}`);
+    rule(
+      { $helper: simple('name'), ...rest('config') },
+      ({ name, config }) => {
+        if (implementationMap.hasOwnProperty(name) && implementationMap[name].helper) {
+          return new HelperSpec(implementationMap[name].helper, config, implementationMap[name].helperMeta);
+        } else {
+          throw new Error(`Unable to resolve helper ${name}`);
+        }
       }
-    },
+    ),
 
-    @rule({ $component: simple('name'), ...rest('config') })
-    createComponentSpec({ name, config }) {
-      if (implementationMap.hasOwnProperty(name) && implementationMap[name].componentPath) {
-        return new ComponentSpec(implementationMap[name].componentPath, config, implementationMap[name].componentMeta);
-      } else {
-        throw new Error(`Unable to resolve component ${name}`);
+    rule(
+      { $component: simple('name'), ...rest('config') },
+      ({ name, config }) => {
+        if (implementationMap.hasOwnProperty(name) && implementationMap[name].componentPath) {
+          return new ComponentSpec(implementationMap[name].componentPath, config, implementationMap[name].componentMeta);
+        } else {
+          throw new Error(`Unable to resolve component ${name}`);
+        }
       }
-    }
-  };
+    )
+  ];
 }
 
 function buildShorthandRules(implementationMap) {
@@ -59,21 +65,21 @@ function buildShorthandRules(implementationMap) {
 }
 
 function buildComponentRule(name, { shorthandProperty, componentPath, componentMeta }) {
-  return {
-    @rule({ [`$${name}`]: subtree('shorthandValue'), ...rest('config') })
-    createComponentSpec({ shorthandValue, config }) {
+  return rule(
+    { [`$${name}`]: subtree('shorthandValue'), ...rest('config') },
+    ({ shorthandValue, config }) => {
       let fullConfig = { [shorthandProperty]: shorthandValue, ...config };
       return new ComponentSpec(componentPath, fullConfig, componentMeta);
     }
-  };
+  );
 }
 
 function buildHelperRule(name, { shorthandProperty, helper, helperMeta }) {
-  return {
-    @rule({ [`$${name}`]: subtree('shorthandValue'), ...rest('config') })
-    createHelperSpec({ shorthandValue, config }) {
+  return rule(
+    { [`$${name}`]: subtree('shorthandValue'), ...rest('config') },
+    ({ shorthandValue, config }) => {
       let fullConfig = { [shorthandProperty]: shorthandValue, ...config };
       return new HelperSpec(helper, fullConfig, helperMeta);
     }
-  }
+  );
 }

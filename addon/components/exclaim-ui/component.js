@@ -22,7 +22,10 @@ export default Component.extend({
 
   baseEnv: computed('env', 'resolveFieldMeta', function() {
     const env = new Environment(get(this, 'env') || {}, this.get('resolveFieldMeta'));
-    env.on('change', get(this, 'onChange'));
+    const onChange = get(this, 'onChange');
+    if (onChange) {
+      env.on('change', onChange);
+    }
     return env;
   }),
 

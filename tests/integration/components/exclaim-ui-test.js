@@ -11,6 +11,7 @@ module('Integration | Component | exclaim-ui', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
+    set(this, 'onChange', () => {});
     set(this, 'implementationMap', {
       'simple-component': {
         componentPath: 'simple-component',
@@ -55,7 +56,7 @@ module('Integration | Component | exclaim-ui', function(hooks) {
     });
 
     await this.renderUI();
-    assert.equal(this.$('[data-value]').text(), 'a, b, c');
+    assert.equal(this.element.querySelector('[data-value]').textContent, 'a, b, c');
   });
 
   test('it renders a basic component', async function(assert) {
@@ -69,7 +70,7 @@ module('Integration | Component | exclaim-ui', function(hooks) {
     });
 
     await this.renderUI();
-    assert.equal(this.$('[data-value]').text(), 'value!');
+    assert.equal(this.element.querySelector('[data-value]').textContent, 'value!');
   });
 
   test('it renders subcomponents', async function(assert) {
@@ -88,8 +89,8 @@ module('Integration | Component | exclaim-ui', function(hooks) {
     });
 
     await this.renderUI();
-    assert.equal(this.$('[data-id=1]').text(), 'one');
-    assert.equal(this.$('[data-id=2]').text(), 'two');
+    assert.equal(this.element.querySelector('[data-id="1"]').textContent, 'one');
+    assert.equal(this.element.querySelector('[data-id="2"]').textContent, 'two');
   });
 
   test('it renders data bound to the env', async function(assert) {
@@ -109,10 +110,10 @@ module('Integration | Component | exclaim-ui', function(hooks) {
     });
 
     await this.renderUI();
-    assert.equal(this.$('[data-value]').text(), 'hello');
+    assert.equal(this.element.querySelector('[data-value]').textContent, 'hello');
 
     run(() => set(this, 'env.envValue', 'goodbye'));
-    assert.equal(this.$('[data-value]').text(), 'goodbye');
+    assert.equal(this.element.querySelector('[data-value]').textContent, 'goodbye');
   });
 
   test('it writes bound data back to the env', async function(assert) {
@@ -132,7 +133,7 @@ module('Integration | Component | exclaim-ui', function(hooks) {
     });
 
     await this.renderUI();
-    assert.equal(this.$('input').val(), 'before');
+    assert.equal(this.element.querySelector('input').value, 'before');
 
     await fillIn('input', 'after');
     assert.equal(get(this, 'env.envValue'), 'after');
@@ -191,8 +192,8 @@ module('Integration | Component | exclaim-ui', function(hooks) {
     });
 
     await this.renderUI();
-    assert.equal(this.$('[data-id=1]').text(), 'a');
-    assert.equal(this.$('[data-id=2]').text(), 'b');
+    assert.equal(this.element.querySelector('[data-id="1"]').textContent, 'a');
+    assert.equal(this.element.querySelector('[data-id="2"]').textContent, 'b');
   });
 
   test('it allows components to resolve field metadata', async function(assert) {
@@ -241,16 +242,16 @@ module('Integration | Component | exclaim-ui', function(hooks) {
     });
 
     await this.renderUI();
-    assert.equal(this.$().text(), 'Invalid.Invalid.');
+    assert.equal(this.element.textContent, 'Invalid.Invalid.');
 
     run(() => this.set('env.data.a.value', 'DATA.A.VALUE'));
-    assert.equal(this.$().text(), 'DATA.A.VALUEInvalid.');
+    assert.equal(this.element.textContent, 'DATA.A.VALUEInvalid.');
 
     run(() => this.set('env.data.b.value', 'DATA.A.VALUE'));
-    assert.equal(this.$().text(), 'DATA.A.VALUEInvalid.');
+    assert.equal(this.element.textContent, 'DATA.A.VALUEInvalid.');
 
     run(() => this.set('env.data.b.value', 'DATA.B.VALUE'));
-    assert.equal(this.$().text(), 'DATA.A.VALUEDATA.B.VALUE');
+    assert.equal(this.element.textContent, 'DATA.A.VALUEDATA.B.VALUE');
   });
 
   test('it renders the wrapper component around every extensible component', async function(assert) {
@@ -271,7 +272,7 @@ module('Integration | Component | exclaim-ui', function(hooks) {
 
     await this.renderUI();
 
-    assert.equal(this.$().text(), 'value!');
-    assert.equal(this.$('code').length, 1);
+    assert.equal(this.element.textContent, 'value!');
+    assert.equal(this.element.querySelectorAll('code').length, 1);
   });
 });
