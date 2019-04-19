@@ -66,6 +66,11 @@
     "loader.js": "^4.7.0",
     "qunit-dom": "^0.8.0"
   },
+  "resolutions": {
+    "ember-cli-clipboard": "^0.11.1",
+    "ember-truth-helpers": "^2.1.0",
+    "ember-assign-polyfill": "^2.6.0"
+  },
   "engines": {
     "node": "6.* || 8.* || >= 10.*"
   },
