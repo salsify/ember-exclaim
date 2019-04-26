@@ -1,0 +1,36 @@
+{{docs-hero}}
+
+<p>
+  Build custom UIs with a declarative JSON syntax, implemented with Ember
+  components.
+</p>
+
+<code>
+  <pre>
+    {
+      "$vbox": [
+        {
+          "$header": "An Exclaim Example"
+        },
+        {
+          "$input": { "$bind": "username" }
+        },
+        {
+          "$text": {
+            "$join": [
+              { "$bind": "greeting" },
+              { "$bind": "username" }
+            ]
+          }
+        }
+      ]
+    }
+  </pre>
+</code>
+
+<div class="docs-bg-brand">
+  <h2>Ready to learn more?</h2>
+  <p>
+    {{#link-to 'docs'}}Read the docs{{/link-to}}
+  </p>
+</div>

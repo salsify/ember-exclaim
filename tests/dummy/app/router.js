@@ -9,7 +9,6 @@ const Router = AddonDocsRouter.extend({
 Router.map(function() {
   this.route("sandbox");
   docsRoute(this, function() {});
-  this.route("sandbox");
 });
 
 export default Router;
