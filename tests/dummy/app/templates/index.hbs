@@ -7,19 +7,27 @@
 
 <code>
   <pre>
+    // environment
+    {
+      "greeting": "Hello, ",
+      "name": "CHANGE ME"
+    }
+    // interface
     {
       "$vbox": [
         {
-          "$header": "An Exclaim Example"
-        },
-        {
-          "$input": { "$bind": "username" }
+          "$hbox": [
+            { "$text": "Your name: " },
+            {
+              "$input": { "$bind": "name" }
+            }
+          ]
         },
         {
           "$text": {
             "$join": [
               { "$bind": "greeting" },
-              { "$bind": "username" }
+              { "$bind": "name" }
             ]
           }
         }
