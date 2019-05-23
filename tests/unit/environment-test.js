@@ -14,6 +14,18 @@ module('Unit | environment', function() {
     assert.equal(get(env, 'foo'), 'baz');
   });
 
+  test('simple array lookups', function(assert) {
+    const env = new Environment({ foo: ['bar', 'baz'] });
+    assert.equal(get(env, 'foo.0'), 'bar');
+    assert.equal(get(env, 'foo.1'), 'baz');
+  });
+
+  test('set unknown property', function(assert) {
+    const env = new Environment({ foo: ['bar'] });
+    set(env, '3', 'kylerules');
+    assert.equal(get(env, 'foo.3'), 'kylerules');
+  });
+
   test('HTML-safe strings', function(assert) {
     const env = new Environment({ foo: htmlSafe('hello') });
     assert.deepEqual(get(env, 'foo'), htmlSafe('hello'));

@@ -5,6 +5,7 @@ import Binding from 'ember-exclaim/-private/binding';
 import HelperSpec from 'ember-exclaim/-private/helper-spec';
 import { wrap } from './index';
 import { extractKey } from './utils';
+import createEnvComputed from './create-env-computed';
 
 /*
  * Wraps an array, resolving any Bindings in it when requested to the corresponding
@@ -49,6 +50,17 @@ export default class EnvironmentArray extends ArrayProxy {
     } else if (items.length > amount) {
       this.__wrapped__.replace(index + items.length, 0, items.slice(amount));
     }
+  }
+
+  unknownProperty(key) {
+    createEnvComputed(this, key, '__wrapped__', '__env__');
+    return get(this, key);
+  }
+
+  setUnknownProperty(key, value) {
+    createEnvComputed(this, key, '__wrapped__', '__env__');
+    set(this, key, value);
+    return get(this, key);
   }
 
   toString() {
