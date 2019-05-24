@@ -22,8 +22,10 @@ module('Unit | environment', function() {
 
   test('set unknown property', function(assert) {
     const env = new Environment({ foo: ['bar'] });
-    set(env, '3', 'kylerules');
-    assert.equal(get(env, 'foo.3'), 'kylerules');
+    set(env, 'baz', 'bax');
+    assert.equal(get(env, 'baz'), 'bax');
+    set(env, 'foo.3', 'qux');
+    assert.equal(get(env, 'foo.3'), 'qux');
   });
 
   test('HTML-safe strings', function(assert) {
