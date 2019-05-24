@@ -42,7 +42,8 @@ export default function createComputed(host, key, valueRoot, envRoot) {
     // Otherwise, we depend on the value of that key on the host object
     const hostKey = extractKey(host);
     const fullEnvKey = hostKey ? `${hostKey}.${key}` : key;
-    defineProperty(host, key, computed(...determineDependentKeys(result, key, valueRoot, envRoot), {
+    const depKeys = determineDependentKeys(result, key, valueRoot, envRoot);
+    defineProperty(host, key, computed(...depKeys, {
       get() {
         return wrap(get(host, fullHostKey), env, fullEnvKey);
       },
