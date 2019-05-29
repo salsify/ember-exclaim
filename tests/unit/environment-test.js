@@ -24,8 +24,19 @@ module('Unit | environment', function() {
     const env = new Environment({ foo: ['bar'] });
     set(env, 'baz', 'bax');
     assert.equal(get(env, 'baz'), 'bax');
+    assert.equal(get(env, 'foo.length'), 1);
     set(env, 'foo.3', 'qux');
     assert.equal(get(env, 'foo.3'), 'qux');
+    assert.equal(get(env, 'foo.length'), 4);
+  });
+
+  test('array mutation', function(assert) {
+    const env = new Environment({ foo: ['bar', 'baz'] });
+    const foo = get(env, 'foo');
+    assert.equal(get(foo, 1), 'baz');
+    set(foo, 1, 'oops');
+    assert.equal(get(foo, 1), 'oops');
+    assert.equal(get(env, 'foo.1'), 'oops');
   });
 
   test('HTML-safe strings', function(assert) {

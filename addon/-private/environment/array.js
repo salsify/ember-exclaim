@@ -25,8 +25,7 @@ export default class EnvironmentArray extends ArrayProxy {
       defineIndexProperty(this, key);
       return get(this, key);
     } else {
-      defineProperty(this, key);
-      return this[key];
+      return this[key] = undefined;
     }
   }
 
