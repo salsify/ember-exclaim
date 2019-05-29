@@ -43,4 +43,8 @@ export default Component.extend({
   specProcessor: computed('implementationMap', function() {
     return buildSpecProcessor(getProperties(this, 'implementationMap'));
   }),
+
+  wrapperComponentName: computed('wrapper', function() {
+    return get(this, 'wrapper') || 'exclaim-default-component-wrapper';
+  }),
 });
