@@ -31,12 +31,13 @@ module('Unit | environment', function() {
   });
 
   test('array mutation', function(assert) {
-    const env = new Environment({ foo: ['bar', 'baz'] });
-    const foo = get(env, 'foo');
-    assert.equal(get(foo, 1), 'baz');
-    set(foo, 1, 'oops');
-    assert.equal(get(foo, 1), 'oops');
+    const foo = ['bar', 'baz'];
+    const env = new Environment({ foo });
+    set(env, 'foo.1', 'oops');
+    assert.equal(foo[1], 'oops');
     assert.equal(get(env, 'foo.1'), 'oops');
+    set(env, 'foo.0', 'oops again');
+    assert.equal(get(foo, 'firstObject'), 'oops again');
   });
 
   test('HTML-safe strings', function(assert) {
