@@ -14,6 +14,32 @@ module('Unit | environment', function() {
     assert.equal(get(env, 'foo'), 'baz');
   });
 
+  test('simple array lookups', function(assert) {
+    const env = new Environment({ foo: ['bar', 'baz'] });
+    assert.equal(get(env, 'foo.0'), 'bar');
+    assert.equal(get(env, 'foo.1'), 'baz');
+  });
+
+  test('set unknown property', function(assert) {
+    const env = new Environment({ foo: ['bar'] });
+    set(env, 'baz', 'bax');
+    assert.equal(get(env, 'baz'), 'bax');
+    assert.equal(get(env, 'foo.length'), 1);
+    set(env, 'foo.3', 'qux');
+    assert.equal(get(env, 'foo.3'), 'qux');
+    assert.equal(get(env, 'foo.length'), 4);
+  });
+
+  test('array mutation', function(assert) {
+    const foo = ['bar', 'baz'];
+    const env = new Environment({ foo });
+    set(env, 'foo.1', 'oops');
+    assert.equal(foo[1], 'oops');
+    assert.equal(get(env, 'foo.1'), 'oops');
+    set(env, 'foo.0', 'oops again');
+    assert.equal(get(foo, 'firstObject'), 'oops again');
+  });
+
   test('HTML-safe strings', function(assert) {
     const env = new Environment({ foo: htmlSafe('hello') });
     assert.deepEqual(get(env, 'foo'), htmlSafe('hello'));
