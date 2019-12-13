@@ -215,6 +215,7 @@ module('Integration | Component | exclaim-ui', function(hooks) {
         if (meta && this.get('config.value') !== meta.goldStandard) {
           return 'Invalid.';
         }
+        return;
       })
     }));
 
