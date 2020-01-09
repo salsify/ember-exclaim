@@ -34,5 +34,6 @@ export default Component.extend({
       const key = get(this, 'config.yield');
       return items.map(item => env.extend({ [key]: item }));
     }
+    return;
   })
 });
