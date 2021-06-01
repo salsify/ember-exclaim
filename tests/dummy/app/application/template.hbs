@@ -73,16 +73,16 @@
 
       <h2 local-class='header'>Demo Helper Documentation</h2>
       <div local-class='impls'>
-        {{#each this.helperDocs as |helper|}}
+        {{#each this.helperDocs as |helperInfo|}}
           <div local-class='impl'>
-            <code local-class='code-element'>{{helper.name}}</code>:
-            {{helper.description}}
+            <code local-class='code-element'>{{helperInfo.name}}</code>:
+            {{helperInfo.description}}
             <ul>
-              {{#each helper.properties as |property|}}
+              {{#each helperInfo.properties as |property|}}
                 <li>
                   <code
                     local-class='code-element {{if
-                      (eq helper.shorthandProperty property.name)
+                      (eq helperInfo.shorthandProperty property.name)
                       'shorthand'
                     }}'
                   >

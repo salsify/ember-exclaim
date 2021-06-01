@@ -28,7 +28,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
 
     this.renderUI = async () => {
       await render(
-        hbs`{{exclaim-ui implementationMap=implementationMap ui=ui env=env resolveFieldMeta=resolveFieldMeta onChange=onChange wrapper=wrapper}}`
+        hbs`{{exclaim-ui implementationMap=this.implementationMap ui=this.ui env=this.env resolveFieldMeta=this.resolveFieldMeta onChange=this.onChange wrapper=this.wrapper}}`
       );
     };
   });
@@ -37,7 +37,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
-        layout: hbs`<div data-value>{{config.value}}</div>`,
+        layout: hbs`<div data-value>{{@config.value}}</div>`,
       })
     );
 
@@ -68,7 +68,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
-        layout: hbs`<div data-value>{{config.value}}</div>`,
+        layout: hbs`<div data-value>{{@config.value}}</div>`,
       })
     );
 
@@ -88,14 +88,14 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:parent-component',
       Component.extend({
-        layout: hbs`{{yield config.childA}}{{yield config.childB}}`,
+        layout: hbs`{{yield @config.childA}}{{yield @config.childB}}`,
       })
     );
 
     this.owner.register(
       'component:child-component',
       Component.extend({
-        layout: hbs`<div data-id={{config.id}}>{{config.name}}</div>`,
+        layout: hbs`<div data-id={{@config.id}}>{{@config.name}}</div>`,
       })
     );
 
@@ -120,7 +120,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
-        layout: hbs`<div data-value>{{config.value}}</div>`,
+        layout: hbs`<div data-value>{{@config.value}}</div>`,
       })
     );
 
@@ -152,7 +152,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
-        layout: hbs`<input value={{config.value}} oninput={{action (mut config.value) value='target.value'}}>`,
+        layout: hbs`<input value={{@config.value}} oninput={{action (mut @config.value) value='target.value'}}>`,
       })
     );
 
@@ -184,7 +184,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
-        layout: hbs`<input value={{config.value}} oninput={{action (mut config.value) value='target.value'}}>`,
+        layout: hbs`<input value={{@config.value}} oninput={{action (mut @config.value) value='target.value'}}>`,
       })
     );
 
@@ -214,7 +214,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:parent-component',
       Component.extend({
-        layout: hbs`{{yield config.child envA}}{{yield config.child envB}}`,
+        layout: hbs`{{yield @config.child this.envA}}{{yield @config.child this.envB}}`,
 
         envA: computed('env', function () {
           return get(this, 'env').extend({ id: 1, value: 'a' });
@@ -229,7 +229,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:child-component',
       Component.extend({
-        layout: hbs`<div data-id={{config.id}}>{{config.text}}</div>`,
+        layout: hbs`<div data-id={{@config.id}}>{{@config.text}}</div>`,
       })
     );
 
@@ -251,7 +251,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:parent-component',
       Component.extend({
-        layout: hbs`{{#each envs as |env|}}{{yield config.child env}}{{/each}}`,
+        layout: hbs`{{#each this.envs as |env|}}{{yield @config.child env}}{{/each}}`,
 
         envs: computed('config.items.[]', 'env', function () {
           return this.get('config.items').map((item) => {
@@ -264,7 +264,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:child-component',
       Component.extend({
-        layout: hbs`{{if error error config.value}}`,
+        layout: hbs`{{if this.error this.error @config.value}}`,
 
         error: computed('config.value', 'env', function () {
           const meta = this.get('env').metaForField(this, 'config.value');
@@ -320,7 +320,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
-        layout: hbs`<div data-value>{{config.value}}</div>`,
+        layout: hbs`<div data-value>{{@config.value}}</div>`,
       })
     );
 
