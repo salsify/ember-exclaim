@@ -5,5 +5,6 @@ module.exports = {
   rules: {
     quotes: false,
     'table-groups': false,
+    'no-curly-component-invocation': false,
   },
 };
