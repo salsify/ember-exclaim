@@ -10,8 +10,8 @@ const implementationMap = discoverImplementations(config, {
 });
 
 const docs = Object.values(implementationMap);
-const componentDocs = docs.filter(doc => doc.componentPath);
-const helperDocs = docs.filter(doc => doc.helper);
+const componentDocs = docs.filter((doc) => doc.componentPath);
+const helperDocs = docs.filter((doc) => doc.helper);
 
 export default Controller.extend({
   queryParams: ['active'],
@@ -34,6 +34,6 @@ function sampleValue(key) {
 
     set(key, value) {
       return value;
-    }
+    },
   });
 }

@@ -20,7 +20,7 @@ export default [
       {
         "hello_target": "World"
       }
-    `
+    `,
   },
   {
     name: 'Iteration',
@@ -75,7 +75,7 @@ export default [
         "text_value": "hello",
         "boolean_value": true
       }
-    `
+    `,
   },
   {
     name: 'Table',
@@ -94,7 +94,7 @@ export default [
           { "$text": {"$bind":"item.length"} }
         ]
       }
-    `
+    `,
   },
   {
     name: 'Complex Binding',
@@ -133,6 +133,6 @@ export default [
           { "name": "Item 4" }
         ]
       }
-    `
-  }
+    `,
+  },
 ];

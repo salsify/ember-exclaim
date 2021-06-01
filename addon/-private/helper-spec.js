@@ -21,7 +21,11 @@ function discoverBindings(config) {
     config.forEach((item) => {
       bindings.push(...discoverBindings(item));
     });
-  } else if (config && typeof config === 'object' && Object.getPrototypeOf(config) === Object.prototype) {
+  } else if (
+    config &&
+    typeof config === 'object' &&
+    Object.getPrototypeOf(config) === Object.prototype
+  ) {
     Object.keys(config).forEach((key) => {
       bindings.push(...discoverBindings(config[key]));
     });

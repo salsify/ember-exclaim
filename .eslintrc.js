@@ -17,11 +17,17 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   env: {
-    browser: true
+    browser: true,
   },
   rules: {
     'ember/avoid-leaking-state-in-ember-objects': 'off',
     'ember/no-jquery': 'error',
+    // Needed to work with `unknownProperty` for now
+    'ember/no-get': 'off',
+    // Needed until we drop support for pre-Octane Ember
+    'ember/no-classic-classes': 'off',
+    'ember/no-classic-components': 'off',
+    'ember/require-tagless-components': 'off',
   },
   overrides: [
     // node files

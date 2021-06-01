@@ -8,7 +8,7 @@ module.exports = function (defaults) {
       themes: ['chrome'],
       modes: ['json'],
       workers: ['json'],
-    }
+    },
   });
 
   return app.toTree();

@@ -3,7 +3,7 @@
 module.exports = {
   extends: 'octane',
   rules: {
-    'quotes': false,
-    'table-groups': false
-  }
+    quotes: false,
+    'table-groups': false,
+  },
 };

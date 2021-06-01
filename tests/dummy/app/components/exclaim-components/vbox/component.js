@@ -6,8 +6,8 @@ export const SHORTHAND_PROPERTY = 'children';
 export const PROPERTIES = [
   {
     name: 'children',
-    description: 'An array items in the container'
-  }
+    description: 'An array items in the container',
+  },
 ];
 
 export default Component.extend({

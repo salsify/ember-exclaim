@@ -6,11 +6,12 @@ export const SHORTHAND_PROPERTY = 'items';
 export const PROPERTIES = [
   {
     name: 'items',
-    description: 'An array of values to be joined together'
+    description: 'An array of values to be joined together',
   },
   {
     name: 'separator',
-    description: 'An optional string that should be used between each joined element'
+    description:
+      'An optional string that should be used between each joined element',
   },
 ];
 
