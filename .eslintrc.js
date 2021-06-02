@@ -30,6 +30,17 @@ module.exports = {
     'ember/require-tagless-components': 'off',
   },
   overrides: [
+    // TypeScript
+    {
+      files: '*.ts',
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      extends: [
+        'eslint:recommended',
+        'plugin:ember/recommended',
+        'plugin:@typescript-eslint/recommended',
+      ],
+    },
     // node files
     {
       files: [
