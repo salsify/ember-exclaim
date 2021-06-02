@@ -6,13 +6,14 @@ export const SHORTHAND_PROPERTY = 'checked';
 export const PROPERTIES = [
   {
     name: 'checked',
-    description: 'Whether or not this box is checked. If bound to a field in the environment, checking or unchecking the box will update that field.'
-  }
+    description:
+      'Whether or not this box is checked. If bound to a field in the environment, checking or unchecking the box will update that field.',
+  },
 ];
 
 export const COMPONENT_META = {
   isUserInput: true,
-  writesKeys: [ SHORTHAND_PROPERTY ],
+  writesKeys: [SHORTHAND_PROPERTY],
 };
 
 export default Component.extend({

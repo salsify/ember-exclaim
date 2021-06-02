@@ -10,16 +10,19 @@ export default Component.extend({
   componentSpec: null,
   env: null,
 
-  unwrappedSpec: computed('componentSpec', function() {
+  unwrappedSpec: computed('componentSpec', function () {
     return unwrap(get(this, 'componentSpec'));
   }),
 
-  effectiveEnv: computed('env', 'overrideEnv', function() {
+  effectiveEnv: computed('env', 'overrideEnv', function () {
     return get(this, 'overrideEnv') || get(this, 'env');
   }),
 
-  resolvedConfig: computed('unwrappedSpec', 'effectiveEnv', function() {
+  resolvedConfig: computed('unwrappedSpec', 'effectiveEnv', function () {
     const unwrappedSpec = get(this, 'unwrappedSpec');
-    return unwrappedSpec.resolveConfig && unwrappedSpec.resolveConfig(get(this, 'effectiveEnv'));
+    return (
+      unwrappedSpec.resolveConfig &&
+      unwrappedSpec.resolveConfig(get(this, 'effectiveEnv'))
+    );
   }),
 });

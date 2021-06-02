@@ -29,29 +29,37 @@ export default function createComputed(host, key, valueRoot, envRoot) {
     defineProperty(host, key, alias(envPath(envRoot, result)));
   } else if (result instanceof HelperSpec) {
     // If it's a helper we set up a computed that reflects its calculated result
-    defineProperty(host, key, computed(...result.bindings.map(binding => envPath(envRoot, binding)), {
-      get() {
-        return result.invoke(env);
-      },
+    defineProperty(
+      host,
+      key,
+      computed(...result.bindings.map((binding) => envPath(envRoot, binding)), {
+        get() {
+          return result.invoke(env);
+        },
 
-      set(key, value) {
-        return value;
-      }
-    }));
+        set(key, value) {
+          return value;
+        },
+      })
+    );
   } else {
     // Otherwise, we depend on the value of that key on the host object
     const hostKey = extractKey(host);
     const fullEnvKey = hostKey ? `${hostKey}.${key}` : key;
-    defineProperty(host, key, computed(...determineDependentKeys(result, key, valueRoot, envRoot), {
-      get() {
-        return wrap(get(host, fullHostKey), env, fullEnvKey);
-      },
-      set(key, value) {
-        set(host, fullHostKey, value);
-        env.trigger('change', fullEnvKey);
-        return wrap(get(host, fullHostKey), env, fullEnvKey);
-      }
-    }));
+    defineProperty(
+      host,
+      key,
+      computed(...determineDependentKeys(result, key, valueRoot, envRoot), {
+        get() {
+          return wrap(get(host, fullHostKey), env, fullEnvKey);
+        },
+        set(key, value) {
+          set(host, fullHostKey, value);
+          env.trigger('change', fullEnvKey);
+          return wrap(get(host, fullHostKey), env, fullEnvKey);
+        },
+      })
+    );
   }
 }
 
@@ -60,8 +68,8 @@ function determineDependentKeys(value, key, valueRoot, envRoot) {
   if (!Array.isArray(value)) {
     return [`${valueRoot}.${key}`];
   } else {
-    const bindings = value.filter(element => element instanceof Binding);
-    const bindingKeys = bindings.map(binding => envPath(envRoot, binding));
+    const bindings = value.filter((element) => element instanceof Binding);
+    const bindingKeys = bindings.map((binding) => envPath(envRoot, binding));
     return [`${valueRoot}.${key}.[]`, ...bindingKeys];
   }
 }

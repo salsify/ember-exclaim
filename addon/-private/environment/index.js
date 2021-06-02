@@ -17,9 +17,8 @@ export default class Environment {
   constructor(bound, metaForField) {
     this.__listeners__ = Object.create(null);
     this.__bound__ = makeArray(bound);
-    this.__resolveFieldMeta__ = typeof metaForField === 'function' ?
-      metaForField :
-      () => {};
+    this.__resolveFieldMeta__ =
+      typeof metaForField === 'function' ? metaForField : () => {};
   }
 
   get(key) {
@@ -43,7 +42,10 @@ export default class Environment {
   }
 
   extend(values) {
-    return new Environment([values, ...this.__bound__], this.__resolveFieldMeta__);
+    return new Environment(
+      [values, ...this.__bound__],
+      this.__resolveFieldMeta__
+    );
   }
 
   metaForField(object, path) {
@@ -78,7 +80,10 @@ export function wrap(data, env, key) {
   const realKey = extractKey(data) || key;
   if (Array.isArray(data) || data instanceof EnvironmentArray) {
     return EnvironmentArray.create({ data, env, key: realKey });
-  } else if ((data && typeof data === 'object' && !isHTMLSafe(data)) || data instanceof EnvironmentData) {
+  } else if (
+    (data && typeof data === 'object' && !isHTMLSafe(data)) ||
+    data instanceof EnvironmentData
+  ) {
     return EnvironmentData.create({ data, env, key: realKey });
   } else {
     return data;
@@ -101,13 +106,22 @@ export function resolvePath(object, path) {
 
   const parts = path.split('.');
   const key = parts[parts.length - 1];
-  const host = parts.length > 1 ? get(object, parts.slice(0, -1).join('.')) : object;
+  const host =
+    parts.length > 1 ? get(object, parts.slice(0, -1).join('.')) : object;
   if (host instanceof Environment) {
-    return canonicalizeBinding(host, host.__bound__[findIndex(host.__bound__, key)][key]) || key;
+    return (
+      canonicalizeBinding(
+        host,
+        host.__bound__[findIndex(host.__bound__, key)][key]
+      ) || key
+    );
   } else if (host instanceof EnvironmentData) {
-    const canonicalized = canonicalizeBinding(host.__env__, host.__wrapped__[key]);
+    const canonicalized = canonicalizeBinding(
+      host.__env__,
+      host.__wrapped__[key]
+    );
     const hostKey = extractKey(host);
-    return canonicalized || hostKey && `${hostKey}.${key}`;
+    return canonicalized || (hostKey && `${hostKey}.${key}`);
   } else if (host instanceof EnvironmentArray) {
     throw new Error('Cannot canonicalize the path to an array element itself.');
   }
@@ -116,7 +130,10 @@ export function resolvePath(object, path) {
 function canonicalizeBinding(env, value) {
   if (value instanceof Binding) {
     return resolvePath(env, value.path.join('.'));
-  } else if (value instanceof EnvironmentData || value instanceof EnvironmentArray) {
+  } else if (
+    value instanceof EnvironmentData ||
+    value instanceof EnvironmentArray
+  ) {
     // We can wind up with wrapped values IN wrapped values in cases like `env.extend({ foo: env.get('bar') })`
     // When this happens, we want to canonicalize on the original key
     return resolvePath(env, extractKey(value));

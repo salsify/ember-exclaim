@@ -1,5 +1,7 @@
+{{! template-lint-disable no-action require-input-label }}
+
 <input
-  type="checkbox"
-  checked={{config.checked}}
-  onchange={{action (mut config.checked) value='target.checked'}}
->
+  type='checkbox'
+  checked={{@config.checked}}
+  onchange={{action (mut @config.checked) value='target.checked'}}
+/>

@@ -8,7 +8,8 @@ import createEnvComputed from './create-env-computed';
 export default class EnvironmentData {
   static create({ data, env, key }) {
     let instance = new EnvironmentData();
-    instance.__wrapped__ = (data instanceof EnvironmentData) ? data.__wrapped__ : data;
+    instance.__wrapped__ =
+      data instanceof EnvironmentData ? data.__wrapped__ : data;
     instance.__env__ = env;
     instance.__key__ = key;
     return instance;

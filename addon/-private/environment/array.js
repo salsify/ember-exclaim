@@ -5,6 +5,8 @@ import Binding from 'ember-exclaim/-private/binding';
 import HelperSpec from 'ember-exclaim/-private/helper-spec';
 import { wrap } from './index';
 import { extractKey } from './utils';
+
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { defineProperty, computed } from '@ember/object';
 
 /*
@@ -14,7 +16,8 @@ import { defineProperty, computed } from '@ember/object';
 export default class EnvironmentArray extends ArrayProxy {
   static create({ data, env, key } = {}) {
     let instance = super.create({ content: data });
-    instance.__wrapped__ = data instanceof EnvironmentArray ? data.__wrapped__ : A(data);
+    instance.__wrapped__ =
+      data instanceof EnvironmentArray ? data.__wrapped__ : A(data);
     instance.__env__ = env;
     instance.__key__ = key;
     return instance;
@@ -25,7 +28,7 @@ export default class EnvironmentArray extends ArrayProxy {
       defineIndexProperty(this, key);
       return get(this, key);
     } else {
-      return this[key] = undefined;
+      return (this[key] = undefined);
     }
   }
 
@@ -35,7 +38,7 @@ export default class EnvironmentArray extends ArrayProxy {
       set(this, key, value);
       return get(this, key);
     } else {
-      return this[key] = value;
+      return (this[key] = value);
     }
   }
 
@@ -77,20 +80,24 @@ export default class EnvironmentArray extends ArrayProxy {
 }
 
 function defineIndexProperty(host, index) {
-  defineProperty(host, index, computed('__wrapped__.[]', {
-    get() {
-      return host.__wrapped__.objectAt(index);
-    },
-    set(_key, value) {
-      if (parseInt(index) + 1 > host.__wrapped__.length) {
-        const newWrappedArr = host.__wrapped__.slice();
-        newWrappedArr[index] = value;
-        host.__wrapped__.setObjects(newWrappedArr);
-      } else {
-        host.__wrapped__.replace(index, 1, [value]);
-      }
+  defineProperty(
+    host,
+    index,
+    computed('__wrapped__.[]', {
+      get() {
+        return host.__wrapped__.objectAt(index);
+      },
+      set(_key, value) {
+        if (parseInt(index) + 1 > host.__wrapped__.length) {
+          const newWrappedArr = host.__wrapped__.slice();
+          newWrappedArr[index] = value;
+          host.__wrapped__.setObjects(newWrappedArr);
+        } else {
+          host.__wrapped__.replace(index, 1, [value]);
+        }
 
-      return value;
-    }
-  }));
+        return value;
+      },
+    })
+  );
 }

@@ -1,8 +1,8 @@
 <table>
-  {{#if config.header}}
+  {{#if @config.header}}
     <thead>
       <tr>
-        {{#each config.header as |row|}}
+        {{#each @config.header as |row|}}
           <th>{{yield row}}</th>
         {{/each}}
       </tr>
@@ -10,9 +10,9 @@
   {{/if}}
 
   <tbody>
-    {{#each items as |env|}}
+    {{#each this.items as |env|}}
       <tr>
-        {{#each config.row as |cell|}}
+        {{#each @config.row as |cell|}}
           <td>{{yield cell env}}</td>
         {{/each}}
       </tr>

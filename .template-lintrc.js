@@ -1,9 +1,10 @@
 'use strict';
 
 module.exports = {
-  extends: 'recommended',
+  extends: 'octane',
   rules: {
-    'quotes': false,
-    'table-groups': false
-  }
+    quotes: false,
+    'table-groups': false,
+    'no-curly-component-invocation': false,
+  },
 };

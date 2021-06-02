@@ -6,16 +6,18 @@ export const SHORTHAND_PROPERTY = 'condition';
 export const PROPERTIES = [
   {
     name: 'condition',
-    description: 'A value that will determine which case is rendered'
+    description: 'A value that will determine which case is rendered',
   },
   {
     name: 'then',
-    description: 'An optional component that will be rendered if the condition is true'
+    description:
+      'An optional component that will be rendered if the condition is true',
   },
   {
     name: 'else',
-    description: 'An optional component that will be rendered if the condition is false'
-  }
+    description:
+      'An optional component that will be rendered if the condition is false',
+  },
 ];
 
 export default (config) => {

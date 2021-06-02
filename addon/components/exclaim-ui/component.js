@@ -20,8 +20,11 @@ export default Component.extend({
   resolveFieldMeta: () => {},
   onChange: () => {},
 
-  baseEnv: computed('env', 'resolveFieldMeta', function() {
-    const env = new Environment(get(this, 'env') || {}, this.get('resolveFieldMeta'));
+  baseEnv: computed('env', 'onChange', 'resolveFieldMeta', function () {
+    const env = new Environment(
+      get(this, 'env') || {},
+      this.get('resolveFieldMeta')
+    );
     const onChange = get(this, 'onChange');
     if (onChange) {
       env.on('change', onChange);
@@ -29,7 +32,7 @@ export default Component.extend({
     return env;
   }),
 
-  content: computed('specProcessor', 'ui', function() {
+  content: computed('specProcessor', 'ui', function () {
     const processor = get(this, 'specProcessor');
     const ui = get(this, 'ui');
 
@@ -40,11 +43,11 @@ export default Component.extend({
     }
   }),
 
-  specProcessor: computed('implementationMap', function() {
+  specProcessor: computed('implementationMap', function () {
     return buildSpecProcessor(getProperties(this, 'implementationMap'));
   }),
 
-  wrapperComponentName: computed('wrapper', function() {
+  wrapperComponentName: computed('wrapper', function () {
     return get(this, 'wrapper') || 'exclaim-default-component-wrapper';
   }),
 });

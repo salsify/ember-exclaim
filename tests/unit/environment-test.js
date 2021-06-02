@@ -2,11 +2,14 @@ import { set, get } from '@ember/object';
 import { module, test } from 'qunit';
 import Binding from 'ember-exclaim/-private/binding';
 import HelperSpec from 'ember-exclaim/-private/helper-spec';
-import Environment, { wrap, resolvePath } from 'ember-exclaim/-private/environment';
+import Environment, {
+  wrap,
+  resolvePath,
+} from 'ember-exclaim/-private/environment';
 import { htmlSafe } from '@ember/string';
 
-module('Unit | environment', function() {
-  test('simple lookups', function(assert) {
+module('Unit | environment', function () {
+  test('simple lookups', function (assert) {
     const env = new Environment({ foo: 'bar' });
     assert.equal(get(env, 'foo'), 'bar');
 
@@ -14,13 +17,13 @@ module('Unit | environment', function() {
     assert.equal(get(env, 'foo'), 'baz');
   });
 
-  test('simple array lookups', function(assert) {
+  test('simple array lookups', function (assert) {
     const env = new Environment({ foo: ['bar', 'baz'] });
     assert.equal(get(env, 'foo.0'), 'bar');
     assert.equal(get(env, 'foo.1'), 'baz');
   });
 
-  test('set unknown property', function(assert) {
+  test('set unknown property', function (assert) {
     const env = new Environment({ foo: ['bar'] });
     set(env, 'baz', 'bax');
     assert.equal(get(env, 'baz'), 'bax');
@@ -30,7 +33,7 @@ module('Unit | environment', function() {
     assert.equal(get(env, 'foo.length'), 4);
   });
 
-  test('array mutation', function(assert) {
+  test('array mutation', function (assert) {
     const foo = ['bar', 'baz'];
     const env = new Environment({ foo });
     set(env, 'foo.1', 'oops');
@@ -40,12 +43,12 @@ module('Unit | environment', function() {
     assert.equal(get(foo, 'firstObject'), 'oops again');
   });
 
-  test('HTML-safe strings', function(assert) {
+  test('HTML-safe strings', function (assert) {
     const env = new Environment({ foo: htmlSafe('hello') });
     assert.deepEqual(get(env, 'foo'), htmlSafe('hello'));
   });
 
-  test('simple binding resolution', function(assert) {
+  test('simple binding resolution', function (assert) {
     const env = new Environment({ foo: 'bar', baz: new Binding('foo') });
     assert.equal(get(env, 'baz'), 'bar');
 
@@ -56,8 +59,12 @@ module('Unit | environment', function() {
     assert.equal(get(env, 'foo'), 'fizz');
   });
 
-  test('complex binding resolution', function(assert) {
-    const env = new Environment({ x: { y: 'foo', z: 'bar' }, other: new Binding('x'), stillMore: new Binding('other.z') });
+  test('complex binding resolution', function (assert) {
+    const env = new Environment({
+      x: { y: 'foo', z: 'bar' },
+      other: new Binding('x'),
+      stillMore: new Binding('other.z'),
+    });
     assert.equal(get(env, 'stillMore'), 'bar');
     assert.equal(resolvePath(env, 'x.y'), 'x.y');
     assert.equal(resolvePath(env, 'other'), 'x');
@@ -76,7 +83,7 @@ module('Unit | environment', function() {
     assert.equal(get(env, 'other.z'), 345);
   });
 
-  test('value reference resolution', function(assert) {
+  test('value reference resolution', function (assert) {
     const env = new Environment({ foo: 'bar' });
     const value = wrap({ key: new Binding('foo') }, env);
     assert.equal(get(value, 'key'), 'bar');
@@ -86,7 +93,7 @@ module('Unit | environment', function() {
     assert.equal(get(env, 'foo'), 'ok');
   });
 
-  test('chained reference resolution', function(assert) {
+  test('chained reference resolution', function (assert) {
     const env = new Environment({ foo: 'bar' });
     const value = wrap({ key: { child: new Binding('foo') } }, env);
     const subvalue = get(value, 'key');
@@ -104,7 +111,7 @@ module('Unit | environment', function() {
     assert.equal(get(subvalue, 'child'), 999);
   });
 
-  test('array values', function(assert) {
+  test('array values', function (assert) {
     const env = new Environment({ foo: 2, array: [1, new Binding('foo'), 3] });
     const ref = wrap({ array: new Binding('array') }, env);
     assert.deepEqual(get(env, 'array').toArray(), [1, 2, 3]);
@@ -132,7 +139,7 @@ module('Unit | environment', function() {
     assert.deepEqual(refArray.toArray(), [0, 3, 4]);
   });
 
-  test('environment extension', function(assert) {
+  test('environment extension', function (assert) {
     const base = new Environment({ a: 'bar' });
     const ext1 = base.extend({ b: 'qux' });
     const ext2 = base.extend({ a: 'newbar' });
@@ -165,13 +172,13 @@ module('Unit | environment', function() {
     assert.equal(get(ext2, 'c'), undefined);
 
     // Writing a previously-nonexistent key in the base propagates down
-    set(base, 'd', 'everywhere')
+    set(base, 'd', 'everywhere');
     assert.equal(get(base, 'd'), 'everywhere');
     assert.equal(get(ext1, 'd'), 'everywhere');
     assert.equal(get(ext2, 'd'), 'everywhere');
   });
 
-  test('path resolution', function(assert) {
+  test('path resolution', function (assert) {
     const env = new Environment({
       root: 'value',
       nested: {
@@ -199,7 +206,10 @@ module('Unit | environment', function() {
     assert.equal(resolvePath(env, 'nested.pointsToRoot'), 'root');
     assert.equal(resolvePath(env, 'array'), 'array');
     assert.equal(resolvePath(env, 'array.firstObject.ownKey'), 'nested.ownKey');
-    assert.equal(resolvePath(env, 'nested.super.extra.nested'), 'nested.super.extra.nested');
+    assert.equal(
+      resolvePath(env, 'nested.super.extra.nested'),
+      'nested.super.extra.nested'
+    );
 
     const nested = get(env, 'nested');
     assert.equal(resolvePath(nested, 'nonexistent'), 'nested.nonexistent');
@@ -211,14 +221,23 @@ module('Unit | environment', function() {
     assert.equal(resolvePath(array, 'firstObject.ownKey'), 'nested.ownKey');
     assert.equal(resolvePath(array, 'lastObject.ownKey'), 'array.1.ownKey');
     assert.equal(resolvePath(array, 'lastObject.pointsToParent'), 'array');
-    assert.throws(() => resolvePath(array, 'firstObject'), /Cannot canonicalize the path to an array element/);
-    assert.throws(() => resolvePath(array, '0'), /Cannot canonicalize the path to an array element/);
+    assert.throws(
+      () => resolvePath(array, 'firstObject'),
+      /Cannot canonicalize the path to an array element/
+    );
+    assert.throws(
+      () => resolvePath(array, '0'),
+      /Cannot canonicalize the path to an array element/
+    );
 
     // A value (like components' `config`) that has bindings to the environment, but didn't itself come from there
-    const config = wrap({
-      abc: 123,
-      binding: new Binding('nested.ownKey')
-    }, env);
+    const config = wrap(
+      {
+        abc: 123,
+        binding: new Binding('nested.ownKey'),
+      },
+      env
+    );
 
     assert.equal(resolvePath(config, 'abc'), undefined);
     assert.equal(resolvePath(config, 'binding'), 'nested.ownKey');
@@ -235,42 +254,61 @@ module('Unit | environment', function() {
     assert.equal(resolvePath(subenv, 'recycled.extra'), 'nested.super.extra');
   });
 
-  test('metadata resolution', function(assert) {
-    const env = new Environment({
-      foo: 'bar',
-      baz: new Binding('foo'),
-      deep: {
-        own: 'key',
-        ref: new Binding('baz'),
+  test('metadata resolution', function (assert) {
+    const env = new Environment(
+      {
+        foo: 'bar',
+        baz: new Binding('foo'),
+        deep: {
+          own: 'key',
+          ref: new Binding('baz'),
+        },
       },
-    }, (path) => {
-      return { tag: 'so meta', path };
-    });
+      (path) => {
+        return { tag: 'so meta', path };
+      }
+    );
 
     assert.deepEqual(env.metaForField('foo'), { tag: 'so meta', path: 'foo' });
     assert.deepEqual(env.metaForField('baz'), { tag: 'so meta', path: 'foo' });
-    assert.deepEqual(env.metaForField('deep.ref'), { tag: 'so meta', path: 'foo' });
+    assert.deepEqual(env.metaForField('deep.ref'), {
+      tag: 'so meta',
+      path: 'foo',
+    });
 
     const value = get(env, 'deep');
-    assert.deepEqual(env.metaForField(value, 'own'), { tag: 'so meta', path: 'deep.own' });
-    assert.deepEqual(env.metaForField(value, 'ref'), { tag: 'so meta', path: 'foo' });
+    assert.deepEqual(env.metaForField(value, 'own'), {
+      tag: 'so meta',
+      path: 'deep.own',
+    });
+    assert.deepEqual(env.metaForField(value, 'ref'), {
+      tag: 'so meta',
+      path: 'foo',
+    });
   });
 });
 
-test('helper invocation', function(assert) {
+test('helper invocation', function (assert) {
   const env = new Environment({
     foo: 'bar',
-    shouty: new HelperSpec(config => get(config, 'word').toUpperCase(), { word: new Binding('foo') }),
+    shouty: new HelperSpec((config) => get(config, 'word').toUpperCase(), {
+      word: new Binding('foo'),
+    }),
     array: [
       1,
       2,
-      new HelperSpec(config => get(config, 'word.length'), { word: new Binding('shouty') }),
+      new HelperSpec((config) => get(config, 'word.length'), {
+        word: new Binding('shouty'),
+      }),
     ],
-    nested: new HelperSpec(config => get(config, 'word').toUpperCase(), {
-      word: new HelperSpec(config => get(config, 'word').split('').reverse().join(''), {
-        word: new Binding('foo')
-      })
-    })
+    nested: new HelperSpec((config) => get(config, 'word').toUpperCase(), {
+      word: new HelperSpec(
+        (config) => get(config, 'word').split('').reverse().join(''),
+        {
+          word: new Binding('foo'),
+        }
+      ),
+    }),
   });
 
   assert.equal(get(env, 'foo'), 'bar');
