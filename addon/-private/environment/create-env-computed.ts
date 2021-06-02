@@ -4,6 +4,9 @@ import Binding from 'ember-exclaim/-private/binding';
 import HelperSpec from 'ember-exclaim/-private/helper-spec';
 import { wrap } from './index';
 import { extractKey } from './utils';
+import Environment from '.';
+import EnvironmentData from './data';
+import EnvironmentArray from './array';
 
 /*
  * For an object proxying some other content in an exclaim Environment, this function
@@ -19,10 +22,15 @@ import { extractKey } from './utils';
  * value will be the value at that Binding's path on whatever object is in envRoot. (Note that
  * Environment instances are their own binding resolution source, so they have no envRoot.)
  */
-export default function createComputed(host, key, valueRoot, envRoot) {
+export default function createComputed(
+  host: Environment | EnvironmentArray<unknown> | EnvironmentData<unknown>,
+  key: string,
+  valueRoot: string,
+  envRoot?: string
+): void {
   const fullHostKey = `${valueRoot}.${key}`;
-  const result = get(host, fullHostKey);
-  const env = envRoot ? get(host, envRoot) : host;
+  const result = get(host, fullHostKey as keyof typeof host);
+  const env = (envRoot ? get(host, envRoot as never) : host) as Environment;
 
   if (result instanceof Binding) {
     // If it's a Binding, we can just return an alias for the given value on the environment
@@ -32,12 +40,13 @@ export default function createComputed(host, key, valueRoot, envRoot) {
     defineProperty(
       host,
       key,
+      // @ts-expect-error: the types for `computed` don't handle this dependency spread
       computed(...result.bindings.map((binding) => envPath(envRoot, binding)), {
         get() {
           return result.invoke(env);
         },
 
-        set(key, value) {
+        set(_key: string, value: unknown) {
           return value;
         },
       })
@@ -49,14 +58,15 @@ export default function createComputed(host, key, valueRoot, envRoot) {
     defineProperty(
       host,
       key,
+      // @ts-expect-error: the types for `computed` don't handle this dependency spread
       computed(...determineDependentKeys(result, key, valueRoot, envRoot), {
         get() {
-          return wrap(get(host, fullHostKey), env, fullEnvKey);
+          return wrap(get(host, fullHostKey as never), env, fullEnvKey);
         },
-        set(key, value) {
-          set(host, fullHostKey, value);
+        set(_key: string, value: never) {
+          set(host, fullHostKey as never, value);
           env.trigger('change', fullEnvKey);
-          return wrap(get(host, fullHostKey), env, fullEnvKey);
+          return wrap(get(host, fullHostKey as never), env, fullEnvKey);
         },
       })
     );
@@ -64,7 +74,12 @@ export default function createComputed(host, key, valueRoot, envRoot) {
 }
 
 // For arrays containing bindings, the calculated array value itself depends on all those bound paths
-function determineDependentKeys(value, key, valueRoot, envRoot) {
+function determineDependentKeys(
+  value: unknown,
+  key: string,
+  valueRoot: string,
+  envRoot?: string
+): Array<string> {
   if (!Array.isArray(value)) {
     return [`${valueRoot}.${key}`];
   } else {
@@ -74,7 +89,7 @@ function determineDependentKeys(value, key, valueRoot, envRoot) {
   }
 }
 
-function envPath(envRoot, binding) {
+function envPath(envRoot: string | undefined, binding: Binding): string {
   const bindingPath = binding.path.join('.');
   return envRoot ? `${envRoot}.${bindingPath}` : bindingPath;
 }
