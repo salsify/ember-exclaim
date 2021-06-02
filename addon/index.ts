@@ -1,1 +1,1 @@
-export { wrap, unwrap } from 'ember-exclaim/-private/environment';
+export { wrap, unwrap } from 'ember-exclaim/-private/environment/wrapping';

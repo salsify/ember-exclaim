@@ -4,8 +4,9 @@ import type MutableArray from '@ember/array/mutable';
 import ArrayProxy from '@ember/array/proxy';
 import Binding from 'ember-exclaim/-private/binding';
 import HelperSpec from 'ember-exclaim/-private/helper-spec';
-import Environment, { wrap } from './index';
+import Environment from '.';
 import { extractKey } from './utils';
+import { wrap } from './wrapping';
 
 // eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { defineProperty, computed } from '@ember/object';

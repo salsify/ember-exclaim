@@ -2,7 +2,7 @@ import { alias } from '@ember/object/computed';
 import { computed, set, get, defineProperty } from '@ember/object';
 import Binding from 'ember-exclaim/-private/binding';
 import HelperSpec from 'ember-exclaim/-private/helper-spec';
-import { wrap } from './index';
+import { wrap } from './wrapping';
 import { extractKey } from './utils';
 import Environment from '.';
 import EnvironmentData from './data';

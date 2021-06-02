@@ -1,5 +1,5 @@
-import { wrap } from 'ember-exclaim';
-import Environment, { Wrapped } from './environment';
+import Environment from './environment';
+import { wrap, Wrapped } from './environment/wrapping';
 
 export default class ComponentSpec<T, Meta> {
   constructor(
