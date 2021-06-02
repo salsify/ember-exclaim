@@ -6,16 +6,16 @@ import HelperSpec from 'ember-exclaim/-private/helper-spec';
 
 module('Unit | build-spec-processor', function () {
   test('processing valid config', function (assert) {
-    let implementationMap = { foo: { componentPath: 'components/foo' } };
-    let processor = buildSpecProcessor({ implementationMap });
-    let input = {
+    const implementationMap = { foo: { componentPath: 'components/foo' } };
+    const processor = buildSpecProcessor({ implementationMap });
+    const input = {
       $component: 'foo',
       value: {
         $bind: 'bar',
       },
     };
 
-    let result = processor(input);
+    const result = processor(input);
     assert.deepEqual(
       result,
       new ComponentSpec('components/foo', { value: new Binding('bar') })
@@ -23,9 +23,9 @@ module('Unit | build-spec-processor', function () {
   });
 
   test('processing an empty binding', function (assert) {
-    let implementationMap = {};
-    let processor = buildSpecProcessor({ implementationMap });
-    let input = {
+    const implementationMap = {};
+    const processor = buildSpecProcessor({ implementationMap });
+    const input = {
       $component: 'foo',
       value: {
         $bind: '',
@@ -36,17 +36,17 @@ module('Unit | build-spec-processor', function () {
   });
 
   test('processing a component with shorthand', function (assert) {
-    let implementationMap = {
+    const implementationMap = {
       foo: {
         componentPath: 'components/foo',
         shorthandProperty: 'value',
       },
     };
 
-    let processor = buildSpecProcessor({ implementationMap });
-    let input = { $foo: { $bind: 'bar' } };
+    const processor = buildSpecProcessor({ implementationMap });
+    const input = { $foo: { $bind: 'bar' } };
 
-    let result = processor(input);
+    const result = processor(input);
     assert.deepEqual(
       result,
       new ComponentSpec('components/foo', { value: new Binding('bar') })
@@ -54,7 +54,7 @@ module('Unit | build-spec-processor', function () {
   });
 
   test('processing a component with meta', function (assert) {
-    let implementationMap = {
+    const implementationMap = {
       foo: {
         componentPath: 'components/foo',
         componentMeta: {
@@ -63,14 +63,14 @@ module('Unit | build-spec-processor', function () {
       },
     };
 
-    let processor = buildSpecProcessor({ implementationMap });
-    let input = {
+    const processor = buildSpecProcessor({ implementationMap });
+    const input = {
       $component: 'foo',
       value: {
         $bind: 'bar',
       },
     };
-    let result = processor(input);
+    const result = processor(input);
     assert.deepEqual(
       result,
       new ComponentSpec(
@@ -82,18 +82,18 @@ module('Unit | build-spec-processor', function () {
   });
 
   test('processing a helper with shorthand', function (assert) {
-    let helper = () => {};
-    let implementationMap = {
+    const helper = () => undefined;
+    const implementationMap = {
       foo: {
         helper,
         shorthandProperty: 'value',
       },
     };
 
-    let processor = buildSpecProcessor({ implementationMap });
-    let input = { $foo: { $bind: 'bar' } };
+    const processor = buildSpecProcessor({ implementationMap });
+    const input = { $foo: { $bind: 'bar' } };
 
-    let result = processor(input);
+    const result = processor(input);
     assert.deepEqual(
       result,
       new HelperSpec(helper, { value: new Binding('bar') })
@@ -101,8 +101,8 @@ module('Unit | build-spec-processor', function () {
   });
 
   test('processing a helper with meta', function (assert) {
-    let helper = () => {};
-    let implementationMap = {
+    const helper = () => undefined;
+    const implementationMap = {
       foo: {
         helper,
         helperMeta: {
@@ -111,14 +111,14 @@ module('Unit | build-spec-processor', function () {
       },
     };
 
-    let processor = buildSpecProcessor({ implementationMap });
-    let input = {
+    const processor = buildSpecProcessor({ implementationMap });
+    const input = {
       $helper: 'foo',
       value: {
         $bind: 'bar',
       },
     };
-    let result = processor(input);
+    const result = processor(input);
     assert.deepEqual(
       result,
       new HelperSpec(helper, { value: new Binding('bar') }, { available: true })

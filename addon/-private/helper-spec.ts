@@ -13,7 +13,7 @@ export default class HelperSpec<
   public constructor(
     public readonly helper: T,
     public readonly config: unknown,
-    public readonly meta: Meta
+    public readonly meta?: Meta
   ) {
     this.bindings = discoverBindings(config);
   }

@@ -1,3 +1,5 @@
+/* eslint-disable ember/no-classic-components, ember/no-classic-classes, ember/no-get */
+
 import { run } from '@ember/runloop';
 import { computed, set, get } from '@ember/object';
 import Component from '@ember/component';
@@ -6,12 +8,25 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
+import type { TestContext } from 'ember-test-helpers';
+import { ImplementationMap } from 'ember-exclaim';
+import EmberArray from '@ember/array';
 
 module('Integration | Component | exclaim-ui', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function () {
-    set(this, 'onChange', () => {});
+  interface ExclaimTestContext extends TestContext {
+    onChange: (key: string) => unknown;
+    resolveFieldMeta: (path: string) => unknown;
+    renderUI: () => Promise<void>;
+    wrapper?: string;
+    env: Record<string, unknown>;
+    ui: Record<string, unknown>;
+    implementationMap: ImplementationMap;
+  }
+
+  hooks.beforeEach(function (this: ExclaimTestContext) {
+    set(this, 'onChange', () => undefined);
     set(this, 'implementationMap', {
       'simple-component': {
         componentPath: 'simple-component',
@@ -24,7 +39,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
       },
     });
 
-    set(this, 'resolveFieldMeta', () => {});
+    set(this, 'resolveFieldMeta', () => undefined);
 
     this.renderUI = async () => {
       await render(
@@ -33,7 +48,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     };
   });
 
-  test('it invokes helpers', async function (assert) {
+  test('it invokes helpers', async function (this: ExclaimTestContext, assert) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
@@ -41,11 +56,11 @@ module('Integration | Component | exclaim-ui', function (hooks) {
       })
     );
 
-    set(this, 'implementationMap.join', {
+    set(this.implementationMap, 'join', {
       shorthandProperty: 'items',
-      helper: (config) => {
-        let items = get(config, 'items').toArray();
-        let separator = get(config, 'separator') || ', ';
+      helper: (config: { items: EmberArray<unknown>; separator?: string }) => {
+        const items = get(config, 'items').toArray();
+        const separator = get(config, 'separator') || ', ';
         return items.join(separator);
       },
     });
@@ -59,12 +74,12 @@ module('Integration | Component | exclaim-ui', function (hooks) {
 
     await this.renderUI();
     assert.equal(
-      this.element.querySelector('[data-value]').textContent,
+      this.element.querySelector('[data-value]')?.textContent,
       'a, b, c'
     );
   });
 
-  test('it renders a basic component', async function (assert) {
+  test('it renders a basic component', async function (this: ExclaimTestContext, assert) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
@@ -79,12 +94,12 @@ module('Integration | Component | exclaim-ui', function (hooks) {
 
     await this.renderUI();
     assert.equal(
-      this.element.querySelector('[data-value]').textContent,
+      this.element.querySelector('[data-value]')?.textContent,
       'value!'
     );
   });
 
-  test('it renders subcomponents', async function (assert) {
+  test('it renders subcomponents', async function (this: ExclaimTestContext, assert) {
     this.owner.register(
       'component:parent-component',
       Component.extend({
@@ -107,16 +122,16 @@ module('Integration | Component | exclaim-ui', function (hooks) {
 
     await this.renderUI();
     assert.equal(
-      this.element.querySelector('[data-id="1"]').textContent,
+      this.element.querySelector('[data-id="1"]')?.textContent,
       'one'
     );
     assert.equal(
-      this.element.querySelector('[data-id="2"]').textContent,
+      this.element.querySelector('[data-id="2"]')?.textContent,
       'two'
     );
   });
 
-  test('it renders data bound to the env', async function (assert) {
+  test('it renders data bound to the env', async function (this: ExclaimTestContext, assert) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
@@ -137,18 +152,18 @@ module('Integration | Component | exclaim-ui', function (hooks) {
 
     await this.renderUI();
     assert.equal(
-      this.element.querySelector('[data-value]').textContent,
+      this.element.querySelector('[data-value]')?.textContent,
       'hello'
     );
 
-    run(() => set(this, 'env.envValue', 'goodbye'));
+    run(() => set(this.env, 'envValue', 'goodbye'));
     assert.equal(
-      this.element.querySelector('[data-value]').textContent,
+      this.element.querySelector('[data-value]')?.textContent,
       'goodbye'
     );
   });
 
-  test('it writes bound data back to the env', async function (assert) {
+  test('it writes bound data back to the env', async function (this: ExclaimTestContext, assert) {
     this.owner.register(
       'component:simple-component',
       Component.extend({
@@ -168,18 +183,15 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     });
 
     await this.renderUI();
-    assert.equal(this.element.querySelector('input').value, 'before');
+    assert.equal(this.element.querySelector('input')?.value, 'before');
 
     await fillIn('input', 'after');
-    assert.equal(get(this, 'env.envValue'), 'after');
+    assert.equal(get(this.env, 'envValue'), 'after');
   });
 
-  test('it should call the onChange action when the env changes', async function (assert) {
-    set(
-      this,
-      'onChange',
-      sinon.spy((envKey) => envKey)
-    );
+  test('it should call the onChange action when the env changes', async function (this: ExclaimTestContext, assert) {
+    const onChange = sinon.spy((envKey) => envKey);
+    set(this, 'onChange', onChange);
 
     this.owner.register(
       'component:simple-component',
@@ -202,26 +214,26 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     await this.renderUI();
     await fillIn('input', 'after');
 
-    assert.ok(get(this, 'onChange').calledOnce);
-    assert.ok(get(this, 'onChange').calledWith('envValue'));
+    assert.ok(onChange.calledOnce);
+    assert.ok(onChange.calledWith('envValue'));
     assert.equal(
-      get(this, `env.${get(this, 'onChange').firstCall.returnValue}`),
+      get(this, `env.${onChange.firstCall.returnValue}` as never),
       'after'
     );
   });
 
-  test('it renders subcomponents with extended envs', async function (assert) {
+  test('it renders subcomponents with extended envs', async function (this: ExclaimTestContext, assert) {
     this.owner.register(
       'component:parent-component',
       Component.extend({
         layout: hbs`{{yield @config.child this.envA}}{{yield @config.child this.envB}}`,
 
         envA: computed('env', function () {
-          return get(this, 'env').extend({ id: 1, value: 'a' });
+          return this.env.extend({ id: 1, value: 'a' });
         }),
 
         envB: computed('env', function () {
-          return get(this, 'env').extend({ id: 2, value: 'b' });
+          return this.env.extend({ id: 2, value: 'b' });
         }),
       })
     );
@@ -243,19 +255,19 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     });
 
     await this.renderUI();
-    assert.equal(this.element.querySelector('[data-id="1"]').textContent, 'a');
-    assert.equal(this.element.querySelector('[data-id="2"]').textContent, 'b');
+    assert.equal(this.element.querySelector('[data-id="1"]')?.textContent, 'a');
+    assert.equal(this.element.querySelector('[data-id="2"]')?.textContent, 'b');
   });
 
-  test('it allows components to resolve field metadata', async function (assert) {
+  test('it allows components to resolve field metadata', async function (this: ExclaimTestContext, assert) {
     this.owner.register(
       'component:parent-component',
       Component.extend({
         layout: hbs`{{#each this.envs as |env|}}{{yield @config.child env}}{{/each}}`,
 
         envs: computed('config.items.[]', 'env', function () {
-          return this.get('config.items').map((item) => {
-            return this.get('env').extend({ item });
+          return this.get('config.items').map((item: unknown) => {
+            return this.env.extend({ item });
           });
         }),
       })
@@ -267,7 +279,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
         layout: hbs`{{if this.error this.error @config.value}}`,
 
         error: computed('config.value', 'env', function () {
-          const meta = this.get('env').metaForField(this, 'config.value');
+          const meta = this.env.metaForField(this, 'config.value');
           if (meta && this.get('config.value') !== meta.goldStandard) {
             return 'Invalid.';
           }
@@ -285,7 +297,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
       },
     });
 
-    set(this, 'resolveFieldMeta', (path) => {
+    set(this, 'resolveFieldMeta', (path: string) => {
       return { goldStandard: path.toUpperCase() };
     });
 
@@ -309,7 +321,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     assert.equal(this.element.textContent, 'DATA.A.VALUEDATA.B.VALUE');
   });
 
-  test('it renders the wrapper component around every extensible component', async function (assert) {
+  test('it renders the wrapper component around every extensible component', async function (this: ExclaimTestContext, assert) {
     this.owner.register(
       'component:wrapper-component',
       Component.extend({
