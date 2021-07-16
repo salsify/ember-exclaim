@@ -1,4 +1,4 @@
-import Component from '@ember/component';
+import templateComponent from '@ember/component/template-only';
 
 export const NAME = 'header';
 export const DESCRIPTION = 'A header';
@@ -11,6 +11,4 @@ export const PROPERTIES = [
   },
 ];
 
-export default Component.extend({
-  tagName: 'h3',
-});
+export default templateComponent();

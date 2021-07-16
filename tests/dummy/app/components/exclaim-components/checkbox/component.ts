@@ -1,4 +1,4 @@
-import Component from '@ember/component';
+import templateComponent from '@ember/component/template-only';
 
 export const NAME = 'checkbox';
 export const DESCRIPTION = 'A checkbox';
@@ -16,6 +16,4 @@ export const COMPONENT_META = {
   writesKeys: [SHORTHAND_PROPERTY],
 };
 
-export default Component.extend({
-  tagName: '',
-});
+export default templateComponent();

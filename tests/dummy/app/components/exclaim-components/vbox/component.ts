@@ -1,4 +1,4 @@
-import Component from '@ember/component';
+import templateComponent from '@ember/component/template-only';
 
 export const NAME = 'vbox';
 export const DESCRIPTION = 'A container that lays out its contents vertically';
@@ -10,6 +10,4 @@ export const PROPERTIES = [
   },
 ];
 
-export default Component.extend({
-  localClassNames: 'vbox',
-});
+export default templateComponent();

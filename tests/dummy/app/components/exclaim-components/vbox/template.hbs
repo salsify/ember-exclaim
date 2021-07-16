@@ -1,3 +1,5 @@
-{{#each @config.children as |child|}}
-  {{yield child}}
-{{/each}}
+<div local-class='vbox'>
+  {{#each @config.children as |child|}}
+    {{yield child}}
+  {{/each}}
+</div>

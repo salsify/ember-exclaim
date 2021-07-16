@@ -1,4 +1,4 @@
-import Component from '@ember/component';
+import templateComponent from '@ember/component/template-only';
 
 export const NAME = 'box';
 export const DESCRIPTION =
@@ -11,4 +11,4 @@ export const PROPERTIES = [
   },
 ];
 
-export default Component.extend({});
+export default templateComponent();

@@ -1,5 +1,6 @@
-import { computed, get } from '@ember/object';
-import Component from '@ember/component';
+import { computed } from '@ember/object';
+import Component from '@glimmer/component';
+import { ExclaimComponentArgs, read } from 'ember-exclaim';
 
 export const NAME = 'input';
 export const DESCRIPTION = 'A basic form field';
@@ -27,10 +28,15 @@ export const COMPONENT_META = {
   writesKeys: [SHORTHAND_PROPERTY],
 };
 
-export default Component.extend({
-  tagName: '',
+export type InputArgs = ExclaimComponentArgs<{
+  type?: string;
+  placeholder?: string;
+  value: string;
+}>;
 
-  type: computed('config.type', function () {
-    return get(this, 'config.type') || 'text';
-  }),
-});
+export default class InputComponent extends Component<InputArgs> {
+  @computed('args.config.type')
+  get type(): string {
+    return read(this, 'args.config.type') ?? 'text';
+  }
+}

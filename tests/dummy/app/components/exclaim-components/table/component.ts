@@ -1,5 +1,11 @@
-import { computed, get } from '@ember/object';
-import Component from '@ember/component';
+import { computed } from '@ember/object';
+import Component from '@glimmer/component';
+import {
+  ComponentSpec,
+  Environment,
+  ExclaimComponentArgs,
+  read,
+} from 'ember-exclaim';
 
 export const NAME = 'table';
 export const DESCRIPTION =
@@ -27,17 +33,20 @@ export const PROPERTIES = [
   },
 ];
 
-export default Component.extend({
-  tagName: '',
+export type TableArgs<T> = ExclaimComponentArgs<{
+  items: Array<T>;
+  yield: string;
+  header?: Array<ComponentSpec>;
+  row?: Array<ComponentSpec>;
+}>;
 
-  items: computed('config.{items.[],yield}', 'env', function () {
-    const items = get(this, 'config.items');
+export default class Table<T> extends Component<TableArgs<T>> {
+  @computed('args.config.{yield,items.[]}', 'args.env')
+  get items(): Array<Environment> | undefined {
+    const { env, config } = this.args;
+    const items = read(config, 'items');
+    const key = read(config, 'yield');
 
-    if (items) {
-      const env = get(this, 'env');
-      const key = get(this, 'config.yield');
-      return items.map((item) => env.extend({ [key]: item }));
-    }
-    return;
-  }),
-});
+    return items?.map((item) => env.extend({ [key]: item }));
+  }
+}
