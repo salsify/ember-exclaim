@@ -1,7 +1,7 @@
 import Environment from './environment';
 import { wrap, Wrapped } from './environment/wrapping';
 
-export default class ComponentSpec<T, Meta> {
+export default class ComponentSpec<T = unknown, Meta = unknown> {
   constructor(
     public readonly path: string,
     public readonly config: T,
