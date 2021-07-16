@@ -1,5 +1,17 @@
 'use strict';
 
+const emberRules = {
+  'ember/avoid-leaking-state-in-ember-objects': 'off',
+  'ember/no-jquery': 'error',
+  // Needed to work with `unknownProperty` for now
+  'ember/no-get': 'off',
+  'ember/no-computed-properties-in-native-classes': 'off',
+  // Needed until we drop support for pre-Octane Ember
+  'ember/no-classic-classes': 'off',
+  'ember/no-classic-components': 'off',
+  'ember/require-tagless-components': 'off',
+};
+
 module.exports = {
   root: true,
   parser: 'babel-eslint',
@@ -19,16 +31,7 @@ module.exports = {
   env: {
     browser: true,
   },
-  rules: {
-    'ember/avoid-leaking-state-in-ember-objects': 'off',
-    'ember/no-jquery': 'error',
-    // Needed to work with `unknownProperty` for now
-    'ember/no-get': 'off',
-    // Needed until we drop support for pre-Octane Ember
-    'ember/no-classic-classes': 'off',
-    'ember/no-classic-components': 'off',
-    'ember/require-tagless-components': 'off',
-  },
+  rules: { ...emberRules },
   overrides: [
     // TypeScript
     {
@@ -40,6 +43,7 @@ module.exports = {
         'plugin:ember/recommended',
         'plugin:@typescript-eslint/recommended',
       ],
+      rules: { ...emberRules },
     },
     // node files
     {
