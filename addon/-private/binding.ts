@@ -1,5 +1,7 @@
 export default class Binding {
-  constructor(path) {
+  public path: Array<string>;
+
+  public constructor(path: string) {
     this.path = path.split('.');
   }
 }

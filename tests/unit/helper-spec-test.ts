@@ -5,7 +5,7 @@ import HelperSpec from 'ember-exclaim/-private/helper-spec';
 module('Unit | helper-spec');
 
 test('discovering bindings', function (assert) {
-  let config = {
+  const config = {
     foo: new Binding('foo'),
     bar: [new Binding('bar[1]'), new Binding('bar[2]')],
     baz: {
@@ -14,10 +14,10 @@ test('discovering bindings', function (assert) {
     },
   };
 
-  let spec = new HelperSpec(() => {}, config);
+  const spec = new HelperSpec(() => {}, config);
 
   assert.deepEqual(
-    spec.bindings.map((binding) => binding.path.join('')).sort(),
+    spec.bindings.map((binding: Binding) => binding.path.join('')).sort(),
     ['a', 'b', 'bar[1]', 'bar[2]', 'foo', 'value']
   );
 });
