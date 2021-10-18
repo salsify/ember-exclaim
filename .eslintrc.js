@@ -34,7 +34,6 @@ module.exports = {
     {
       files: [
         '.eslintrc.js',
-        'typescript.js',
         '.prettierrc.js',
         '.template-lintrc.js',
         'ember-cli-build.js',
@@ -59,10 +58,6 @@ module.exports = {
       },
       plugins: ['node'],
       extends: ['plugin:node/recommended'],
-    },
-    {
-      files: '*.ts',
-      extends: require.resolve('./typescript'),
     },
   ],
 };
