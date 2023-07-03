@@ -137,10 +137,11 @@ var o=s(r)
 function r(){var e
 m(this,r)
 for(var l=arguments.length,u=new Array(l),f=0;f<l;f++)u[f]=arguments[f]
-return d(y(e=o.call.apply(o,[this].concat(u))),"ui",i,y(e)),d(y(e),"env",a,y(e)),h(y(e),"implementationMap",(0,n.default)(t.default,{componentPrefix:"components/exclaim-components",helperPrefix:"utils/exclaim-helpers"})),h(y(e),"handleSave",function(){var t=c(regeneratorRuntime.mark((function t(n){var o
-return regeneratorRuntime.wrap((function(t){for(;;)switch(t.prev=t.next){case 0:if(!n.ctrlKey||"s"!==n.key){t.next=6
-break}return(o=new URL(location.href)).searchParams.set("ui",e.ui),o.searchParams.set("env",e.env),t.next=6,navigator.clipboard.writeText(o.toString())
-case 6:case"end":return t.stop()}}),t)})))
+return d(y(e=o.call.apply(o,[this].concat(u))),"ui",i,y(e)),d(y(e),"env",a,y(e)),h(y(e),"implementationMap",(0,n.default)(t.default,{componentPrefix:"components/exclaim-components",helperPrefix:"utils/exclaim-helpers"})),h(y(e),"handleSave",function(){var t=c(regeneratorRuntime.mark((function t(n){var o,r,l,i
+return regeneratorRuntime.wrap((function(t){for(;;)switch(t.prev=t.next){case 0:if(!n.ctrlKey||"s"!==n.key){t.next=5
+break}for(o=new URL(location.href),r=0,l=["ui","env"];r<l.length;r++)e[i=l[r]]?o.searchParams.set(i,e[i]):o.searchParams.delete(i)
+return t.next=5,navigator.clipboard.writeText(o.toString())
+case 5:case"end":return t.stop()}}),t)})))
 return function(e){return t.apply(this,arguments)}}()),e}return r}()).prototype,"ui",[o],{configurable:!0,enumerable:!0,writable:!0,initializer:null}),a=v(l.prototype,"env",[r],{configurable:!0,enumerable:!0,writable:!0,initializer:null}),l)
 e.default=P})),define("dummy/example/route",["exports"],(function(e){function t(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function n(e,t){for(var n=0;n<t.length;n++){var o=t[n]
 o.enumerable=o.enumerable||!1,o.configurable=!0,"value"in o&&(o.writable=!0),Object.defineProperty(e,o.key,o)}}function o(e,t){return(o=Object.setPrototypeOf||function(e,t){return e.__proto__=t,e})(e,t)}function r(e){var t=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1
