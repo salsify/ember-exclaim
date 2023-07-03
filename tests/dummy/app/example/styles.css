@@ -1,0 +1,34 @@
+.example {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: stretch;
+  gap: 1em;
+  padding: 0.5em;
+  box-sizing: border-box;
+}
+
+.panel {
+  flex: 1 0 250px;
+  display: flex;
+  flex-flow: column;
+  box-sizing: border-box;
+}
+
+.panel-header {
+  line-height: 200%;
+}
+
+.card {
+  flex: 1 0;
+  border: thin solid #bbb;
+  box-shadow: 1px 1px 4px 1px #9996;
+  border-radius: 0.5em;
+  overflow: hidden;
+}
+
+.result {
+  padding: 0.5em;
+}

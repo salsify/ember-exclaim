@@ -1,0 +1,35 @@
+{{! template-lint-disable no-invalid-interactive }}
+<div local-class='example' {{on 'keypress' this.handleSave}}>
+  <div local-class='panel'>
+    <div local-class='panel-header'>UI Definition</div>
+    <JsonEditor
+      @string={{this.ui}}
+      @onChange={{fn (mut this.ui)}}
+      @class={{local-class 'card'}}
+    />
+  </div>
+
+  {{#if (not-eq this.env undefined)}}
+    <div local-class='panel'>
+      <div local-class='panel-header'>Environment</div>
+      <JsonEditor
+        @string={{this.env}}
+        @onChange={{fn (mut this.env)}}
+        @class={{local-class 'card'}}
+      />
+    </div>
+  {{/if}}
+
+  <div local-class='panel'>
+    <div local-class='panel-header'>Result</div>
+    <ExclaimUi
+      @ui={{json (or this.ui '{}')}}
+      @env={{json (or this.env '{}')}}
+      @implementationMap={{this.implementationMap}}
+      local-class='result card'
+      as |error|
+    >
+      {{error}}
+    </ExclaimUi>
+  </div>
+</div>

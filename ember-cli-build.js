@@ -8,6 +8,10 @@ module.exports = function (defaults) {
       themes: ['chrome'],
       modes: ['json'],
       workers: ['json'],
+      workerPath:
+        EmberAddon.env() === 'production'
+          ? '/ember-exclaim/assets/ace'
+          : undefined,
     },
   });
 
