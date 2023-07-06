@@ -5,7 +5,6 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
-import sinon from 'sinon';
 
 module('Integration | Component | exclaim-ui', function (hooks) {
   setupRenderingTest(hooks);
@@ -175,11 +174,11 @@ module('Integration | Component | exclaim-ui', function (hooks) {
   });
 
   test('it should call the onChange action when the env changes', async function (assert) {
-    set(
-      this,
-      'onChange',
-      sinon.spy((envKey) => envKey)
-    );
+    assert.expect(2);
+
+    set(this, 'onChange', (envKey) => {
+      assert.strictEqual(envKey, 'envValue');
+    });
 
     this.owner.register(
       'component:simple-component',
@@ -202,12 +201,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     await this.renderUI();
     await fillIn('input', 'after');
 
-    assert.ok(get(this, 'onChange').calledOnce);
-    assert.ok(get(this, 'onChange').calledWith('envValue'));
-    assert.strictEqual(
-      get(this, `env.${get(this, 'onChange').firstCall.returnValue}`),
-      'after'
-    );
+    assert.strictEqual(get(this, `env.envValue`), 'after');
   });
 
   test('it renders subcomponents with extended envs', async function (assert) {
