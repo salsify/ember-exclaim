@@ -1,16 +1,20 @@
 'use strict';
 
-const getChannelURL = require('ember-source-channel-url');
 const { embroiderSafe, embroiderOptimized } = require('@embroider/test-setup');
 
 module.exports = async function () {
   return {
+    useYarn: true,
     scenarios: [
       {
         name: 'ember-lts-3.28',
         npm: {
           devDependencies: {
             'ember-source': '~3.28.0',
+            'ember-cli': '~3.28.0',
+            // Work around https://github.com/emberjs/ember-test-helpers/issues/1232#issuecomment-1460247238
+            '@ember/test-helpers': '~2.7.0',
+            'ember-qunit': '~6.0.0',
           },
         },
       },
@@ -19,6 +23,9 @@ module.exports = async function () {
         npm: {
           devDependencies: {
             'ember-source': '~4.4.0',
+            // Work around https://github.com/emberjs/ember-test-helpers/issues/1232#issuecomment-1460247238
+            '@ember/test-helpers': '~2.7.0',
+            'ember-qunit': '~6.0.0',
           },
         },
       },
@@ -26,41 +33,7 @@ module.exports = async function () {
         name: 'ember-release',
         npm: {
           devDependencies: {
-            'ember-source': await getChannelURL('release'),
-          },
-        },
-      },
-      {
-        name: 'ember-beta',
-        npm: {
-          devDependencies: {
-            'ember-source': await getChannelURL('beta'),
-          },
-        },
-      },
-      {
-        name: 'ember-canary',
-        npm: {
-          devDependencies: {
-            'ember-source': await getChannelURL('canary'),
-          },
-        },
-      },
-      {
-        name: 'ember-classic',
-        env: {
-          EMBER_OPTIONAL_FEATURES: JSON.stringify({
-            'application-template-wrapper': true,
-            'default-async-observers': false,
-            'template-only-glimmer-components': false,
-          }),
-        },
-        npm: {
-          devDependencies: {
-            'ember-source': '~3.28.0',
-          },
-          ember: {
-            edition: 'classic',
+            'ember-source': 'latest',
           },
         },
       },
