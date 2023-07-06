@@ -22,7 +22,13 @@ module.exports = {
   env: {
     browser: true,
   },
-  rules: {},
+  rules: {
+    // Temporarily disabled while the codebase is modernized
+    'ember/no-get': 'off',
+    'ember/no-classic-classes': 'off',
+    'ember/no-classic-components': 'off',
+    'ember/require-tagless-components': 'off',
+  },
   overrides: [
     // node files
     {
@@ -51,6 +57,9 @@ module.exports = {
       // test files
       files: ['tests/**/*-test.{js,ts}'],
       extends: ['plugin:qunit/recommended'],
+      rules: {
+        'qunit/require-expect': ['error', 'except-simple'],
+      },
     },
   ],
 };
