@@ -7,15 +7,6 @@ module.exports = function (defaults) {
     autoImport: {
       watchDependencies: ['ember-exclaim'],
     },
-    ace: {
-      themes: ['chrome'],
-      modes: ['json'],
-      workers: ['json'],
-      workerPath:
-        EmberApp.env() === 'production'
-          ? '/ember-exclaim/assets/ace'
-          : undefined,
-    },
   });
 
   const { maybeEmbroider } = require('@embroider/test-setup');

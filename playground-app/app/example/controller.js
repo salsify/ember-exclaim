@@ -1,7 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
-import config from 'test-app/config/environment';
-import discoverImplementations from 'test-app/utils/discover-implementations';
+import config from 'playground-app/config/environment';
+import discoverImplementations from 'playground-app/utils/discover-implementations';
 
 export default class ExampleController extends Controller {
   @tracked ui;

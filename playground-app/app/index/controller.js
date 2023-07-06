@@ -1,7 +1,7 @@
 import { computed, get } from '@ember/object';
 import Controller from '@ember/controller';
-import config from 'test-app/config/environment';
-import discoverImplementations from 'test-app/utils/discover-implementations';
+import config from 'playground-app/config/environment';
+import discoverImplementations from 'playground-app/utils/discover-implementations';
 import samples from './samples';
 
 const implementationMap = discoverImplementations(config, {

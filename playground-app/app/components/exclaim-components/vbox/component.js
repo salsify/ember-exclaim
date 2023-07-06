@@ -1,8 +1,7 @@
 import Component from '@ember/component';
 
-export const NAME = 'hbox';
-export const DESCRIPTION =
-  'A container that lays out its contents horizontally';
+export const NAME = 'vbox';
+export const DESCRIPTION = 'A container that lays out its contents vertically';
 export const SHORTHAND_PROPERTY = 'children';
 export const PROPERTIES = [
   {
@@ -12,5 +11,5 @@ export const PROPERTIES = [
 ];
 
 export default Component.extend({
-  localClassNames: 'hbox',
+  tagName: '',
 });
