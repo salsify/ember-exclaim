@@ -1,7 +1,3 @@
-.outer {
-  display: flex;
-}
-
-.inner {
+.editor {
   flex: 1;
 }
