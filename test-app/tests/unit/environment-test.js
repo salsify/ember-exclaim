@@ -6,7 +6,7 @@ import Environment, {
   wrap,
   resolvePath,
 } from 'ember-exclaim/-private/environment';
-import { htmlSafe } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 
 module('Unit | environment', function () {
   test('simple lookups', function (assert) {
@@ -259,6 +259,7 @@ module('Unit | environment', function () {
 
     const subenv = env.extend({
       subValue: 'hello',
+      // eslint-disable-next-line ember/avoid-leaking-state-in-ember-objects
       upReference: new Binding('nested.ownKey'),
       recycled: get(env, 'nested.super'),
     });
@@ -304,40 +305,40 @@ module('Unit | environment', function () {
       path: 'foo',
     });
   });
-});
 
-test('helper invocation', function (assert) {
-  const env = new Environment({
-    foo: 'bar',
-    shouty: new HelperSpec((config) => get(config, 'word').toUpperCase(), {
-      word: new Binding('foo'),
-    }),
-    array: [
-      1,
-      2,
-      new HelperSpec((config) => get(config, 'word.length'), {
-        word: new Binding('shouty'),
+  test('helper invocation', function (assert) {
+    const env = new Environment({
+      foo: 'bar',
+      shouty: new HelperSpec((config) => get(config, 'word').toUpperCase(), {
+        word: new Binding('foo'),
       }),
-    ],
-    nested: new HelperSpec((config) => get(config, 'word').toUpperCase(), {
-      word: new HelperSpec(
-        (config) => get(config, 'word').split('').reverse().join(''),
-        {
-          word: new Binding('foo'),
-        }
-      ),
-    }),
+      array: [
+        1,
+        2,
+        new HelperSpec((config) => get(config, 'word.length'), {
+          word: new Binding('shouty'),
+        }),
+      ],
+      nested: new HelperSpec((config) => get(config, 'word').toUpperCase(), {
+        word: new HelperSpec(
+          (config) => get(config, 'word').split('').reverse().join(''),
+          {
+            word: new Binding('foo'),
+          }
+        ),
+      }),
+    });
+
+    assert.strictEqual(get(env, 'foo'), 'bar');
+    assert.strictEqual(get(env, 'shouty'), 'BAR');
+    assert.strictEqual(get(env, 'nested'), 'RAB');
+    assert.deepEqual(get(env, 'array').toArray(), [1, 2, 3]);
+
+    set(env, 'foo', 'ok');
+
+    assert.strictEqual(get(env, 'foo'), 'ok');
+    assert.strictEqual(get(env, 'shouty'), 'OK');
+    assert.strictEqual(get(env, 'nested'), 'KO');
+    assert.deepEqual(get(env, 'array').toArray(), [1, 2, 2]);
   });
-
-  assert.strictEqual(get(env, 'foo'), 'bar');
-  assert.strictEqual(get(env, 'shouty'), 'BAR');
-  assert.strictEqual(get(env, 'nested'), 'RAB');
-  assert.deepEqual(get(env, 'array').toArray(), [1, 2, 3]);
-
-  set(env, 'foo', 'ok');
-
-  assert.strictEqual(get(env, 'foo'), 'ok');
-  assert.strictEqual(get(env, 'shouty'), 'OK');
-  assert.strictEqual(get(env, 'nested'), 'KO');
-  assert.deepEqual(get(env, 'array').toArray(), [1, 2, 2]);
 });
