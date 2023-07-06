@@ -39,10 +39,10 @@ e.NAME="hbox"
 e.DESCRIPTION="A container that lays out its contents horizontally"
 e.SHORTHAND_PROPERTY="children"
 e.PROPERTIES=[{name:"children",description:"An array items in the container"}]
-var n=t.default.extend({localClassNames:"hbox"})
+var n=t.default.extend({tagName:""})
 e.default=n})),define("playground-app/components/exclaim-components/hbox/styles",["exports"],(function(e){Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
 e.default={hbox:"_hbox_10tpsy"}})),define("playground-app/components/exclaim-components/hbox/template",["exports","@ember/template-factory"],(function(e,t){Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
-var n=(0,t.createTemplateFactory)({id:"x2+2ihwT",block:'[[[42,[28,[37,1],[[28,[37,1],[[30,1,["children"]]],null]],null],null,[[[1,"  "],[18,3,[[30,2]]],[1,"\\n"]],[2]],null]],["@config","child","&default"],false,["each","-track-array","yield"]]',moduleName:"playground-app/components/exclaim-components/hbox/template.hbs",isStrictMode:!1})
+var n=(0,t.createTemplateFactory)({id:"n5j/+6Iz",block:'[[[10,0],[15,0,[29,[[28,[37,0],["hbox"],[["from"],["playground-app/components/exclaim-components/hbox/styles"]]]]]],[12],[1,"\\n"],[42,[28,[37,2],[[28,[37,2],[[30,1,["children"]]],null]],null],null,[[[1,"    "],[18,3,[[30,2]]],[1,"\\n"]],[2]],null],[13]],["@config","child","&default"],false,["local-class","each","-track-array","yield"]]',moduleName:"playground-app/components/exclaim-components/hbox/template.hbs",isStrictMode:!1})
 e.default=n})),define("playground-app/components/exclaim-components/header/component",["exports","@ember/component"],(function(e,t){Object.defineProperty(e,"__esModule",{value:!0}),e.default=e.SHORTHAND_PROPERTY=e.PROPERTIES=e.NAME=e.DESCRIPTION=void 0
 e.NAME="header"
 e.DESCRIPTION="A header"
@@ -94,10 +94,10 @@ e.NAME="vbox"
 e.DESCRIPTION="A container that lays out its contents vertically"
 e.SHORTHAND_PROPERTY="children"
 e.PROPERTIES=[{name:"children",description:"An array items in the container"}]
-var n=t.default.extend({localClassNames:"vbox"})
+var n=t.default.extend({tagName:""})
 e.default=n})),define("playground-app/components/exclaim-components/vbox/styles",["exports"],(function(e){Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
 e.default={vbox:"_vbox_v4uyqf"}})),define("playground-app/components/exclaim-components/vbox/template",["exports","@ember/template-factory"],(function(e,t){Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
-var n=(0,t.createTemplateFactory)({id:"CxNFvFAY",block:'[[[42,[28,[37,1],[[28,[37,1],[[30,1,["children"]]],null]],null],null,[[[1,"  "],[18,3,[[30,2]]],[1,"\\n"]],[2]],null]],["@config","child","&default"],false,["each","-track-array","yield"]]',moduleName:"playground-app/components/exclaim-components/vbox/template.hbs",isStrictMode:!1})
+var n=(0,t.createTemplateFactory)({id:"X+w4IAML",block:'[[[10,0],[15,0,[29,[[28,[37,0],["vbox"],[["from"],["playground-app/components/exclaim-components/vbox/styles"]]]]]],[12],[1,"\\n"],[42,[28,[37,2],[[28,[37,2],[[30,1,["children"]]],null]],null],null,[[[1,"    "],[18,3,[[30,2]]],[1,"\\n"]],[2]],null],[13]],["@config","child","&default"],false,["local-class","each","-track-array","yield"]]',moduleName:"playground-app/components/exclaim-components/vbox/template.hbs",isStrictMode:!1})
 e.default=n})),define("playground-app/components/exclaim-default-component-wrapper",["exports","ember-exclaim/components/exclaim-default-component-wrapper"],(function(e,t){Object.defineProperty(e,"__esModule",{value:!0}),Object.defineProperty(e,"default",{enumerable:!0,get:function(){return t.default}})})),define("playground-app/components/exclaim-ui",["exports","ember-exclaim/components/exclaim-ui"],(function(e,t){Object.defineProperty(e,"__esModule",{value:!0}),Object.defineProperty(e,"default",{enumerable:!0,get:function(){return t.default}})})),define("playground-app/components/json-editor/component",["exports","@ember/object","@ember/component","ace-builds/src-noconflict/ace","ace-builds/src-noconflict/theme-chrome","ace-builds/src-noconflict/mode-json","ace-builds/src-noconflict/worker-json?resource","ace-builds"],(function(e,t,n,o,r,l,a,i){Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0,i.config.setModuleUrl("ace/mode/json_worker",a)
 var p=n.default.extend({tagName:"",string:null,valueChanged:(0,t.action)((function(e){try{JSON.parse(e),(0,t.get)(this,"onChange")(e)}catch(n){}}))})
 e.default=p})),define("playground-app/components/json-editor/styles",["exports"],(function(e){Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
