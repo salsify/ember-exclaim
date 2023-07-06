@@ -1,0 +1,80 @@
+{
+  "name": "ember-exclaim",
+  "version": "1.3.1",
+  "description": "An addon allowing apps to expose declarative, JSON-configurable custom UIs backed by Ember components",
+  "keywords": [
+    "ember-addon"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/salsify/ember-exclaim.git",
+    "directory": "ember-exclaim"
+  },
+  "license": "MIT",
+  "author": "Dan Freeman",
+  "files": [
+    "addon-main.cjs",
+    "declarations",
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup --config",
+    "lint": "concurrently 'npm:lint:*(!fix)' --names 'lint:'",
+    "lint:fix": "concurrently 'npm:lint:*:fix' --names 'fix:'",
+    "lint:hbs": "ember-template-lint . --no-error-on-unmatched-pattern",
+    "lint:js": "eslint . --cache",
+    "lint:hbs:fix": "ember-template-lint . --fix --no-error-on-unmatched-pattern",
+    "lint:js:fix": "eslint . --fix",
+    "start": "rollup --config --watch",
+    "test": "echo 'A v2 addon does not have tests, run tests in test-app'",
+    "prepack": "rollup --config"
+  },
+  "dependencies": {
+    "@embroider/addon-shim": "^1.0.0",
+    "botanist": "^1.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.0",
+    "@babel/eslint-parser": "^7.19.1",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/plugin-proposal-decorators": "^7.20.13",
+    "@babel/runtime": "^7.17.0",
+    "@embroider/addon-dev": "^3.0.0",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "concurrently": "^8.0.1",
+    "ember-template-lint": "^5.7.3",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-ember": "^11.6.0",
+    "eslint-plugin-n": "^16.0.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1",
+    "rollup": "^3.21.8",
+    "rollup-plugin-copy": "^3.4.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "volta": {
+    "extends": "../package.json"
+  },
+  "ember": {
+    "edition": "octane"
+  },
+  "ember-addon": {
+    "version": 2,
+    "type": "addon",
+    "main": "addon-main.cjs",
+    "app-js": {
+      "./components/exclaim-component.js": "./dist/_app_/components/exclaim-component.js",
+      "./components/exclaim-default-component-wrapper.js": "./dist/_app_/components/exclaim-default-component-wrapper.js",
+      "./components/exclaim-ui.js": "./dist/_app_/components/exclaim-ui.js"
+    }
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./*": "./dist/*.js",
+    "./addon-main.js": "./addon-main.cjs"
+  }
+}
