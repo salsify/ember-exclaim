@@ -1,4 +1,4 @@
-# ember-exclaim [![Build Status](https://travis-ci.org/salsify/ember-exclaim.svg?branch=master)](https://travis-ci.org/salsify/ember-exclaim)
+# ember-exclaim [![CI](https://github.com/salsify/ember-exclaim/actions/workflows/ci.yml/badge.svg)](https://github.com/salsify/ember-exclaim/actions/workflows/ci.yml)
 
 This addon allows apps to expose declarative, JSON-configurable custom UIs that are backed by Ember components.
 

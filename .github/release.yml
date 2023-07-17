@@ -1,0 +1,20 @@
+changelog:
+  exclude:
+    authors:
+      - dependabot
+  categories:
+    - title: 💥 Breaking Changes
+      labels:
+        - breaking
+
+    - title: 🐞 Bugfixes
+      labels:
+        - bug
+
+    - title: 🚀 Features
+      labels:
+        - enhancement
+
+    - title: 🧹 Housekeeping
+      labels:
+        - housekeeping
