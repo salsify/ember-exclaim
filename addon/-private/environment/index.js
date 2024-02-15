@@ -1,6 +1,6 @@
 import { makeArray } from '@ember/array';
 import { set, get } from '@ember/object';
-import { isHTMLSafe } from '@ember/string';
+import { isHTMLSafe } from '@ember/template';
 import createEnvComputed from './create-env-computed';
 import EnvironmentData from './data';
 import EnvironmentArray from './array';

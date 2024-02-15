@@ -6,7 +6,7 @@ import Environment, {
   wrap,
   resolvePath,
 } from 'ember-exclaim/-private/environment';
-import { htmlSafe } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 
 module('Unit | environment', function () {
   test('simple lookups', function (assert) {
