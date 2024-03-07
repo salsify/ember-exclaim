@@ -53,7 +53,7 @@ The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` compone
  - `implementationMap`: a mapping of names in the `ui` config to information about their backing implementations
  - `resolveFieldMeta(path)`: an optional action that will be invoked if a component calls `env.metaForField(...)`
  - `onChange(envKeyOfChangedValue)`: an optional action that will be invoked when a value in the `env` changes
- - `wrapper`: an optional component or component name string that will wrap every rendered component in your UI configuration. The `wrapper` component will receive the unwrapped `ComponentSpec` as `spec` ([more on `ComponentSpec` here](addon/-private/GLOSSARY.md)), the `Environment` as `env` and the component's resolved `config`.
+ - `wrapper`: an optional component or component name string that will wrap every rendered component in your UI configuration. The `wrapper` component will receive the unwrapped `ComponentSpec` as `spec` ([more on `ComponentSpec` here](ember-exclaim/src/-private/GLOSSARY.md)), the `Environment` as `env` and the component's resolved `config`.
  - `resolveMeta(path)`: an optional action that will be invoked if a component calls `env.metaFor(...)`
 
 Each of these things is described in further detail below.
