@@ -1,8 +1,7 @@
 import { module, test } from 'qunit';
 import buildSpecProcessor from 'ember-exclaim/-private/build-spec-processor';
 import Binding from 'ember-exclaim/-private/binding';
-import ComponentSpec from 'ember-exclaim/-private/component-spec';
-import HelperSpec from 'ember-exclaim/-private/helper-spec';
+import { ComponentSpec, HelperSpec } from 'ember-exclaim';
 
 module('Unit | build-spec-processor', function () {
   test('processing valid config', function (assert) {

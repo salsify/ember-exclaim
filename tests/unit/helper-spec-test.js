@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import Binding from 'ember-exclaim/-private/binding';
-import HelperSpec from 'ember-exclaim/-private/helper-spec';
+import { HelperSpec } from 'ember-exclaim';
 
 module('Unit | helper-spec');
 
