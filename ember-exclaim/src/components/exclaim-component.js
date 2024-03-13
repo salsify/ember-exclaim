@@ -1,6 +1,5 @@
 import { computed, get } from '@ember/object';
 import Component from '@ember/component';
-import { unwrap } from '../-private/environment';
 
 export default Component.extend({
   tagName: '',
@@ -8,19 +7,14 @@ export default Component.extend({
   componentSpec: null,
   env: null,
 
-  unwrappedSpec: computed('componentSpec', function () {
-    return unwrap(get(this, 'componentSpec'));
-  }),
-
   effectiveEnv: computed('env', 'overrideEnv', function () {
     return get(this, 'overrideEnv') || get(this, 'env');
   }),
 
-  resolvedConfig: computed('unwrappedSpec', 'effectiveEnv', function () {
-    const unwrappedSpec = get(this, 'unwrappedSpec');
+  resolvedConfig: computed('componentSpec', 'effectiveEnv', function () {
+    const componentSpec = get(this, 'componentSpec');
     return (
-      unwrappedSpec.resolveConfig &&
-      unwrappedSpec.resolveConfig(get(this, 'effectiveEnv'))
+      componentSpec && componentSpec.resolveConfig(get(this, 'effectiveEnv'))
     );
   }),
 });

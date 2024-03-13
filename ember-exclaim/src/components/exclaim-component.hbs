@@ -1,11 +1,11 @@
 {{#component
   @wrapper
-  componentSpec=this.unwrappedSpec
+  componentSpec=@componentSpec
   env=this.effectiveEnv
   config=this.resolvedConfig
 }}
   {{#component
-    @componentSpec.path
+    @componentSpec.component
     config=this.resolvedConfig
     env=this.effectiveEnv
     as |componentSpec overrideEnv|
