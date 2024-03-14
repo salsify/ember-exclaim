@@ -1,5 +1,3 @@
-import { get } from '@ember/object';
-
 export const NAME = 'join';
 export const DESCRIPTION = 'Joins an array of values into a single string';
 export const SHORTHAND_PROPERTY = 'items';
@@ -16,7 +14,5 @@ export const PROPERTIES = [
 ];
 
 export default (config) => {
-  let items = get(config, 'items');
-  let separator = get(config, 'separator') || '';
-  return items ? items.toArray().join(separator) : '';
+  return config.items?.join(config.separator ?? '');
 };

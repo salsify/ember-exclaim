@@ -1,4 +1,4 @@
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 
 export const NAME = 'each';
@@ -25,13 +25,8 @@ export default Component.extend({
   tagName: '',
 
   items: computed('config.{items.[],yield}', 'env', function () {
-    const items = get(this, 'config.items');
-
-    if (items) {
-      const env = get(this, 'env');
-      const key = get(this, 'config.yield');
-      return items.map((item) => env.extend({ [key]: item }));
-    }
-    return;
+    return this.config.items?.map((item) =>
+      this.env.extend({ [this.config.yield]: item })
+    );
   }),
 });

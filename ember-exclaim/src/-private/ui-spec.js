@@ -1,7 +1,22 @@
-import Binding from './binding';
-import { wrap } from './environment';
+export class Binding {
+  constructor(path) {
+    this.path = path.split('.');
+  }
+}
 
-export default class HelperSpec {
+export class ComponentSpec {
+  constructor(component, config, meta) {
+    this.component = component;
+    this.config = config;
+    this.meta = meta;
+  }
+
+  resolveConfig(env) {
+    return env.bind(this.config);
+  }
+}
+
+export class HelperSpec {
   constructor(helper, config, meta) {
     this.helper = helper;
     this.config = config;
@@ -11,7 +26,7 @@ export default class HelperSpec {
 
   invoke(env) {
     let { helper, config } = this;
-    return helper(wrap(config, env), env);
+    return helper(env.bind(config), env);
   }
 }
 

@@ -1,7 +1,5 @@
-import Binding from './binding';
-import ComponentSpec from './component-spec';
-import HelperSpec from './helper-spec';
 import { transform, rule, simple, subtree, rest } from 'botanist';
+import { ComponentSpec, HelperSpec, Binding } from './ui-spec.js';
 
 const hasOwnProperty = Function.prototype.call.bind(
   Object.prototype.hasOwnProperty

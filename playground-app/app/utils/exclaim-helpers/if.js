@@ -1,5 +1,3 @@
-import { get } from '@ember/object';
-
 export const NAME = 'if';
 export const DESCRIPTION = 'A construct for rendering one thing or another';
 export const SHORTHAND_PROPERTY = 'condition';
@@ -21,9 +19,9 @@ export const PROPERTIES = [
 ];
 
 export default (config) => {
-  if (get(config, 'condition')) {
-    return get(config, 'then');
+  if (config.condition) {
+    return config.then;
   } else {
-    return get(config, 'else');
+    return config.else;
   }
 };

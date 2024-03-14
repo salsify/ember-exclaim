@@ -1,4 +1,4 @@
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 
 export const NAME = 'input';
@@ -31,6 +31,6 @@ export default Component.extend({
   tagName: '',
 
   type: computed('config.type', function () {
-    return get(this, 'config.type') || 'text';
+    return this.config.type ?? 'text';
   }),
 });

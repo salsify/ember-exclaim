@@ -43,9 +43,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     set(this, 'implementationMap.join', {
       shorthandProperty: 'items',
       helper: (config) => {
-        let items = get(config, 'items').toArray();
-        let separator = get(config, 'separator') || ', ';
-        return items.join(separator);
+        return config.items.join(config.separator ?? ', ');
       },
     });
 
@@ -278,7 +276,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
 
     set(this, 'ui', {
       $component: 'parent-component',
-      items: [{ $bind: 'data.a' }, { $bind: 'data.b' }],
+      items: [{ value: { $bind: 'data.a' } }, { value: { $bind: 'data.b' } }],
       child: {
         $component: 'child-component',
         value: { $bind: 'item.value' },
@@ -291,22 +289,22 @@ module('Integration | Component | exclaim-ui', function (hooks) {
 
     set(this, 'env', {
       data: {
-        a: { value: 'hello' },
-        b: { value: 'goodbye' },
+        a: 'hello',
+        b: 'goodbye',
       },
     });
 
     await this.renderUI();
     assert.strictEqual(this.element.textContent, 'Invalid.Invalid.');
 
-    run(() => this.set('env.data.a.value', 'DATA.A.VALUE'));
-    assert.strictEqual(this.element.textContent, 'DATA.A.VALUEInvalid.');
+    run(() => this.set('env.data.a', 'DATA.A'));
+    assert.strictEqual(this.element.textContent, 'DATA.AInvalid.');
 
-    run(() => this.set('env.data.b.value', 'DATA.A.VALUE'));
-    assert.strictEqual(this.element.textContent, 'DATA.A.VALUEInvalid.');
+    run(() => this.set('env.data.b', 'DATA.A'));
+    assert.strictEqual(this.element.textContent, 'DATA.AInvalid.');
 
-    run(() => this.set('env.data.b.value', 'DATA.B.VALUE'));
-    assert.strictEqual(this.element.textContent, 'DATA.A.VALUEDATA.B.VALUE');
+    run(() => this.set('env.data.b', 'DATA.B'));
+    assert.strictEqual(this.element.textContent, 'DATA.ADATA.B');
   });
 
   test('it renders the wrapper component around every extensible component', async function (assert) {

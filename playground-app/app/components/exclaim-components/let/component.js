@@ -1,6 +1,5 @@
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import { unwrap } from 'ember-exclaim';
 
 export const NAME = 'let';
 export const DESCRIPTION = 'A construct for binding values in child components';
@@ -22,8 +21,6 @@ export default Component.extend({
   tagName: '',
 
   boundEnv: computed('config.bindings', 'env', function () {
-    const env = get(this, 'env');
-    const bindings = unwrap(get(this, 'config.bindings'));
-    return bindings ? env.extend(bindings) : env;
+    return this.env.extend(this.config.bindings ?? {});
   }),
 });

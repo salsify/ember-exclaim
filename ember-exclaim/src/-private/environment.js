@@ -1,11 +1,8 @@
+/* eslint-disable ember/no-computed-properties-in-native-classes */
 import { makeArray } from '@ember/array';
-import { set, get } from '@ember/object';
-import { isHTMLSafe } from '@ember/template';
-import createEnvComputed from './environment/create-env-computed';
-import EnvironmentData from './environment/data';
-import EnvironmentArray from './environment/array';
-import Binding from './binding';
-import { extractKey } from './environment/utils';
+import { set, get, computed, defineProperty } from '@ember/object';
+import { resolveCanonicalPath } from './paths';
+import { bindComputeds } from './bind-computeds';
 
 /*
  * Wraps an object that may contain exclaim Bindings, automatically resolving
@@ -27,6 +24,10 @@ export default class Environment {
 
   set(key, value) {
     return set(this, key, value);
+  }
+
+  bind(data) {
+    return bindComputeds(data, this);
   }
 
   on(type, listener) {
@@ -54,90 +55,32 @@ export default class Environment {
       object = this;
     }
 
-    const resolveFieldMeta = this.__resolveFieldMeta__;
-    const resolvedPath = resolvePath(object, path);
-    return resolveFieldMeta(resolvedPath);
+    return this.__resolveFieldMeta__(resolveCanonicalPath(object, path));
   }
 
   unknownProperty(key) {
-    createEnvComputed(this, key, `__bound__.${findIndex(this.__bound__, key)}`);
+    defineProperty(this, key, broadcastingAlias(this, key));
     return get(this, key);
   }
 
   setUnknownProperty(key, value) {
-    createEnvComputed(this, key, `__bound__.${findIndex(this.__bound__, key)}`);
-    set(this, key, value);
-    return get(this, key);
+    defineProperty(this, key, broadcastingAlias(this, key));
+    return set(this, key, value);
   }
 }
 
-/*
- * Given a piece of data and an environment, returns a wrapped version of that value that
- * will resolve any Binding instances against the given environment.
- */
-export function wrap(data, env, key) {
-  // Persist the original environment key if we're re-wrapping a new one
-  const realKey = extractKey(data) || key;
-  if (Array.isArray(data) || data instanceof EnvironmentArray) {
-    return EnvironmentArray.create({ data, env, key: realKey });
-  } else if (
-    (data && typeof data === 'object' && !isHTMLSafe(data)) ||
-    data instanceof EnvironmentData
-  ) {
-    return EnvironmentData.create({ data, env, key: realKey });
-  } else {
-    return data;
-  }
-}
-
-/*
- * Given a wrapped piece of data, returns the underlying one.
- */
-export function unwrap(data) {
-  if (data instanceof EnvironmentArray || data instanceof EnvironmentData) {
-    return data.__wrapped__;
-  } else {
-    return data;
-  }
-}
-
-export function resolvePath(object, path) {
-  if (!path) return;
-
-  const parts = path.split('.');
-  const key = parts[parts.length - 1];
-  const host =
-    parts.length > 1 ? get(object, parts.slice(0, -1).join('.')) : object;
-  if (host instanceof Environment) {
-    return (
-      canonicalizeBinding(
-        host,
-        host.__bound__[findIndex(host.__bound__, key)][key]
-      ) || key
-    );
-  } else if (host instanceof EnvironmentData) {
-    const canonicalized = canonicalizeBinding(
-      host.__env__,
-      host.__wrapped__[key]
-    );
-    const hostKey = extractKey(host);
-    return canonicalized || (hostKey && `${hostKey}.${key}`);
-  } else if (host instanceof EnvironmentArray) {
-    throw new Error('Cannot canonicalize the path to an array element itself.');
-  }
-}
-
-function canonicalizeBinding(env, value) {
-  if (value instanceof Binding) {
-    return resolvePath(env, value.path.join('.'));
-  } else if (
-    value instanceof EnvironmentData ||
-    value instanceof EnvironmentArray
-  ) {
-    // We can wind up with wrapped values IN wrapped values in cases like `env.extend({ foo: env.get('bar') })`
-    // When this happens, we want to canonicalize on the original key
-    return resolvePath(env, extractKey(value));
-  }
+function broadcastingAlias(host, key) {
+  const fullPath = `__bound__.${findIndex(host.__bound__, key)}.${key}`;
+  return computed(fullPath, {
+    get() {
+      return get(this, fullPath);
+    },
+    set(_, value) {
+      let result = set(this, fullPath, value);
+      this.trigger('change', key);
+      return result;
+    },
+  });
 }
 
 const hasProperty = Function.call.bind(Object.prototype.hasOwnProperty);
