@@ -1,7 +1,10 @@
 import { get } from '@ember/object';
 import Environment from './environment';
 
-const paths = new WeakMap();
+// This fun bit of line noise is a workaround for
+// https://github.com/embroider-build/ember-auto-import/issues/503#issuecomment-1064405138
+const paths = (globalThis[Symbol.for('exclaim-paths-lookup')] ??=
+  new WeakMap());
 
 /**
  * Notes, for a given key on a given object, the source environment
