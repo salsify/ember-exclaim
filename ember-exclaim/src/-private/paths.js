@@ -23,7 +23,7 @@ export function recordCanonicalPath(object, key, env, path) {
  * Returns the known environment and source path within it where
  * the field at the path on the given object originates, if known.
  */
-export function resolveCanonicalPath(object, path) {
+export function resolveEnvPath(object, path) {
   let parts = path.split('.');
   let current = object;
   // If we're starting from an environment to begin with, then the given
