@@ -1,5 +1,5 @@
-import { computed } from '@ember/object';
 import Component from '@ember/component';
+import { helper } from '@ember/component/helper';
 
 export const NAME = 'each';
 export const DESCRIPTION =
@@ -21,12 +21,9 @@ export const PROPERTIES = [
   },
 ];
 
+const singletonHash = helper(([key, value]) => ({ [key]: value }));
+
 export default Component.extend({
   tagName: '',
-
-  items: computed('config.{items.[],yield}', 'env', function () {
-    return this.config.items?.map((item) =>
-      this.env.extend({ [this.config.yield]: item })
-    );
-  }),
+  singletonHash,
 });

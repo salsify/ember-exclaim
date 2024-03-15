@@ -1,4 +1,3 @@
-import { computed } from '@ember/object';
 import Component from '@ember/component';
 
 export const NAME = 'let';
@@ -19,8 +18,4 @@ export const PROPERTIES = [
 
 export default Component.extend({
   tagName: '',
-
-  boundEnv: computed('config.bindings', 'env', function () {
-    return this.env.extend(this.config.bindings ?? {});
-  }),
 });

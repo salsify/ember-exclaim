@@ -1,5 +1,6 @@
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
+import { extendEnv } from '../-private/env/index.js';
 
 export default Component.extend({
   tagName: '',
@@ -8,13 +9,14 @@ export default Component.extend({
   env: null,
 
   effectiveEnv: computed('env', 'overrideEnv', function () {
-    return get(this, 'overrideEnv') || get(this, 'env');
+    if (this.overrideEnv) {
+      return extendEnv(this.env, this.overrideEnv);
+    } else {
+      return this.env;
+    }
   }),
 
   resolvedConfig: computed('componentSpec', 'effectiveEnv', function () {
-    const componentSpec = get(this, 'componentSpec');
-    return (
-      componentSpec && componentSpec.resolveConfig(get(this, 'effectiveEnv'))
-    );
+    return this.componentSpec?.resolveConfig?.(this.effectiveEnv);
   }),
 });
