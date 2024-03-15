@@ -2,7 +2,8 @@ import { computed, getProperties, get } from '@ember/object';
 import { deprecatingAlias } from '@ember/object/computed';
 import Component from '@ember/component';
 import buildSpecProcessor from '../-private/build-spec-processor';
-import Environment from '../-private/environment';
+import { makeEnv } from '../-private/env/index.js';
+import * as computedEnv from '../-private/env/computed.js';
 
 export default Component.extend({
   ui: null,
@@ -17,16 +18,8 @@ export default Component.extend({
   resolveFieldMeta: () => {},
   onChange: () => {},
 
-  baseEnv: computed('env', 'onChange', 'resolveFieldMeta', function () {
-    const env = new Environment(
-      get(this, 'env') || {},
-      this.get('resolveFieldMeta')
-    );
-    const onChange = get(this, 'onChange');
-    if (onChange) {
-      env.on('change', onChange);
-    }
-    return env;
+  baseEnv: computed('env', 'onChange', function () {
+    return makeEnv(this.env ?? {}, this.onChange, computedEnv);
   }),
 
   content: computed('specProcessor', 'ui', function () {

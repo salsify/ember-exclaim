@@ -1,9 +1,53 @@
 /* eslint-disable ember/no-computed-properties-in-native-classes */
 import { get, set, defineProperty, computed } from '@ember/object';
-import { deprecate } from '@ember/debug';
 import { alias } from '@ember/object/computed';
-import { HelperSpec, Binding } from './ui-spec.js';
-import { recordCanonicalPath } from './paths.js';
+import { deprecate } from '@ember/debug';
+import { HelperSpec, Binding } from '../ui-spec.js';
+import { recordCanonicalPath } from '../paths.js';
+import { triggerChange } from './index.js';
+
+// This module contains implementations of key operations
+// (namely `extend` and `bind`) for environments whose
+// reactivity model is based on Ember computeds. The idea
+// is that we should be able to make a similar (but simpler)
+// one that just uses native getters and setters to instead
+// work more cleanly with `@tracked` data and have `ExclaimUi`
+// decide which version to pass to `makeEnv` based on an arg.
+
+/**
+ * Returns wrapper around the given environment object that
+ * will essentially behave exactly the same unless one of
+ * the added/overridden fields is accessed instead.
+ */
+export function extend(env, extraFields) {
+  return new Proxy(
+    {},
+    {
+      get(target, key, receiver) {
+        if (key in extraFields) {
+          return Reflect.get(extraFields, key, receiver);
+        } else {
+          ensureAlias(target, key, env);
+          return Reflect.get(target, key, receiver);
+        }
+      },
+      set(target, key, value, receiver) {
+        if (key in extraFields) {
+          return Reflect.set(extraFields, key, value, receiver);
+        } else {
+          ensureAlias(target, key, env);
+          return Reflect.set(target, key, value, receiver);
+        }
+      },
+    }
+  );
+}
+
+function ensureAlias(target, key, env) {
+  if (typeof key === 'string' && key !== 'isDestroyed' && !(key in target)) {
+    defineProperty(target, key, alias(`${getEnvKey(target, env)}.${key}`));
+  }
+}
 
 /**
  * Given a piece of a UI spec `data` and an environment `env`,
@@ -16,7 +60,7 @@ import { recordCanonicalPath } from './paths.js';
  * the component spec is yielded and we know what environment to
  * bind it to.
  */
-export function bindComputeds(data, env) {
+export function bind(data, env) {
   if (Array.isArray(data)) {
     let result = Array(data.length);
     for (let i = 0; i < data.length; i++) {
@@ -40,11 +84,23 @@ export function bindComputeds(data, env) {
 
 function bindKey(host, key, value, env) {
   if (value instanceof Binding) {
-    recordCanonicalPath(host, key, env, value.path.join('.'));
+    const bindingPath = value.path.join('.');
+    const fullKey = `${getEnvKey(host, env)}.${bindingPath}`;
+
+    recordCanonicalPath(host, key, env, bindingPath);
     defineProperty(
       host,
       key,
-      alias(`${getEnvKey(host, env)}.${value.path.join('.')}`)
+      computed(fullKey, {
+        get() {
+          return get(this, fullKey);
+        },
+        set(_, value) {
+          let result = set(this, fullKey, value);
+          triggerChange(env, bindingPath);
+          return result;
+        },
+      })
     );
   } else if (value instanceof HelperSpec) {
     const envKey = getEnvKey(host, env);
@@ -57,7 +113,7 @@ function bindKey(host, key, value, env) {
       computed(...dependentKeys, { get: () => value.invoke(env) })
     );
   } else {
-    host[key] = bindComputeds(value, env);
+    host[key] = bind(value, env);
   }
 }
 

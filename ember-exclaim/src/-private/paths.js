@@ -1,5 +1,5 @@
 import { get } from '@ember/object';
-import Environment from './environment';
+import { isEnv } from './env/index.js';
 
 // This fun bit of line noise is a workaround for
 // https://github.com/embroider-build/ember-auto-import/issues/503#issuecomment-1064405138
@@ -30,7 +30,7 @@ export function resolveCanonicalPath(object, path) {
   // path could be the canonical one on its own; otherwise if it's just
   // on a random object, we won't know what we're looking at until we first
   // encounter a bound field.
-  let fullCanonicalPath = object instanceof Environment ? [] : undefined;
+  let fullCanonicalPath = isEnv(object) ? [] : undefined;
 
   while (parts.length) {
     if (!current) return;
