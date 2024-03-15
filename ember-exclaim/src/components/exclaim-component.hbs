@@ -9,12 +9,12 @@
     config=this.resolvedConfig
     env=this.effectiveEnv
     as |componentSpec overrideEnv|
-  }}
-    {{~exclaim-component
-      componentSpec=componentSpec
-      env=this.effectiveEnv
-      overrideEnv=overrideEnv
-      wrapper=@wrapper
-    ~}}
-  {{/component}}
+  ~}}
+    <ExclaimComponent 
+      @componentSpec={{componentSpec}}
+      @env={{this.effectiveEnv}}
+      @overrideEnv={{overrideEnv}}
+      @wrapper={{@wrapper}}
+    />
+  {{~/component}}
 {{/component}}

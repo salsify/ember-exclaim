@@ -2,7 +2,7 @@ import { transform, rule, simple, subtree, rest } from 'botanist';
 import { ComponentSpec, HelperSpec, Binding } from './ui-spec.js';
 
 const hasOwnProperty = Function.prototype.call.bind(
-  Object.prototype.hasOwnProperty
+  Object.prototype.hasOwnProperty,
 );
 
 export default function buildSpecProcessor({ implementationMap }) {
@@ -30,7 +30,7 @@ function buildBaseRules(implementationMap) {
         return new HelperSpec(
           implementationMap[name].helper,
           config,
-          implementationMap[name].helperMeta
+          implementationMap[name].helperMeta,
         );
       } else {
         throw new Error(`Unable to resolve helper ${name}`);
@@ -47,12 +47,12 @@ function buildBaseRules(implementationMap) {
           return new ComponentSpec(
             implementationMap[name].componentPath,
             config,
-            implementationMap[name].componentMeta
+            implementationMap[name].componentMeta,
           );
         } else {
           throw new Error(`Unable to resolve component ${name}`);
         }
-      }
+      },
     ),
   ];
 }
@@ -76,14 +76,14 @@ function buildShorthandRules(implementationMap) {
 
 function buildComponentRule(
   name,
-  { shorthandProperty, componentPath, componentMeta }
+  { shorthandProperty, componentPath, componentMeta },
 ) {
   return rule(
     { [`$${name}`]: subtree('shorthandValue'), ...rest('config') },
     ({ shorthandValue, config }) => {
       let fullConfig = { [shorthandProperty]: shorthandValue, ...config };
       return new ComponentSpec(componentPath, fullConfig, componentMeta);
-    }
+    },
   );
 }
 
@@ -93,6 +93,6 @@ function buildHelperRule(name, { shorthandProperty, helper, helperMeta }) {
     ({ shorthandValue, config }) => {
       let fullConfig = { [shorthandProperty]: shorthandValue, ...config };
       return new HelperSpec(helper, fullConfig, helperMeta);
-    }
+    },
   );
 }

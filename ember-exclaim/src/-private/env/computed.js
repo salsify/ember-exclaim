@@ -39,7 +39,7 @@ export function extend(env, extraFields) {
           return Reflect.set(target, key, value, receiver);
         }
       },
-    }
+    },
   );
 }
 
@@ -100,17 +100,17 @@ function bindKey(host, key, value, env) {
           triggerChange(env, bindingPath);
           return result;
         },
-      })
+      }),
     );
   } else if (value instanceof HelperSpec) {
     const envKey = getEnvKey(host, env);
     const dependentKeys = value.bindings.map(
-      (binding) => `${envKey}.${binding.path.join('.')}`
+      (binding) => `${envKey}.${binding.path.join('.')}`,
     );
     defineProperty(
       host,
       key,
-      computed(...dependentKeys, { get: () => value.invoke(env) })
+      computed(...dependentKeys, { get: () => value.invoke(env) }),
     );
   } else {
     host[key] = bind(value, env);
@@ -144,7 +144,7 @@ class ConfigObject {
         for: 'ember-exclaim',
         since: { available: '2.0.0', enabled: '2.0.0' },
         until: '3.0.0',
-      }
+      },
     );
     return get(this, key);
   }
@@ -158,7 +158,7 @@ class ConfigObject {
         for: 'ember-exclaim',
         since: { available: '2.0.0', enabled: '2.0.0' },
         until: '3.0.0',
-      }
+      },
     );
     return set(this, key, value);
   }

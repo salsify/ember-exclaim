@@ -18,7 +18,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
           super(owner, args);
           onInit?.(this);
         }
-      }
+      },
     );
   }
 
@@ -34,7 +34,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
             @onChange={{this.onChange}}
             @wrapper={{this.wrapper}}
           />
-        `
+        `,
       );
     };
   });
@@ -43,7 +43,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     const implementationMap = {
       'simple-component': {
         componentPath: makeComponent(
-          hbs`<div data-value>{{@config.value}}</div>`
+          hbs`<div data-value>{{@config.value}}</div>`,
         ),
       },
       join: {
@@ -64,7 +64,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
 
     assert.strictEqual(
       this.element.querySelector('[data-value]').textContent,
-      'a, b, c'
+      'a, b, c',
     );
   });
 
@@ -72,7 +72,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     const implementationMap = {
       'simple-component': {
         componentPath: makeComponent(
-          hbs`<div data-value>{{@config.value}}</div>`
+          hbs`<div data-value>{{@config.value}}</div>`,
         ),
       },
     };
@@ -86,7 +86,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
 
     assert.strictEqual(
       this.element.querySelector('[data-value]').textContent,
-      'value!'
+      'value!',
     );
   });
 
@@ -94,12 +94,12 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     const implementationMap = {
       'parent-component': {
         componentPath: makeComponent(
-          hbs`{{yield @config.childA}}{{yield @config.childB}}`
+          hbs`{{yield @config.childA}}{{yield @config.childB}}`,
         ),
       },
       'child-component': {
         componentPath: makeComponent(
-          hbs`<div data-id={{@config.id}}>{{@config.name}}</div>`
+          hbs`<div data-id={{@config.id}}>{{@config.name}}</div>`,
         ),
       },
     };
@@ -120,7 +120,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     const implementationMap = {
       'simple-component': {
         componentPath: makeComponent(
-          hbs`<div data-value>{{@config.value}}</div>`
+          hbs`<div data-value>{{@config.value}}</div>`,
         ),
       },
     };
@@ -150,7 +150,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     const implementationMap = {
       'simple-component': {
         componentPath: makeComponent(
-          hbs`<input value={{@config.value}} oninput={{action (mut @config.value) value='target.value'}}>`
+          hbs`<input value={{@config.value}} oninput={{action (mut @config.value) value='target.value'}}>`,
         ),
       },
     };
@@ -184,7 +184,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
             <div data-first>{{yield @config.child (hash self='first')}}</div>
             <div data-second>{{yield @config.child (hash self='second')}}</div>
           `,
-          (instance) => (components.root = instance)
+          (instance) => (components.root = instance),
         ),
       },
       child: {
@@ -193,7 +193,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
             <div data-global>{{@config.global}}</div>
             <div data-self>{{@config.self}}</div>
           `,
-          (instance) => (components[instance.args.config.self] = instance)
+          (instance) => (components[instance.args.config.self] = instance),
         ),
       },
     };
@@ -296,13 +296,13 @@ module('Integration | Component | exclaim-ui', function (hooks) {
       root: {
         componentPath: makeComponent(
           hbs`{{yield @config.child (hash local='yes' base='no')}}`,
-          (instance) => (components.root = instance)
+          (instance) => (components.root = instance),
         ),
       },
       child: {
         componentPath: makeComponent(
           hbs``,
-          (instance) => (components.child = instance)
+          (instance) => (components.child = instance),
         ),
       },
     };
@@ -368,13 +368,13 @@ module('Integration | Component | exclaim-ui', function (hooks) {
       root: {
         componentPath: makeComponent(
           hbs`{{yield @config.child (hash local='local')}}`,
-          (instance) => (components.root = instance)
+          (instance) => (components.root = instance),
         ),
       },
       child: {
         componentPath: makeComponent(
           hbs``,
-          (instance) => (components.child = instance)
+          (instance) => (components.child = instance),
         ),
       },
     };
@@ -398,31 +398,31 @@ module('Integration | Component | exclaim-ui', function (hooks) {
     assert.strictEqual(components.root.args.config.data, 'global');
     assert.strictEqual(
       resolveEnvPath(components.root.args.config, 'data'),
-      'global'
+      'global',
     );
     assert.strictEqual(
       resolveEnvPath(components.root.args.env, 'global'),
-      'global'
+      'global',
     );
 
     assert.strictEqual(components.child.args.config.globalData, 'global');
     assert.strictEqual(
       resolveEnvPath(components.child.args.config, 'globalData'),
-      'global'
+      'global',
     );
     assert.strictEqual(
       resolveEnvPath(components.child.args.env, 'global'),
-      'global'
+      'global',
     );
 
     assert.strictEqual(components.child.args.config.localData, 'local');
     assert.strictEqual(
       resolveEnvPath(components.child.args.config, 'localData'),
-      'local'
+      'local',
     );
     assert.strictEqual(
       resolveEnvPath(components.child.args.env, 'local'),
-      'local'
+      'local',
     );
   });
 });

@@ -28,7 +28,7 @@ module('Integration | environment', function (hooks) {
           shorthandProperty: 'bindings',
           componentPath: setComponentTemplate(
             hbs`{{yield @config.in @config.bindings}}`,
-            class extends Component {}
+            class extends Component {},
           ),
         },
         validate: {
@@ -37,7 +37,7 @@ module('Integration | environment', function (hooks) {
             constructor(owner, args) {
               super(owner, args);
               setTimeout(() =>
-                this.runCallback().then(deferred.resolve, deferred.reject)
+                this.runCallback().then(deferred.resolve, deferred.reject),
               );
             }
 
