@@ -1,6 +1,4 @@
 {
-  "name": "ember-exclaim",
-  "version": "0.0.0",
   "private": true,
   "repository": "",
   "license": "MIT",
@@ -13,11 +11,13 @@
     "start": "concurrently 'npm:start:*' --restart-after 5000 --prefix-colors cyan,white,yellow",
     "start:addon": "yarn workspace ember-exclaim start -- --no-watch.clearScreen",
     "start:test-app": "yarn workspace test-app start",
-    "test": "yarn workspace test-app test:ember"
+    "test": "yarn workspace test-app test:ember",
+    "test:ember": "npm run test:ember --workspaces --if-present"
   },
   "devDependencies": {
-    "concurrently": "^7.2.1",
-    "prettier": "^2.5.1"
+    "concurrently": "^8.2.0",
+    "prettier": "^3.0.3",
+    "prettier-plugin-ember-template-tag": "^1.1.0"
   },
   "workspaces": [
     "ember-exclaim",
