@@ -1,7 +1,10 @@
 import { get } from '@ember/object';
-import Environment from './environment';
+import { isEnv } from './env/index.js';
 
-const paths = new WeakMap();
+// This fun bit of line noise is a workaround for
+// https://github.com/embroider-build/ember-auto-import/issues/503#issuecomment-1064405138
+const paths = (globalThis[Symbol.for('exclaim-paths-lookup')] ??=
+  new WeakMap());
 
 /**
  * Notes, for a given key on a given object, the source environment
@@ -20,14 +23,14 @@ export function recordCanonicalPath(object, key, env, path) {
  * Returns the known environment and source path within it where
  * the field at the path on the given object originates, if known.
  */
-export function resolveCanonicalPath(object, path) {
+export function resolveEnvPath(object, path) {
   let parts = path.split('.');
   let current = object;
   // If we're starting from an environment to begin with, then the given
   // path could be the canonical one on its own; otherwise if it's just
   // on a random object, we won't know what we're looking at until we first
   // encounter a bound field.
-  let fullCanonicalPath = object instanceof Environment ? [] : undefined;
+  let fullCanonicalPath = isEnv(object) ? [] : undefined;
 
   while (parts.length) {
     if (!current) return;

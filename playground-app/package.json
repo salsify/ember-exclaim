@@ -53,7 +53,7 @@
     "ember-page-title": "^7.0.0",
     "ember-qunit": "^7.0.0",
     "ember-resolver": "^10.1.1",
-    "ember-source": "~5.1.1",
+    "ember-source": "~5.7.0",
     "ember-template-lint": "^5.11.0",
     "ember-truth-helpers": "^3.1.1",
     "eslint": "^8.43.0",

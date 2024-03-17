@@ -47,14 +47,12 @@ And something like this would render an input that would update the underlying v
 
 ## Usage
 
-The entry point to a UI powered by ember-exclaim is the `{{exclaim-ui}}` component. It accepts the following properties:
- - `ui`: an object containing configuration for the UI that should be rendered
- - `env`: a hash whose keys will be bindable from the `ui` config, to be read from and written to
- - `implementationMap`: a mapping of names in the `ui` config to information about their backing implementations
- - `resolveFieldMeta(path)`: an optional action that will be invoked if a component calls `env.metaForField(...)`
- - `onChange(envKeyOfChangedValue)`: an optional action that will be invoked when a value in the `env` changes
- - `wrapper`: an optional component or component name string that will wrap every rendered component in your UI configuration. The `wrapper` component will receive the unwrapped `ComponentSpec` as `spec` ([more on `ComponentSpec` here](ember-exclaim/src/-private/GLOSSARY.md)), the `Environment` as `env` and the component's resolved `config`.
- - `resolveMeta(path)`: an optional action that will be invoked if a component calls `env.metaFor(...)`
+The entry point to a UI powered by ember-exclaim is the `<ExclaimUi>` component. It accepts the following arguments:
+ - `@ui`: an object containing configuration for the UI that should be rendered
+ - `@env`: a hash whose keys will be bindable from the `ui` config, to be read from and written to
+ - `@implementationMap`: a mapping of names in the `ui` config to information about their backing implementations
+ - `@onChange(envPathOfChangedValue)`: an optional function that will be invoked when a value in the `env` changes
+ - `@wrapper`: an optional component that will wrap every rendered component in your UI configuration. The `wrapper` component will receive the `ComponentSpec` as `@spec` ([more on `ComponentSpec` here](ember-exclaim/src/-private/GLOSSARY.md)), the `Environment` as `@env` and the component's resolved `@config`.
 
 Each of these things is described in further detail below.
 
@@ -162,18 +160,10 @@ Note that `$bind` works with paths, too, so `{ $bind: 'foo.bar' }` would access 
 
 ### The Implementation Map
 
-The `implementationMap` given to `{{exclaim-ui}}` dictates what components it can render. It should be a hash whose keys are the component and helper names available for use in the UI config. The value for each key should itself be a hash describing the component or helper with that name.
+The `@implementationMap` given to `<ExclaimUi>` dictates what components it can render. It should be a hash whose keys are the component and helper names available for use in the UI config. The value for each key should itself be a hash describing the component or helper with that name.
  - `componentPath` (for components): the name to the Ember component to be invoked when this exclaim-ui component is used in the config, as you'd give it to the `{{component}}` helper
  - `helper` (for helper functions): a function that receives a `config` hash and `env` information and should return the output value for the helper
  - `shorthandProperty` (optional for both helpers and components): the name of a property that should be populated when shorthand notation is used for this component or helper (see above)
-
-### Metadata Resolution
-
-The `env` property exposed to ember-exclaim components (see below for details) includes a `metaForField(object, key)` method that component implementations can use to discover more information about their bound values. For instance, an `$input` component might call `metaForField(this, 'config.value')` to discover validation rules for its bound value in order to display an error message to the user.
-
-The `resolveFieldMeta` action on `{{exclaim-ui}}` designates how this metadata is discovered. It receives the full path in the environment of the value in question.
-
-This action should return any relevant information available about the field at `valuePath`. Note that, if a component calls `metaForField` on a path that doesn't resolve to a field on the environment, the `resolveFieldMeta` action will not be invoked.
 
 ## Implementing Components
 
@@ -181,21 +171,19 @@ The [demo app](https://salsify.github.io/ember-exclaim) for this repo contains [
 
 An ember-exclaim component implementation will receive two properties when rendered: `config` and `env`.
 
-### `config`
+### `@config`
 
-The `config` property of the implementing component will contain all other information supplied in the `$component` hash representing it in the UI config. Any `$bind` directives in that config will be automatically be resolved when they are `get` or `set`. As an example, consider a lightweight implementation of the `input` component mentioned above.
+The `@config` argument of the implementing component will contain all other information supplied in the `$component` hash representing it in the UI config. Any `$bind` directives in that config will be automatically be resolved when they are `get` or `set`. As an example, consider a lightweight implementation of the `input` component mentioned above.
 
 ```hbs
-<input type="text" value={{config.value}} oninput={{action (mut config.value) value='target.value'}}>
+<input type="text" value={{@config.value}} oninput={{action (mut @config.value) value='target.value'}}>
 ```
 
 When invoked as `{ "$component": "input", "value": {"$bind":"x"} }` with `x` in the environment having the value `'hello'`, this component will receive the equivalent of `{ value: 'hello' }` as its `config`, except that reading and writing `config.value` will redirect back to `x` on the environment.
 
-### `env`
+### `@env`
 
-The `env` property will contain an object representing the environment that the component is being rendered in. This object has two methods:
- - `extend(hash)`: can be used to produce a new environment based on the original that additionally contains the values from the given hash
- - `metaForField(object, key)`: takes an object and key, resolves the canonical path for that key in the environment, and then retrieves metadata for that path according to any configured `resolveFieldMeta` action on the owning `{{exclaim-ui}}` component
+The `@env` arg to components in the UI will contain the same `@env` value passed to `<ExclaimUi>` (or an extension of that value). Components should rarely need to access it directly, but it's available as a grab bag of shared state that all components in an instance of a UI have access to.
 
 ### Rendering Children
 
@@ -204,12 +192,12 @@ In many cases, components may want to accept configuration for subcomponents tha
 For example, the [`vbox`](tests/dummy/app/components/exclaim-components/vbox) component in the demo application applies a class with `flex-flow: column` to its root element and then simply renders all its children directly beneath:
 
 ```hbs
-{{#each config.children as |child|}}
+{{#each @config.children as |child|}}
   {{yield child}}
 {{/each}}
 ```
 
-By default, children will inherit the environment of their parent. This environment can be overridden by passing a new `env` value as a second parameter to `{{yield}}`, typically obtained by calling `extend` on the base environment (see above). Check the implementation of [`each`](tests/dummy/app/components/exclaim-components/each) and [`let`](tests/dummy/app/components/exclaim-components/let) in the demo app for examples of how this can be used.
+By default, children will inherit the environment of their parent. This environment can be extended by passing a POJO with additional key/value pairs as a second parameter to `{{yield}}`. Check the implementation of [`each`](playground-app/app/components/exclaim-components/each) and [`let`](playground-app/app/components/exclaim-components/let) in the demo app for examples of how this can be used.
 
 ## Implementing Helpers
 

@@ -1,3 +1,5 @@
+import { bindData } from './env/index.js';
+
 export class Binding {
   constructor(path) {
     this.path = path.split('.');
@@ -12,7 +14,7 @@ export class ComponentSpec {
   }
 
   resolveConfig(env) {
-    return env.bind(this.config);
+    return bindData(this.config, env);
   }
 }
 
@@ -26,7 +28,7 @@ export class HelperSpec {
 
   invoke(env) {
     let { helper, config } = this;
-    return helper(env.bind(config), env);
+    return helper(bindData(config, env), env);
   }
 }
 

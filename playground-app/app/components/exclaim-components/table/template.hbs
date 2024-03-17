@@ -10,10 +10,10 @@
   {{/if}}
 
   <tbody>
-    {{#each this.items as |env|}}
+    {{#each @config.items as |item|}}
       <tr>
         {{#each @config.row as |cell|}}
-          <td>{{yield cell env}}</td>
+          <td>{{yield cell (this.singletonHash @config.yield item)}}</td>
         {{/each}}
       </tr>
     {{/each}}
