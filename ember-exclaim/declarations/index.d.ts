@@ -1,5 +1,10 @@
 import { ComponentLike } from '@glint/template';
 
+declare const Env: unique symbol;
+
+/** A marker type for objects that are operating as an Exclaim environment. */
+export type Environment<T> = T & Record<typeof Env, undefined>;
+
 /**
  * Returns the environment and source path within it where the field at
  * the path on the given object originates, if known.
