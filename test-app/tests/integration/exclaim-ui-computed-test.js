@@ -7,7 +7,7 @@ import { render, fillIn, settled } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { resolveEnvPath } from 'ember-exclaim';
 
-module('Integration | Component | exclaim-ui', function (hooks) {
+module('Integration | Component | ExclaimUi | computed env', function (hooks) {
   setupRenderingTest(hooks);
 
   function makeComponent(template, onInit) {
@@ -33,6 +33,7 @@ module('Integration | Component | exclaim-ui', function (hooks) {
             @implementationMap={{this.implementationMap}}
             @onChange={{this.onChange}}
             @wrapper={{this.wrapper}}
+            @useClassicReactivity={{true}}
           />
         `,
       );

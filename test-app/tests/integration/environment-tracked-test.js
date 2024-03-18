@@ -1,15 +1,14 @@
 import Component from '@glimmer/component';
 import { setComponentTemplate } from '@ember/component';
-import { A } from '@ember/array';
-import { set } from '@ember/object';
 import { render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 import { htmlSafe } from '@ember/template';
 import { setupRenderingTest } from 'ember-qunit';
 import { resolveEnvPath } from 'ember-exclaim';
+import { TrackedObject } from 'tracked-built-ins';
 
-module('Integration | environment', function (hooks) {
+module('Integration | environment | tracked', function (hooks) {
   setupRenderingTest(hooks);
 
   function exclaimTest(name, { ui, env, implementationMap }) {
@@ -21,7 +20,7 @@ module('Integration | environment', function (hooks) {
         deferred.reject = reject;
       });
 
-      this.env = env;
+      this.env = new TrackedObject(env);
       this.ui = ui;
       this.implementationMap = {
         let: {
@@ -67,7 +66,7 @@ module('Integration | environment', function (hooks) {
       async $validate(assert) {
         assert.strictEqual(this.env.foo, 'bar');
 
-        set(this.env, 'foo', 'baz');
+        this.env.foo = 'baz';
         assert.strictEqual(this.env.foo, 'baz');
       },
     },
@@ -87,10 +86,10 @@ module('Integration | environment', function (hooks) {
     env: { foo: ['bar'] },
     ui: {
       async $validate(assert) {
-        set(this.env, 'baz', 'bax');
+        this.env.baz = 'bax';
         assert.strictEqual(this.env.baz, 'bax');
         assert.strictEqual(this.env.foo.length, 1);
-        set(this.env, 'foo.3', 'qux');
+        this.env.foo[3] = 'qux';
         assert.strictEqual(this.env.foo[3], 'qux');
         assert.strictEqual(this.env.foo.length, 4);
       },
@@ -102,10 +101,10 @@ module('Integration | environment', function (hooks) {
     ui: {
       bound: { $bind: 'foo' },
       async $validate(assert) {
-        set(this.env, 'foo.1', 'oops');
+        this.env.foo[1] = 'oops';
         assert.strictEqual(this.config.bound[1], 'oops');
         assert.strictEqual(this.env.foo[1], 'oops');
-        set(this.config.bound, '0', 'oops again');
+        this.config.bound[0] = 'oops again';
         assert.strictEqual(this.env.foo[0], 'oops again');
       },
     },
@@ -127,10 +126,10 @@ module('Integration | environment', function (hooks) {
       async $validate(assert) {
         assert.strictEqual(this.config.baz, 'bar');
 
-        set(this.env, 'foo', 'qux');
+        this.env.foo = 'qux';
         assert.strictEqual(this.config.baz, 'qux');
 
-        set(this.config, 'baz', 'fizz');
+        this.config.baz = 'fizz';
         assert.strictEqual(this.env.foo, 'fizz');
       },
     },
@@ -147,15 +146,15 @@ module('Integration | environment', function (hooks) {
         assert.strictEqual(resolveEnvPath(this.config, 'other'), 'x');
         assert.strictEqual(resolveEnvPath(this.config, 'stillMore'), 'x.z');
 
-        set(this.env, 'x.z', 123);
+        this.env.x.z = 123;
         assert.strictEqual(this.config.other.z, 123);
         assert.strictEqual(this.config.stillMore, 123);
 
-        set(this.config, 'other.z', 234);
+        this.config.other.z = 234;
         assert.strictEqual(this.config.other.z, 234);
         assert.strictEqual(this.config.stillMore, 234);
 
-        set(this.config, 'stillMore', 345);
+        this.config.stillMore = 345;
         assert.strictEqual(this.config.other.z, 345);
         assert.strictEqual(this.config.stillMore, 345);
       },
@@ -171,7 +170,7 @@ module('Integration | environment', function (hooks) {
         assert.strictEqual(value.key, 'bar');
         assert.strictEqual(resolveEnvPath(value, 'key'), 'foo');
 
-        set(value, 'key', 'ok');
+        value.key = 'ok';
         assert.strictEqual(this.env.foo, 'ok');
       },
     },
@@ -190,18 +189,18 @@ module('Integration | environment', function (hooks) {
         assert.strictEqual(resolveEnvPath(value, 'key.child'), 'foo');
         assert.strictEqual(resolveEnvPath(subvalue, 'child'), 'foo');
 
-        set(subvalue, 'child', 321);
+        subvalue.child = 321;
         assert.strictEqual(value.key.child, 321);
         assert.strictEqual(this.env.foo, 321);
 
-        set(this.env, 'foo', 999);
+        this.env.foo = 999;
         assert.strictEqual(subvalue.child, 999);
       },
     },
   });
 
   exclaimTest('array values', {
-    env: { array: A([1, 2, 3]) },
+    env: { array: [1, 2, 3] },
     ui: {
       ref: { array: { $bind: 'array' } },
       async $validate(assert) {
@@ -214,15 +213,15 @@ module('Integration | environment', function (hooks) {
         assert.strictEqual(envArray[1], 2);
         assert.strictEqual(refArray[1], 2);
 
-        envArray.replace(1, 1, [100]);
+        envArray.splice(1, 1, 100);
         assert.deepEqual(envArray, [1, 100, 3]);
         assert.deepEqual(refArray, [1, 100, 3]);
 
-        envArray.pushObject(4);
+        envArray.push(4);
         assert.deepEqual(envArray, [1, 100, 3, 4]);
         assert.deepEqual(refArray, [1, 100, 3, 4]);
 
-        refArray.shiftObject();
+        refArray.shift();
         assert.deepEqual(envArray, [100, 3, 4]);
         assert.deepEqual(refArray, [100, 3, 4]);
       },
@@ -257,7 +256,7 @@ module('Integration | environment', function (hooks) {
         assert.strictEqual(this.config.nested, 'RAB');
         assert.deepEqual(this.config.array, [1, 2, 3]);
 
-        set(this.env, 'foo', 'ok');
+        this.env.foo = 'ok';
 
         assert.strictEqual(this.env.foo, 'ok');
         assert.strictEqual(this.config.shouty, 'OK');
