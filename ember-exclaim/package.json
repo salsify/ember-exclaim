@@ -73,7 +73,6 @@
     "main": "addon-main.cjs",
     "app-js": {
       "./components/exclaim-component.js": "./dist/_app_/components/exclaim-component.js",
-      "./components/exclaim-default-component-wrapper.js": "./dist/_app_/components/exclaim-default-component-wrapper.js",
       "./components/exclaim-ui.js": "./dist/_app_/components/exclaim-ui.js"
     }
   },

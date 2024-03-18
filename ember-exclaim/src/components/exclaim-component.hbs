@@ -1,20 +1,22 @@
-{{#component
-  @wrapper
-  componentSpec=@componentSpec
-  env=this.effectiveEnv
-  config=this.resolvedConfig
-}}
-  {{#component
-    @componentSpec.component
-    config=this.resolvedConfig
-    env=this.effectiveEnv
-    as |componentSpec overrideEnv|
-  ~}}
-    <ExclaimComponent 
+<@wrapper
+  @componentSpec={{@componentSpec}}
+  @env={{this.env}}
+  @config={{this.config}}
+>
+  {{~null~}}
+  <@componentSpec.component
+    @config={{this.config}}
+    @env={{this.env}}
+    as |componentSpec additionalEnvData|
+  >
+    {{~null~}}
+    <ExclaimComponent
       @componentSpec={{componentSpec}}
-      @env={{this.effectiveEnv}}
-      @overrideEnv={{overrideEnv}}
+      @env={{this.env}}
+      @additionalEnvData={{additionalEnvData}}
       @wrapper={{@wrapper}}
     />
-  {{~/component}}
-{{/component}}
+    {{~null~}}
+  </@componentSpec.component>
+  {{~null~}}
+</@wrapper>

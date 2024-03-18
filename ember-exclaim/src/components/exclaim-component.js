@@ -1,22 +1,13 @@
-import { computed } from '@ember/object';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
 import { extendEnv } from '../-private/env/index.js';
 
-export default Component.extend({
-  tagName: '',
+export default class ExclaimComponent extends Component {
+  @cached get env() {
+    return extendEnv(this.args.env, this.args.additionalEnvData);
+  }
 
-  componentSpec: null,
-  env: null,
-
-  effectiveEnv: computed('env', 'overrideEnv', function () {
-    if (this.overrideEnv) {
-      return extendEnv(this.env, this.overrideEnv);
-    } else {
-      return this.env;
-    }
-  }),
-
-  resolvedConfig: computed('componentSpec', 'effectiveEnv', function () {
-    return this.componentSpec?.resolveConfig?.(this.effectiveEnv);
-  }),
-});
+  get config() {
+    return this.args.componentSpec?.resolveConfig?.(this.env);
+  }
+}

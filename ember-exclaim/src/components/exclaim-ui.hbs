@@ -1,9 +1,11 @@
-{{#if this.content.componentSpec~}}
-  <ExclaimComponent
-    @componentSpec={{this.content.componentSpec}}
-    @env={{this.baseEnv}}
-    @wrapper={{this.wrapperComponentName}}
-  />
-{{~else if this.content.error~}}
-  {{yield this.content.error}}
-{{~/if}}
+<div ...attributes>
+  {{#if this.content.componentSpec~}}
+    <ExclaimComponent
+      @componentSpec={{this.content.componentSpec}}
+      @env={{this.env}}
+      @wrapper={{this.wrapper}}
+    />
+  {{~else if this.content.error~}}
+    {{yield this.content.error}}
+  {{~/if}}
+</div>
