@@ -12,15 +12,15 @@ export function resolveEnvPath(
 /** The data defining a helper in an {@link ImplementationMap} */
 export type HelperImplementation = {
   helper: (...args: Array<never>) => unknown;
-  helperMeta?: unknown;
   shorthandProperty?: string;
+  meta?: unknown;
 };
 
 /** The data defining a component in an {@link ImplementationMap} */
 export type ComponentImplementation = {
-  componentPath: ComponentLike<unknown> | string;
-  componentMeta?: unknown;
+  component: ComponentLike<unknown>;
   shorthandProperty?: string;
+  meta?: unknown;
 };
 
 /**

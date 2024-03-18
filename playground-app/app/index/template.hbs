@@ -51,10 +51,10 @@
       <div local-class='impls'>
         {{#each this.componentDocs as |component|}}
           <div local-class='impl'>
-            <code local-class='code-element'>{{component.name}}</code>:
-            {{component.description}}
+            <code local-class='code-element'>{{component.meta.name}}</code>:
+            {{component.meta.description}}
             <ul>
-              {{#each component.properties as |property|}}
+              {{#each component.meta.properties as |property|}}
                 <li>
                   <code
                     local-class='code-element {{if
@@ -76,10 +76,10 @@
       <div local-class='impls'>
         {{#each this.helperDocs as |helperInfo|}}
           <div local-class='impl'>
-            <code local-class='code-element'>{{helperInfo.name}}</code>:
-            {{helperInfo.description}}
+            <code local-class='code-element'>{{helperInfo.meta.name}}</code>:
+            {{helperInfo.meta.description}}
             <ul>
-              {{#each helperInfo.properties as |property|}}
+              {{#each helperInfo.meta.properties as |property|}}
                 <li>
                   <code
                     local-class='code-element {{if

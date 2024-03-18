@@ -161,7 +161,7 @@ Note that `$bind` works with paths, too, so `{ $bind: 'foo.bar' }` would access 
 ### The Implementation Map
 
 The `@implementationMap` given to `<ExclaimUi>` dictates what components it can render. It should be a hash whose keys are the component and helper names available for use in the UI config. The value for each key should itself be a hash describing the component or helper with that name.
- - `componentPath` (for components): the name to the Ember component to be invoked when this exclaim-ui component is used in the config, as you'd give it to the `{{component}}` helper
+ - `component` (for components): the name to the Ember component to be invoked when this exclaim-ui component is used in the config, as you'd give it to the `{{component}}` helper
  - `helper` (for helper functions): a function that receives a `config` hash and `env` information and should return the output value for the helper
  - `shorthandProperty` (optional for both helpers and components): the name of a property that should be populated when shorthand notation is used for this component or helper (see above)
 

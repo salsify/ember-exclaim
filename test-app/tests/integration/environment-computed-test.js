@@ -26,14 +26,14 @@ module('Integration | environment | computed', function (hooks) {
       this.implementationMap = {
         let: {
           shorthandProperty: 'bindings',
-          componentPath: setComponentTemplate(
+          component: setComponentTemplate(
             hbs`{{yield @config.in @config.bindings}}`,
             class extends Component {},
           ),
         },
         validate: {
           shorthandProperty: 'callback',
-          componentPath: class extends Component {
+          component: class extends Component {
             constructor(owner, args) {
               super(owner, args);
               setTimeout(() =>

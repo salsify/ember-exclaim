@@ -10,7 +10,7 @@ const implementationMap = discoverImplementations(config, {
 });
 
 const docs = Object.values(implementationMap);
-const componentDocs = docs.filter((doc) => doc.componentPath);
+const componentDocs = docs.filter((doc) => doc.component);
 const helperDocs = docs.filter((doc) => doc.helper);
 
 export default Controller.extend({

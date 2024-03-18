@@ -1,3 +1,5 @@
+import { setComponentTemplate } from '@ember/component';
+
 /* global require */
 export default function discoverImplementations(
   { modulePrefix, podModulePrefix },
@@ -9,9 +11,6 @@ export default function discoverImplementations(
   const fullHelperPrefix = new RegExp(
     `^(${modulePrefix}|${podModulePrefix})/${helperPrefix}/`
   );
-  const modulePrefixRegex = new RegExp(
-    `^(${modulePrefix}|${podModulePrefix})/`
-  );
 
   const map = {};
   for (const key of Object.keys(require.entries)) {
@@ -22,22 +21,24 @@ export default function discoverImplementations(
         SHORTHAND_PROPERTY,
         PROPERTIES,
         COMPONENT_META,
+        default: component,
       } = require(key);
       if (!NAME) continue;
 
-      const shortName = key
-        .replace(fullComponentPrefix, '')
-        .replace(/\/component$/, '');
+      setComponentTemplate(
+        require(key.replace(/component$/, 'template')).default,
+        component
+      );
 
       map[NAME] = {
-        componentPath: `${componentPrefix
-          .replace(modulePrefixRegex, '')
-          .replace('components/', '')}/${shortName}`,
-        name: NAME,
-        description: DESCRIPTION,
+        component,
         shorthandProperty: SHORTHAND_PROPERTY,
-        properties: PROPERTIES,
-        componentMeta: COMPONENT_META,
+        meta: {
+          name: NAME,
+          description: DESCRIPTION,
+          properties: PROPERTIES,
+          ...COMPONENT_META,
+        },
       };
     } else if (helperPrefix && fullHelperPrefix.test(key)) {
       const {
@@ -52,11 +53,13 @@ export default function discoverImplementations(
 
       map[NAME] = {
         helper,
-        name: NAME,
-        description: DESCRIPTION,
         shorthandProperty: SHORTHAND_PROPERTY,
-        properties: PROPERTIES,
-        helperMeta: HELPER_META,
+        meta: {
+          name: NAME,
+          description: DESCRIPTION,
+          properties: PROPERTIES,
+          ...HELPER_META,
+        },
       };
     }
   }
