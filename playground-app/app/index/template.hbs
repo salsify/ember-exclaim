@@ -1,11 +1,9 @@
-{{! template-lint-disable no-action require-input-label }}
-
-<div local-class='container'>
-  <div local-class='vertical pane'>
-    <h2 local-class='header'>
+<div local-class="container">
+  <div local-class="vertical pane">
+    <h2 local-class="header">
       Environment
 
-      <select onchange={{action (mut this.active) value='target.value'}}>
+      <select {{on "change" this.onSampleSelect}}>
         <option disabled selected={{eq this.active -1}}>Select a Sample</option>
         {{#each this.samples as |sample index|}}
           <option value={{index}} selected={{eq index this.active}}>
@@ -14,87 +12,89 @@
         {{/each}}
       </select>
     </h2>
-    {{json-editor
-      local-class='editor'
-      string=this.envString
-      onChange=(action (mut this.envString))
-    }}
+    <JsonEditor
+      local-class="editor"
+      @string={{this.envString}}
+      @onChange={{fn (mut this.envString)}}
+    />
   </div>
 
-  <div local-class='vertical pane'>
-    <h2 local-class='header'>Interface</h2>
-    {{json-editor
-      local-class='editor'
-      string=this.uiString
-      onChange=(action (mut this.uiString))
-    }}
+  <div local-class="vertical pane">
+    <h2 local-class="header">Interface</h2>
+    <JsonEditor
+      local-class="editor"
+      @string={{this.uiString}}
+      @onChange={{fn (mut this.uiString)}}
+    />
   </div>
 
-  <div local-class='vertical'>
-    <div local-class='pane'>
-      <h2 local-class='header'>Result</h2>
-      {{#exclaim-ui
-        local-class='rendered'
-        ui=(json this.uiString)
-        env=(json this.envString)
-        implementationMap=this.implementationMap
-        wrapper=(component 'sample-wrapper')
-        useClassicReactivity=true
+  <div local-class="vertical">
+    <div local-class="pane">
+      <h2 local-class="header">Result</h2>
+      <ExclaimUi
+        local-class="rendered"
+        @ui={{this.ui}}
+        @env={{this.env}}
+        @implementationMap={{this.implementationMap}}
+        @wrapper={{component "sample-wrapper"}}
         as |error|
-      }}
+      >
         Error:
         {{error.message}}
-      {{/exclaim-ui}}
+      </ExclaimUi>
     </div>
-    <div local-class='pane'>
-      <h2 local-class='header'>Demo Component Documentation</h2>
-      <div local-class='impls'>
-        {{#each this.componentDocs as |component|}}
-          <div local-class='impl'>
-            <code local-class='code-element'>{{component.meta.name}}</code>:
-            {{component.meta.description}}
-            <ul>
-              {{#each component.meta.properties as |property|}}
-                <li>
-                  <code
-                    local-class='code-element {{if
-                      (eq component.shorthandProperty property.name)
-                      'shorthand'
-                    }}'
-                  >
-                    {{~property.name~}}
-                  </code>:
-                  {{property.description}}
-                </li>
-              {{/each}}
-            </ul>
-          </div>
-        {{/each}}
+    <div local-class="pane">
+      <h2 local-class="header">Demo Component Documentation</h2>
+      <div local-class="impls">
+        {{#each-in this.implementationMap as |name impl|}}
+          {{#if impl.component}}
+            <div local-class="impl">
+              <code local-class="code-element">{{name}}</code>:
+              {{impl.meta.description}}
+              <ul>
+                {{#each impl.meta.properties as |property|}}
+                  <li>
+                    <code
+                      local-class="code-element {{if
+                        (eq impl.shorthandProperty property.name)
+                        'shorthand'
+                      }}"
+                    >
+                      {{~property.name~}}
+                    </code>:
+                    {{property.description}}
+                  </li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+        {{/each-in}}
       </div>
-
-      <h2 local-class='header'>Demo Helper Documentation</h2>
-      <div local-class='impls'>
-        {{#each this.helperDocs as |helperInfo|}}
-          <div local-class='impl'>
-            <code local-class='code-element'>{{helperInfo.meta.name}}</code>:
-            {{helperInfo.meta.description}}
-            <ul>
-              {{#each helperInfo.meta.properties as |property|}}
-                <li>
-                  <code
-                    local-class='code-element {{if
-                      (eq helperInfo.shorthandProperty property.name)
-                      'shorthand'
-                    }}'
-                  >
-                    {{~property.name~}}
-                  </code>:
-                  {{property.description}}
-                </li>
-              {{/each}}
-            </ul>
-          </div>
-        {{/each}}
+      <h2 local-class="header">Demo Helper Documentation</h2>
+      <div local-class="impls">
+        {{#each-in this.implementationMap as |name impl|}}
+          {{#if impl.helper}}
+            <div local-class="impl">
+              <code local-class="code-element">{{name}}</code>:
+              {{impl.meta.description}}
+              <ul>
+                {{#each impl.meta.properties as |property|}}
+                  <li>
+                    <code
+                      local-class="code-element {{if
+                        (eq impl.shorthandProperty property.name)
+                        'shorthand'
+                      }}"
+                    >
+                      {{~property.name~}}
+                    </code>:
+                    {{property.description}}
+                  </li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+        {{/each-in}}
       </div>
     </div>
   </div>

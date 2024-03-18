@@ -1,5 +1,4 @@
-import { get, action } from '@ember/object';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 
 import 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-noconflict/theme-chrome';
@@ -10,17 +9,13 @@ import { config } from 'ace-builds';
 
 config.setModuleUrl('ace/mode/json_worker', jsonWorkerUrl);
 
-export default Component.extend({
-  tagName: '',
-
-  string: null,
-
-  valueChanged: action(function (newString) {
+export default class JsonEditor extends Component {
+  valueChanged = (newString) => {
     try {
       JSON.parse(newString);
-      get(this, 'onChange')(newString);
-    } catch (error) {
+      this.args.onChange(newString);
+    } catch {
       // Ignore, just don't update
     }
-  }),
-});
+  };
+}
