@@ -57,8 +57,7 @@ jobs:
           - ember-lts-4.4
           - ember-release
           - embroider-safe
-          # Disabled pending a shift away from string-based `implementationMap` lookups
-          # - embroider-optimized
+          - embroider-optimized
 
     steps:
       - uses: actions/checkout@v3
