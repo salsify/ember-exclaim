@@ -53,6 +53,7 @@ The entry point to a UI powered by ember-exclaim is the `<ExclaimUi>` component.
  - `@implementationMap`: a mapping of names in the `ui` config to information about their backing implementations
  - `@onChange(envPathOfChangedValue)`: an optional function that will be invoked when a value in the `env` changes
  - `@wrapper`: an optional component that will wrap every rendered component in your UI configuration. The `wrapper` component will receive the `ComponentSpec` as `@spec` ([more on `ComponentSpec` here](ember-exclaim/src/-private/GLOSSARY.md)), the `Environment` as `@env` and the component's resolved `@config`.
+ - `@useClassicReactivity`: an optional flag that, if set, will cause any environment bindings Exclaim constructs to use classic Ember `computed` machinery rather than native getters and setters that assume data is appropriately `@tracked`.
 
 Each of these things is described in further detail below.
 
@@ -169,11 +170,11 @@ The `@implementationMap` given to `<ExclaimUi>` dictates what components it can 
 
 The [demo app](https://salsify.github.io/ember-exclaim) for this repo contains [a variety of simple component implementations](tests/dummy/app/components/exclaim-components) that you can use as a starting point for building your own.
 
-An ember-exclaim component implementation will receive two properties when rendered: `config` and `env`.
+An ember-exclaim component implementation will receive two arguments when rendered: `@config` and `@env`.
 
 ### `@config`
 
-The `@config` argument of the implementing component will contain all other information supplied in the `$component` hash representing it in the UI config. Any `$bind` directives in that config will be automatically be resolved when they are `get` or `set`. As an example, consider a lightweight implementation of the `input` component mentioned above.
+The `@config` argument of the implementing component will contain all other information supplied in the `$component` hash representing it in the UI config. Any `$bind` directives in that config will be automatically be resolved when they are read or written. As an example, consider a lightweight implementation of the `input` component mentioned above.
 
 ```hbs
 <input type="text" value={{@config.value}} oninput={{action (mut @config.value) value='target.value'}}>
@@ -197,7 +198,7 @@ For example, the [`vbox`](tests/dummy/app/components/exclaim-components/vbox) co
 {{/each}}
 ```
 
-By default, children will inherit the environment of their parent. This environment can be extended by passing a POJO with additional key/value pairs as a second parameter to `{{yield}}`. Check the implementation of [`each`](playground-app/app/components/exclaim-components/each) and [`let`](playground-app/app/components/exclaim-components/let) in the demo app for examples of how this can be used.
+By default, children will inherit the environment of their parent. This environment can be extended by passing a POJO with additional key/value pairs as a second parameter to `{{yield}}`. Check [the implementation of `each` and `let`](playground-app/app/components/exclaim-components/) in the demo app for examples of how this can be used.
 
 ## Implementing Helpers
 
