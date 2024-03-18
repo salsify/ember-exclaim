@@ -1,18 +1,18 @@
 <@wrapper
   @componentSpec={{@componentSpec}}
-  @env={{this.env}}
-  @config={{this.config}}
+  @env={{this.componentData.env}}
+  @config={{this.componentData.config}}
 >
   {{~null~}}
   <@componentSpec.component
-    @config={{this.config}}
-    @env={{this.env}}
+    @config={{this.componentData.config}}
+    @env={{this.componentData.env}}
     as |componentSpec additionalEnvData|
   >
     {{~null~}}
     <ExclaimComponent
       @componentSpec={{componentSpec}}
-      @env={{this.env}}
+      @env={{this.componentData.env}}
       @additionalEnvData={{additionalEnvData}}
       @wrapper={{@wrapper}}
     />
