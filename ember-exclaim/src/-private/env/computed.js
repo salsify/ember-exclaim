@@ -8,11 +8,7 @@ import { triggerChange } from './index.js';
 
 // This module contains implementations of key operations
 // (namely `extend` and `bind`) for environments whose
-// reactivity model is based on Ember computeds. The idea
-// is that we should be able to make a similar (but simpler)
-// one that just uses native getters and setters to instead
-// work more cleanly with `@tracked` data and have `ExclaimUi`
-// decide which version to pass to `makeEnv` based on an arg.
+// reactivity model is based on Ember computeds.
 
 /**
  * Returns wrapper around the given environment object that
