@@ -1,0 +1,7 @@
+{{! template-lint-disable require-input-label }}
+
+<input
+  type="checkbox"
+  checked={{@config.checked}}
+  {{on "change" this.onChange}}
+/>

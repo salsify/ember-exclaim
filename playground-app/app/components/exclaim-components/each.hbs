@@ -1,0 +1,3 @@
+{{#each @config.items as |item|}}
+  {{yield @config.do (singleton-hash @config.yield item)}}
+{{/each}}
