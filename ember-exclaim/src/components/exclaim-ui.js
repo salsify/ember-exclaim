@@ -3,14 +3,17 @@ import Component from '@ember/component';
 import buildSpecProcessor from '../-private/build-spec-processor';
 import { makeEnv } from '../-private/env/index.js';
 import * as computedEnv from '../-private/env/computed.js';
+import * as trackedEnv from '../-private/env/tracked.js';
 
 export default Component.extend({
   ui: null,
   env: null,
   implementationMap: null,
+  useClassicReactivity: false,
 
-  baseEnv: computed('env', 'onChange', function () {
-    return makeEnv(this.env ?? {}, this.onChange, computedEnv);
+  baseEnv: computed('env', 'onChange', 'useClassicReactivity', function () {
+    const envImpl = this.useClassicReactivity ? computedEnv : trackedEnv;
+    return makeEnv(this.env ?? {}, this.onChange, envImpl);
   }),
 
   content: computed('specProcessor', 'ui', function () {
