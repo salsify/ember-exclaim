@@ -205,3 +205,20 @@ By default, children will inherit the environment of their parent. This environm
 The [demo app](https://salsify.github.io/ember-exclaim) for this repo contains [a handful of helper implementations](tests/dummy/app/utils/exclaim-helpers) that you can use as a starting point for building your own.
 
 An ember-exclaim helper implementation is simply a function that takes two arguments, `config` and `env`, which are the same two values described for components above. The value returned when this function is called will be the ultimate value of the `{ $helper: ... }` hash in the UI configuration.
+
+## Migrating from v1 to v2
+
+The v2 release of `ember-exclaim` simplified and modernized the internals of the addon to enable clean operation against `@tracked` data, while also eliminating the need for using `get` and `unwrap` when working with data using the classic `computed` reactivity model. In addition, some inconsistencies and overly-complex APIs that had organically evolved over the course of v1 were cleaned up, resulting in a handful of breaking changes:
+
+ - Exclaim now requires Ember 3.28+ and has dropped support for Internet Explorer.
+ - By default, `ExclaimUi` now uses native getters and setters for helpers and bindings in UI config, assuming data in the environment is appropriately `@tracked`.
+   - Support for the "classic" `computed` reactivity model is now opt-in via the `@useClassicReactivity` flag on `ExclaimUi`.
+   - Calling `.get()` or `.set()` on an object retrieved from a component's config or environment is now deprecated with the classic reactivity model, and fully unavailable under the tracked model. Fields on config or the environment may be read via direct access, and should use Ember's importable `set` if they require classic reactivity semantics.
+ - The `@env` passed into `ExclaimUi` is no longer wrapped in an `Environment` object
+   - It no longer automatically has `EmberObject` methods such as `get` and `set`.
+   - There is no longer an `.extend()` method; instead of yielding `this.args.env.extend(someExtraData)` to expose extra data to children, components should just yield `someExtraData`.
+   - The rarely-used `wrap` export has been removed, and the less-rarely-used `unwrap` export is now a deprecated no-op.
+   - The `@resolveFieldMeta` arg and `metaForField` env method have been removed.
+ - The shape of the implementation map has been adjusted:
+   - `componentPath` is now `component`, and expects a `ComponentLike` value rather than a string
+   - `componentMeta` and `helperMeta` have been renamed simply `meta`
