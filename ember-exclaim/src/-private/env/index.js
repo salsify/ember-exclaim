@@ -12,6 +12,10 @@ export function isEnv(data) {
 }
 
 export function extendEnv(env, newBindings) {
+  if (!newBindings || !Object.keys(newBindings).length) {
+    return env;
+  }
+
   const internals = envInternals.get(env);
   const newEnv = internals.extend(env, newBindings);
   const onChange = (key) => {

@@ -43,9 +43,7 @@ module('Integration | Component | ExclaimUi | computed env', function (hooks) {
   test('it invokes helpers', async function (assert) {
     const implementationMap = {
       'simple-component': {
-        componentPath: makeComponent(
-          hbs`<div data-value>{{@config.value}}</div>`,
-        ),
+        component: makeComponent(hbs`<div data-value>{{@config.value}}</div>`),
       },
       join: {
         shorthandProperty: 'items',
@@ -72,9 +70,7 @@ module('Integration | Component | ExclaimUi | computed env', function (hooks) {
   test('it renders a basic component', async function (assert) {
     const implementationMap = {
       'simple-component': {
-        componentPath: makeComponent(
-          hbs`<div data-value>{{@config.value}}</div>`,
-        ),
+        component: makeComponent(hbs`<div data-value>{{@config.value}}</div>`),
       },
     };
 
@@ -94,12 +90,12 @@ module('Integration | Component | ExclaimUi | computed env', function (hooks) {
   test('it renders subcomponents', async function (assert) {
     const implementationMap = {
       'parent-component': {
-        componentPath: makeComponent(
+        component: makeComponent(
           hbs`{{yield @config.childA}}{{yield @config.childB}}`,
         ),
       },
       'child-component': {
-        componentPath: makeComponent(
+        component: makeComponent(
           hbs`<div data-id={{@config.id}}>{{@config.name}}</div>`,
         ),
       },
@@ -120,9 +116,7 @@ module('Integration | Component | ExclaimUi | computed env', function (hooks) {
   test('it renders data bound to the env', async function (assert) {
     const implementationMap = {
       'simple-component': {
-        componentPath: makeComponent(
-          hbs`<div data-value>{{@config.value}}</div>`,
-        ),
+        component: makeComponent(hbs`<div data-value>{{@config.value}}</div>`),
       },
     };
 
@@ -150,7 +144,7 @@ module('Integration | Component | ExclaimUi | computed env', function (hooks) {
   test('it writes bound data back to the env', async function (assert) {
     const implementationMap = {
       'simple-component': {
-        componentPath: makeComponent(
+        component: makeComponent(
           hbs`<input value={{@config.value}} oninput={{action (mut @config.value) value='target.value'}}>`,
         ),
       },
@@ -179,7 +173,7 @@ module('Integration | Component | ExclaimUi | computed env', function (hooks) {
 
     const implementationMap = {
       root: {
-        componentPath: makeComponent(
+        component: makeComponent(
           hbs`
             <div data-root-global>{{@config.global}}</div>
             <div data-first>{{yield @config.child (hash self='first')}}</div>
@@ -189,7 +183,7 @@ module('Integration | Component | ExclaimUi | computed env', function (hooks) {
         ),
       },
       child: {
-        componentPath: makeComponent(
+        component: makeComponent(
           hbs`
             <div data-global>{{@config.global}}</div>
             <div data-self>{{@config.self}}</div>
@@ -295,13 +289,13 @@ module('Integration | Component | ExclaimUi | computed env', function (hooks) {
 
     const implementationMap = {
       root: {
-        componentPath: makeComponent(
+        component: makeComponent(
           hbs`{{yield @config.child (hash local='yes' base='no')}}`,
           (instance) => (components.root = instance),
         ),
       },
       child: {
-        componentPath: makeComponent(
+        component: makeComponent(
           hbs``,
           (instance) => (components.child = instance),
         ),
@@ -367,13 +361,13 @@ module('Integration | Component | ExclaimUi | computed env', function (hooks) {
 
     const implementationMap = {
       root: {
-        componentPath: makeComponent(
+        component: makeComponent(
           hbs`{{yield @config.child (hash local='local')}}`,
           (instance) => (components.root = instance),
         ),
       },
       child: {
-        componentPath: makeComponent(
+        component: makeComponent(
           hbs``,
           (instance) => (components.child = instance),
         ),

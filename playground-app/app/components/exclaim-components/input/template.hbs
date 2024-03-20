@@ -1,8 +1,0 @@
-{{! template-lint-disable require-input-label no-action }}
-
-<input
-  type={{this.type}}
-  placeholder={{@config.placeholder}}
-  value={{@config.value}}
-  oninput={{action (mut @config.value) value='target.value'}}
-/>

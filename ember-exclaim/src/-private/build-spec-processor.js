@@ -30,7 +30,7 @@ function buildBaseRules(implementationMap) {
         return new HelperSpec(
           implementationMap[name].helper,
           config,
-          implementationMap[name].helperMeta,
+          implementationMap[name].meta,
         );
       } else {
         throw new Error(`Unable to resolve helper ${name}`);
@@ -42,12 +42,12 @@ function buildBaseRules(implementationMap) {
       ({ name, config }) => {
         if (
           hasOwnProperty(implementationMap, name) &&
-          implementationMap[name].componentPath
+          implementationMap[name].component
         ) {
           return new ComponentSpec(
-            implementationMap[name].componentPath,
+            implementationMap[name].component,
             config,
-            implementationMap[name].componentMeta,
+            implementationMap[name].meta,
           );
         } else {
           throw new Error(`Unable to resolve component ${name}`);
@@ -63,7 +63,7 @@ function buildShorthandRules(implementationMap) {
   Object.keys(implementationMap).forEach((name) => {
     let details = implementationMap[name];
     if (details.shorthandProperty) {
-      if (details.componentPath) {
+      if (details.component) {
         rules.push(buildComponentRule(name, details));
       } else if (details.helper) {
         rules.push(buildHelperRule(name, details));
@@ -74,25 +74,22 @@ function buildShorthandRules(implementationMap) {
   return rules;
 }
 
-function buildComponentRule(
-  name,
-  { shorthandProperty, componentPath, componentMeta },
-) {
+function buildComponentRule(name, { shorthandProperty, component, meta }) {
   return rule(
     { [`$${name}`]: subtree('shorthandValue'), ...rest('config') },
     ({ shorthandValue, config }) => {
       let fullConfig = { [shorthandProperty]: shorthandValue, ...config };
-      return new ComponentSpec(componentPath, fullConfig, componentMeta);
+      return new ComponentSpec(component, fullConfig, meta);
     },
   );
 }
 
-function buildHelperRule(name, { shorthandProperty, helper, helperMeta }) {
+function buildHelperRule(name, { shorthandProperty, helper, meta }) {
   return rule(
     { [`$${name}`]: subtree('shorthandValue'), ...rest('config') },
     ({ shorthandValue, config }) => {
       let fullConfig = { [shorthandProperty]: shorthandValue, ...config };
-      return new HelperSpec(helper, fullConfig, helperMeta);
+      return new HelperSpec(helper, fullConfig, meta);
     },
   );
 }

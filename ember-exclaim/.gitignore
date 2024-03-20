@@ -5,6 +5,7 @@
 /LICENSE.md
 # Build output
 /dist/
-/declarations/
+# We don't ignore declarations as they're currently hand-written.
+# /declarations/
 # npm/pnpm/yarn pack output
 *.tgz

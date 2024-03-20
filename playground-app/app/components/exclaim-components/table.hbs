@@ -1,0 +1,21 @@
+<table>
+  {{#if @config.header}}
+    <thead>
+      <tr>
+        {{#each @config.header as |row|}}
+          <th>{{yield row}}</th>
+        {{/each}}
+      </tr>
+    </thead>
+  {{/if}}
+
+  <tbody>
+    {{#each @config.items as |item|}}
+      <tr>
+        {{#each @config.row as |cell|}}
+          <td>{{yield cell (singleton-hash @config.yield item)}}</td>
+        {{/each}}
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

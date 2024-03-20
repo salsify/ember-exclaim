@@ -1,39 +1,34 @@
-import { computed, get } from '@ember/object';
 import Controller from '@ember/controller';
-import config from 'playground-app/config/environment';
-import discoverImplementations from 'playground-app/utils/discover-implementations';
+import { tracked } from '@glimmer/tracking';
+import implementationMap from 'playground-app/implementation-map';
 import samples from './samples';
+import { TrackedObject } from 'tracked-built-ins/.';
 
-const implementationMap = discoverImplementations(config, {
-  componentPrefix: 'components/exclaim-components',
-  helperPrefix: 'utils/exclaim-helpers',
-});
+export default class IndexController extends Controller {
+  queryParams = ['active'];
 
-const docs = Object.values(implementationMap);
-const componentDocs = docs.filter((doc) => doc.componentPath);
-const helperDocs = docs.filter((doc) => doc.helper);
+  @tracked active = -1;
+  @tracked uiString = this.samples[this.active]?.interface ?? '';
+  @tracked envString = this.samples[this.active]?.environment ?? '';
 
-export default Controller.extend({
-  queryParams: ['active'],
-  active: -1,
+  samples = samples;
+  implementationMap = implementationMap;
 
-  samples,
-  componentDocs,
-  helperDocs,
-  implementationMap,
+  onSampleSelect = (event) => {
+    this.active = Number(event.target.value);
 
-  uiString: sampleValue('interface'),
-  envString: sampleValue('environment'),
-});
+    let sample = this.samples[this.active];
+    if (sample) {
+      this.uiString = sample.interface ?? '';
+      this.envString = sample.environment ?? '';
+    }
+  };
 
-function sampleValue(key) {
-  return computed('active', {
-    get() {
-      return get(this, `samples.${get(this, 'active')}.${key}`) || '';
-    },
+  get ui() {
+    return JSON.parse(this.uiString || '{}');
+  }
 
-    set(key, value) {
-      return value;
-    },
-  });
+  get env() {
+    return new TrackedObject(JSON.parse(this.envString || '{}'));
+  }
 }

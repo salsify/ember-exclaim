@@ -1,16 +1,12 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
-import config from 'playground-app/config/environment';
-import discoverImplementations from 'playground-app/utils/discover-implementations';
+import implementationMap from 'playground-app/implementation-map';
 
 export default class ExampleController extends Controller {
   @tracked ui;
   @tracked env;
 
-  implementationMap = discoverImplementations(config, {
-    componentPrefix: 'components/exclaim-components',
-    helperPrefix: 'utils/exclaim-helpers',
-  });
+  implementationMap = implementationMap;
 
   handleSave = async (event) => {
     if (event.ctrlKey && event.key === 's') {

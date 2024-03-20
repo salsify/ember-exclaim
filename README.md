@@ -53,6 +53,7 @@ The entry point to a UI powered by ember-exclaim is the `<ExclaimUi>` component.
  - `@implementationMap`: a mapping of names in the `ui` config to information about their backing implementations
  - `@onChange(envPathOfChangedValue)`: an optional function that will be invoked when a value in the `env` changes
  - `@wrapper`: an optional component that will wrap every rendered component in your UI configuration. The `wrapper` component will receive the `ComponentSpec` as `@spec` ([more on `ComponentSpec` here](ember-exclaim/src/-private/GLOSSARY.md)), the `Environment` as `@env` and the component's resolved `@config`.
+ - `@useClassicReactivity`: an optional flag that, if set, will cause any environment bindings Exclaim constructs to use classic Ember `computed` machinery rather than native getters and setters that assume data is appropriately `@tracked`.
 
 Each of these things is described in further detail below.
 
@@ -161,7 +162,7 @@ Note that `$bind` works with paths, too, so `{ $bind: 'foo.bar' }` would access 
 ### The Implementation Map
 
 The `@implementationMap` given to `<ExclaimUi>` dictates what components it can render. It should be a hash whose keys are the component and helper names available for use in the UI config. The value for each key should itself be a hash describing the component or helper with that name.
- - `componentPath` (for components): the name to the Ember component to be invoked when this exclaim-ui component is used in the config, as you'd give it to the `{{component}}` helper
+ - `component` (for components): the name to the Ember component to be invoked when this exclaim-ui component is used in the config, as you'd give it to the `{{component}}` helper
  - `helper` (for helper functions): a function that receives a `config` hash and `env` information and should return the output value for the helper
  - `shorthandProperty` (optional for both helpers and components): the name of a property that should be populated when shorthand notation is used for this component or helper (see above)
 
@@ -169,11 +170,11 @@ The `@implementationMap` given to `<ExclaimUi>` dictates what components it can 
 
 The [demo app](https://salsify.github.io/ember-exclaim) for this repo contains [a variety of simple component implementations](tests/dummy/app/components/exclaim-components) that you can use as a starting point for building your own.
 
-An ember-exclaim component implementation will receive two properties when rendered: `config` and `env`.
+An ember-exclaim component implementation will receive two arguments when rendered: `@config` and `@env`.
 
 ### `@config`
 
-The `@config` argument of the implementing component will contain all other information supplied in the `$component` hash representing it in the UI config. Any `$bind` directives in that config will be automatically be resolved when they are `get` or `set`. As an example, consider a lightweight implementation of the `input` component mentioned above.
+The `@config` argument of the implementing component will contain all other information supplied in the `$component` hash representing it in the UI config. Any `$bind` directives in that config will be automatically be resolved when they are read or written. As an example, consider a lightweight implementation of the `input` component mentioned above.
 
 ```hbs
 <input type="text" value={{@config.value}} oninput={{action (mut @config.value) value='target.value'}}>
@@ -197,10 +198,27 @@ For example, the [`vbox`](tests/dummy/app/components/exclaim-components/vbox) co
 {{/each}}
 ```
 
-By default, children will inherit the environment of their parent. This environment can be extended by passing a POJO with additional key/value pairs as a second parameter to `{{yield}}`. Check the implementation of [`each`](playground-app/app/components/exclaim-components/each) and [`let`](playground-app/app/components/exclaim-components/let) in the demo app for examples of how this can be used.
+By default, children will inherit the environment of their parent. This environment can be extended by passing a POJO with additional key/value pairs as a second parameter to `{{yield}}`. Check [the implementation of `each` and `let`](playground-app/app/components/exclaim-components/) in the demo app for examples of how this can be used.
 
 ## Implementing Helpers
 
 The [demo app](https://salsify.github.io/ember-exclaim) for this repo contains [a handful of helper implementations](tests/dummy/app/utils/exclaim-helpers) that you can use as a starting point for building your own.
 
 An ember-exclaim helper implementation is simply a function that takes two arguments, `config` and `env`, which are the same two values described for components above. The value returned when this function is called will be the ultimate value of the `{ $helper: ... }` hash in the UI configuration.
+
+## Migrating from v1 to v2
+
+The v2 release of `ember-exclaim` simplified and modernized the internals of the addon to enable clean operation against `@tracked` data, while also eliminating the need for using `get` and `unwrap` when working with data using the classic `computed` reactivity model. In addition, some inconsistencies and overly-complex APIs that had organically evolved over the course of v1 were cleaned up, resulting in a handful of breaking changes:
+
+ - Exclaim now requires Ember 3.28+ and has dropped support for Internet Explorer.
+ - By default, `ExclaimUi` now uses native getters and setters for helpers and bindings in UI config, assuming data in the environment is appropriately `@tracked`.
+   - Support for the "classic" `computed` reactivity model is now opt-in via the `@useClassicReactivity` flag on `ExclaimUi`.
+   - Calling `.get()` or `.set()` on an object retrieved from a component's config or environment is now deprecated with the classic reactivity model, and fully unavailable under the tracked model. Fields on config or the environment may be read via direct access, and should use Ember's importable `set` if they require classic reactivity semantics.
+ - The `@env` passed into `ExclaimUi` is no longer wrapped in an `Environment` object
+   - It no longer automatically has `EmberObject` methods such as `get` and `set`.
+   - There is no longer an `.extend()` method; instead of yielding `this.args.env.extend(someExtraData)` to expose extra data to children, components should just yield `someExtraData`.
+   - The rarely-used `wrap` export has been removed, and the less-rarely-used `unwrap` export is now a deprecated no-op.
+   - The `@resolveFieldMeta` arg and `metaForField` env method have been removed.
+ - The shape of the implementation map has been adjusted:
+   - `componentPath` is now `component`, and expects a `ComponentLike` value rather than a string
+   - `componentMeta` and `helperMeta` have been renamed simply `meta`

@@ -1,0 +1,7 @@
+{{! template-lint-disable require-input-label }}
+<input
+  type={{this.type}}
+  placeholder={{@config.placeholder}}
+  value={{@config.value}}
+  {{on "input" this.onInput}}
+/>

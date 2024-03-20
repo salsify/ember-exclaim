@@ -1,22 +1,10 @@
-import { computed } from '@ember/object';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { extendEnv } from '../-private/env/index.js';
 
-export default Component.extend({
-  tagName: '',
-
-  componentSpec: null,
-  env: null,
-
-  effectiveEnv: computed('env', 'overrideEnv', function () {
-    if (this.overrideEnv) {
-      return extendEnv(this.env, this.overrideEnv);
-    } else {
-      return this.env;
-    }
-  }),
-
-  resolvedConfig: computed('componentSpec', 'effectiveEnv', function () {
-    return this.componentSpec?.resolveConfig?.(this.effectiveEnv);
-  }),
-});
+export default class ExclaimComponent extends Component {
+  get componentData() {
+    let env = extendEnv(this.args.env, this.args.additionalEnvData);
+    let config = this.args.componentSpec?.resolveConfig?.(env);
+    return { env, config };
+  }
+}
