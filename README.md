@@ -210,7 +210,7 @@ An ember-exclaim helper implementation is simply a function that takes two argum
 
 The v2 release of `ember-exclaim` simplified and modernized the internals of the addon to enable clean operation against `@tracked` data, while also eliminating the need for using `get` and `unwrap` when working with data using the classic `computed` reactivity model. In addition, some inconsistencies and overly-complex APIs that had organically evolved over the course of v1 were cleaned up, resulting in a handful of breaking changes:
 
- - Exclaim now requires Ember 3.28+ and has dropped support for Internet Explorer.
+ - Exclaim now requires Ember 3.28+ and has dropped support for Internet Explorer. It has also been converted to a v2 addon, meaning consumers must be using Embroider or `ember-auto-import@2`.
  - By default, `ExclaimUi` now uses native getters and setters for helpers and bindings in UI config, assuming data in the environment is appropriately `@tracked`.
    - Support for the "classic" `computed` reactivity model is now opt-in via the `@useClassicReactivity` flag on `ExclaimUi`.
    - Calling `.get()` or `.set()` on an object retrieved from a component's config or environment is now deprecated with the classic reactivity model, and fully unavailable under the tracked model. Fields on config or the environment may be read via direct access, and should use Ember's importable `set` if they require classic reactivity semantics.
