@@ -1,5 +1,5 @@
 <div ...attributes>
-  {{#if this.content.componentSpec~}}
+  {{~#if this.content.componentSpec~}}
     <ExclaimComponent
       @componentSpec={{this.content.componentSpec}}
       @env={{this.env}}
@@ -7,5 +7,5 @@
     />
   {{~else if this.content.error~}}
     {{yield this.content.error}}
-  {{~/if}}
+  {{~/if~}}
 </div>
