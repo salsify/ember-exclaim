@@ -1,4 +1,5 @@
 import { setComponentTemplate } from '@ember/component';
+import { computed } from '@ember/object';
 import Component from '@glimmer/component';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
@@ -138,6 +139,38 @@ module('Integration | Component | ExclaimUi | tracked env', function (hooks) {
     await settled();
 
     assert.dom('[data-value]').hasText('goodbye');
+  });
+
+  test('it exposes bindings that can be consumed by legacy computed properties', async function (assert) {
+    const implementationMap = {
+      shout: {
+        component: setComponentTemplate(
+          hbs`{{this.shoutedValue}}`,
+          class extends Component {
+            @computed('args.config.value')
+            get shoutedValue() {
+              return this.args.config.value.toUpperCase();
+            }
+          },
+        ),
+      },
+    };
+
+    const ui = {
+      $component: 'shout',
+      value: { $bind: 'envValue' },
+    };
+
+    const env = new TrackedObject({ envValue: 'hi' });
+
+    await this.renderUI({ implementationMap, ui, env });
+
+    assert.dom().hasText('HI');
+
+    env.envValue = 'hello';
+    await settled();
+
+    assert.dom().hasText('HELLO');
   });
 
   test('it writes bound data back to the env', async function (assert) {

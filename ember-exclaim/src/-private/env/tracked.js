@@ -1,4 +1,5 @@
 import { TrackedObject } from 'tracked-built-ins';
+import { dependentKeyCompat } from '@ember/object/compat';
 import { HelperSpec, Binding } from '../ui-spec.js';
 import { recordCanonicalPath } from '../paths.js';
 import { triggerChange } from './index.js';
@@ -63,7 +64,7 @@ function bindKey(host, key, value, env) {
     const bindingPath = value.path.join('.');
 
     recordCanonicalPath(host, key, env, bindingPath);
-    Object.defineProperty(host, key, {
+    defineProperty(host, key, {
       enumerable: true,
       get() {
         return value.path.reduce((object, key) => object[key], env);
@@ -76,7 +77,7 @@ function bindKey(host, key, value, env) {
       },
     });
   } else if (value instanceof HelperSpec) {
-    Object.defineProperty(host, key, {
+    defineProperty(host, key, {
       enumerable: true,
       get() {
         return value.invoke(env);
@@ -85,4 +86,18 @@ function bindKey(host, key, value, env) {
   } else {
     host[key] = bind(value, env);
   }
+}
+
+function defineProperty(object, key, descriptor) {
+  // Using `dependentKeyCompat` ensures that any computed properties
+  // in component implementations will still work correctly. This allows
+  // shared libraries of Exclaim components to use `@computed` internally
+  // to be compatible with an environment + `ExclaimUi` using classic
+  // reactivity OR modern reactivity, providing their consumers an easier
+  // migration path.
+  Object.defineProperty(
+    object,
+    key,
+    dependentKeyCompat(object, String(key), descriptor) ?? descriptor,
+  );
 }
